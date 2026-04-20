@@ -1,0 +1,150 @@
+"""
+Cal.com booking flow integration.
+Books discovery calls between prospects and Tenacious delivery leads.
+Provides real calendar events both attendees can see.
+"""
+
+from __future__ import annotations
+
+import logging
+import uuid
+
+import httpx
+
+from agent.config import settings
+from agent.models import ProspectInfo, TraceRecord
+
+logger = logging.getLogger(__name__)
+
+
+class CalComClient:
+    """Cal.com client for discovery call booking."""
+
+    def __init__(self):
+        self.base_url = settings.calcom_base_url.rstrip("/")
+        self.api_key = settings.calcom_api_key
+        self.event_type_id = settings.calcom_event_type_id
+
+    async def create_booking(
+        self,
+        prospect: ProspectInfo,
+        start_time: str,
+        end_time: str | None = None,
+        notes: str | None = None,
+    ) -> tuple[dict, TraceRecord]:
+        """
+        Book a discovery call slot via Cal.com API.
+
+        Args:
+            prospect: Prospect info with contact details
+            start_time: ISO-8601 start time
+            end_time: ISO-8601 end time (defaults to start + 30 min)
+            notes: Additional context for the delivery lead
+        """
+        trace_id = f"tr_{uuid.uuid4().hex[:8]}"
+
+        booking_data = {
+            "eventTypeId": self.event_type_id,
+            "start": start_time,
+            "responses": {
+                "name": prospect.contact_name or prospect.company,
+                "email": prospect.contact_email or "",
+                "notes": notes or f"Discovery call with {prospect.company}",
+            },
+            "metadata": {
+                "company": prospect.company,
+                "crunchbase_id": prospect.crunchbase_id,
+                "thread_source": "conversion_engine",
+            },
+            "timeZone": prospect.timezone or "UTC",
+            "language": "en",
+        }
+
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{self.base_url}/api/bookings",
+                    params={"apiKey": self.api_key},
+                    json=booking_data,
+                    timeout=15.0,
+                )
+                response.raise_for_status()
+                result = response.json()
+
+            booking_id = result.get("id") or result.get("uid")
+
+            trace = TraceRecord(
+                trace_id=trace_id,
+                event_type="calcom_booking_created",
+                prospect_company=prospect.company,
+                input_data={
+                    "event_type_id": self.event_type_id,
+                    "start_time": start_time,
+                },
+                output_data={
+                    "booking_id": booking_id,
+                    "status": "confirmed",
+                },
+                cost_usd=0.0,
+                success=True,
+            )
+
+            logger.info(
+                "Cal.com booking created for %s: ID=%s, time=%s",
+                prospect.company,
+                booking_id,
+                start_time,
+            )
+            return result, trace
+
+        except Exception as e:
+            logger.error("Cal.com booking failed for %s: %s", prospect.company, str(e))
+            trace = TraceRecord(
+                trace_id=trace_id,
+                event_type="calcom_booking_created",
+                prospect_company=prospect.company,
+                input_data=booking_data,
+                output_data={"error": str(e)},
+                success=False,
+                error=str(e),
+            )
+            return {"error": str(e)}, trace
+
+    async def get_available_slots(
+        self,
+        date_from: str,
+        date_to: str,
+    ) -> list[dict]:
+        """Get available time slots for the event type."""
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"{self.base_url}/api/availability",
+                    params={
+                        "apiKey": self.api_key,
+                        "eventTypeId": self.event_type_id,
+                        "dateFrom": date_from,
+                        "dateTo": date_to,
+                    },
+                    timeout=10.0,
+                )
+                response.raise_for_status()
+                return response.json().get("slots", {})
+        except Exception as e:
+            logger.error("Cal.com availability check failed: %s", str(e))
+            return []
+
+    def get_booking_link(self) -> str:
+        """Get the public booking URL for the event type."""
+        return f"{self.base_url}/book/{self.event_type_id}"
+
+
+# Module-level singleton
+_calcom: CalComClient | None = None
+
+
+def get_calcom_client() -> CalComClient:
+    global _calcom
+    if _calcom is None:
+        _calcom = CalComClient()
+    return _calcom
