@@ -205,3 +205,47 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+node_modules/
+.next/
+out/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-error.log*
+
+# --- Secrets (never commit) ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets.json
+.claude-credentials
+credentials.json
+
+# --- IDE / OS ---
+.vscode/
+!.vscode/settings.example.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Challenge-specific: large data artifacts you don't want in git ---
+data/snapshots/*.jsonl
+data/enrichment_bundles/*.jsonl
+traces/langfuse/*.jsonl
+traces/tau2bench/*.jsonl
+*.sqlite
+*.db
+
+# --- Compiled TS ---
+*.tsbuildinfo
+
+# --- Temp ---
+tmp/
+temp/
+*.tmp
+*.bak

@@ -1,0 +1,63 @@
+# # .pre-commit-config.yaml — Tenacious Conversion Engine
+# #
+# # Fast hooks only. Mypy and tsc are deliberately NOT here — they are slow
+# # enough to become friction during a sprint. Run them in CI or manually
+# # before each act submission.
+# #
+# # Install: pip install pre-commit && pre-commit install
+
+# repos:
+#   # Basic hygiene
+#   - repo: https://github.com/pre-commit/pre-commit-hooks
+#     rev: v4.6.0
+#     hooks:
+#       - id: trailing-whitespace
+#       - id: end-of-file-fixer
+#       - id: check-yaml
+#       - id: check-json
+#       - id: check-toml
+#       - id: check-merge-conflict
+#       - id: check-added-large-files
+#         args: ["--maxkb=1000"]
+#       - id: detect-private-key
+
+#   # Ruff — lint + format (replaces black, isort, flake8, etc.)
+#   - repo: https://github.com/astral-sh/ruff-pre-commit
+#     rev: v0.5.0
+#     hooks:
+#       - id: ruff
+#         args: [--fix, --exit-non-zero-on-fix]
+#       - id: ruff-format
+
+#   # Prettier for TS/JS/JSON/YAML/Markdown
+#   - repo: https://github.com/pre-commit/mirrors-prettier
+#     rev: v3.1.0
+#     hooks:
+#       - id: prettier
+#         types_or: [javascript, jsx, ts, tsx, json, yaml, markdown]
+#         exclude: |
+#           (?x)^(
+#             .*\.min\.(js|css)|
+#             seeds_placeholder/.*|
+#             data/.*|
+#             traces/.*
+#           )$
+
+#   # ESLint for TS/JS only (skip if you have no JS in the repo)
+#   - repo: https://github.com/pre-commit/mirrors-eslint
+#     rev: v9.5.0
+#     hooks:
+#       - id: eslint
+#         files: \.[jt]sx?$
+#         types: [file]
+#         additional_dependencies:
+#           - "eslint@9.5.0"
+#           - "@typescript-eslint/parser@7.13.0"
+#           - "@typescript-eslint/eslint-plugin@7.13.0"
+#           - "eslint-plugin-simple-import-sort@12.1.0"
+
+#   # Quick secrets scan — catches the most common mistakes
+#   - repo: https://github.com/gitleaks/gitleaks
+#     rev: v8.18.4
+#     hooks:
+#       - id: gitleaks

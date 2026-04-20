@@ -1,0 +1,166 @@
+[project]
+name = "conversion-engine"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "africastalking>=2.0.2",
+    "aiohttp>=3.13.5",
+    "beautifulsoup4>=4.14.3",
+    "fastapi>=0.136.0",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "langfuse>=4.3.1",
+    "lxml>=6.1.0",
+    "openai>=2.32.0",
+    "playwright>=1.58.0",
+    "pydantic>=2.13.3",
+    "pydantic-settings>=2.14.0",
+    "python-dateutil>=2.9.0.post0",
+    "python-dotenv>=1.2.2",
+    "resend>=2.29.0",
+    "uvicorn[standard]>=0.44.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["agent*", "eval*"]
+
+# ---------- Ruff: lint + format ----------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["agent", "eval", "tests"]
+
+[tool.ruff.lint]
+# Ruleset selection:
+#   E, W  - pycodestyle (errors + warnings)
+#   F     - pyflakes (unused imports, undefined names, etc.)
+#   I     - isort (import ordering)
+#   B     - flake8-bugbear (likely bugs)
+#   UP    - pyupgrade (modern Python idioms)
+#   SIM   - flake8-simplify (readability)
+#   ARG   - unused arguments
+#   RET   - return statement patterns
+#   PTH   - use pathlib over os.path
+#   PL    - pylint (conservative subset)
+#   RUF   - ruff-specific
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "ARG", "RET", "PTH", "PL", "RUF"]
+
+# Pragmatic ignores:
+#   E501     - line-too-long; ruff format handles most, rest are usually URLs or fixtures
+#   PLR0913  - too-many-arguments; pragmatic — many legitimate functions need >5 params
+#   PLR2004  - magic-value-comparison; too noisy in tests and config-like code
+#   PLR0911  - too-many-return-statements; early returns are often clearer
+#   PLR0912  - too-many-branches; domain logic (signal scoring, classifier) has legit branching
+#   SIM108   - ternary-over-if-else; not always more readable
+ignore = [
+    "E501",     # line-too-long; ruff format handles most
+    "PLR0913",  # too-many-arguments
+    "PLR2004",  # magic-value-comparison
+    "PLR0911",  # too-many-return-statements
+    "PLR0912",  # too-many-branches; signal scoring has legit branching
+    "PLR0915",  # too-many-statements; score_ai_maturity is naturally long
+    "SIM108",   # ternary-over-if-else
+    "PLW0603",  # global statement; singletons are intentional
+    "PLC0415",  # import not at top-level; lazy imports for heavy deps (playwright, africastalking)
+    "PLW2901",  # for loop var overwritten; line.strip() is standard pattern
+    "ARG001",   # unused function argument; some are for future use / API compatibility
+    "ARG002",   # unused method argument
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests: more permissive — fixtures, assertions, magic numbers all fine
+"tests/**/*.py" = ["ARG", "PLR0915", "PLR2004", "B011", "S101"]
+# Init files: re-exports are OK
+"__init__.py" = ["F401"]
+# Scripts / CLI: prints are OK here (and we actually want them)
+"tenacious/cli/**/*.py" = ["T201"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["agent"]
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+# ---------- Mypy: pragmatic type checking ----------
+[tool.mypy]
+python_version = "3.11"
+strict = false               # Pragmatic — strict=true is friction for a sprint
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+no_implicit_optional = true
+check_untyped_defs = true
+disallow_untyped_defs = false  # Not required on every function — see skill for policy
+show_error_codes = true
+pretty = true
+
+[[tool.mypy.overrides]]
+# Test code: relaxed typing
+module = "tests.*"
+disallow_untyped_defs = false
+check_untyped_defs = false
+
+[[tool.mypy.overrides]]
+# Third-party libs without type stubs — ignore missing imports
+module = [
+    "playwright.*",
+    "langfuse.*",
+    "tau2bench.*",
+    "hubspot.*",
+]
+ignore_missing_imports = true
+
+# ---------- Pytest ----------
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-ra",                   # show summary of all non-passing outcomes
+    "--strict-markers",      # fail on unregistered @pytest.mark.X
+    "--strict-config",
+]
+markers = [
+    "slow: tests that take >1s (deselect with '-m \"not slow\"')",
+    "live: hits live external APIs — skip in CI by default",
+    "snapshot: depends on frozen enrichment snapshot",
+]
+filterwarnings = [
+    "error",                 # treat warnings as errors in test runs
+    "ignore::DeprecationWarning:playwright.*",
+    "ignore::DeprecationWarning:pydantic.*",
+]
+
+# ---------- Coverage (optional, if you use pytest-cov) ----------
+[tool.coverage.run]
+source = ["agent"]
+omit = ["tests/*", "eval/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.20.1",
+    "pre-commit>=4.5.1",
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.15.11",
+]
