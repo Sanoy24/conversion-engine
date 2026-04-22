@@ -1,0 +1,69 @@
+services:
+  - type: web
+    name: conversion-engine
+    runtime: python
+    region: oregon
+    plan: free
+
+    buildCommand: pip install uv && uv pip install --system -e .
+    startCommand: uvicorn agent.main:app --host 0.0.0.0 --port $PORT
+
+    # Health-check so Render knows the service is ready
+    healthCheckPath: /health
+
+    envVars:
+      # ── LLM (OpenRouter) ────────────────────────────────────────────
+      - key: OPENROUTER_API_KEY
+        sync: false          # set in Render dashboard → Environment
+      - key: DEV_MODEL
+        value: deepseek/deepseek-chat-v3-0324
+      - key: EVAL_MODEL
+        value: anthropic/claude-sonnet-4-20250514
+
+      # ── Email (Resend) ───────────────────────────────────────────────
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false          # e.g. outbound@yourdomain.com
+      - key: RESEND_WEBHOOK_SECRET
+        sync: false
+
+      # ── SMS (Africa's Talking) ───────────────────────────────────────
+      - key: AT_USERNAME
+        value: sandbox
+      - key: AT_API_KEY
+        sync: false
+      - key: AT_SHORTCODE
+        sync: false
+      - key: AT_ENVIRONMENT
+        value: sandbox
+
+      # ── CRM (HubSpot) ────────────────────────────────────────────────
+      - key: HUBSPOT_ACCESS_TOKEN
+        sync: false
+      - key: HUBSPOT_PORTAL_ID
+        sync: false
+
+      # ── Calendar (Cal.com) ───────────────────────────────────────────
+      - key: CALCOM_API_KEY
+        sync: false
+      - key: CALCOM_BASE_URL
+        value: https://api.cal.com
+      - key: CALCOM_EVENT_TYPE_ID
+        value: "1"
+
+      # ── Observability (Langfuse) ─────────────────────────────────────
+      - key: LANGFUSE_PUBLIC_KEY
+        sync: false
+      - key: LANGFUSE_SECRET_KEY
+        sync: false
+      - key: LANGFUSE_BASE_URL
+        value: https://cloud.langfuse.com
+
+      # ── Application ──────────────────────────────────────────────────
+      - key: APP_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      - key: LIVE_OUTBOUND_ENABLED
+        value: "false"       # flip to "true" only when ready for live sends

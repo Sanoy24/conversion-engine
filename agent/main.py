@@ -209,6 +209,80 @@ async def sms_inbound_webhook(request: Request):
         return {"status": "error", "error": str(e)}
 
 
+@app.post("/webhooks/calcom")
+async def calcom_webhook(request: Request):
+    """
+    Webhook endpoint for Cal.com booking events.
+
+    Cal.com sends POST requests for:
+      - BOOKING_CREATED    — new discovery-call booking confirmed
+      - BOOKING_CANCELLED  — prospect cancelled
+      - BOOKING_RESCHEDULED — prospect moved the call
+
+    Configure in Cal.com → Settings → Webhooks → Add webhook:
+      URL: https://<your-render-service>.onrender.com/webhooks/calcom
+      Events: BOOKING_CREATED, BOOKING_CANCELLED, BOOKING_RESCHEDULED
+    """
+    try:
+        payload = await request.json()
+    except Exception:
+        # Cal.com may send empty pings to verify the URL
+        return {"status": "ok", "note": "empty_or_invalid_body"}
+
+    trigger = payload.get("triggerEvent", "UNKNOWN")
+    booking = payload.get("payload", {})
+
+    booking_uid = booking.get("uid") or booking.get("id") or "unknown"
+    attendees = booking.get("attendees", [])
+    attendee_email = attendees[0].get("email", "") if attendees else ""
+
+    logger.info(
+        "Cal.com webhook: trigger=%s booking_uid=%s attendee=%s",
+        trigger, booking_uid, attendee_email,
+    )
+
+    # If the booking carries metadata we can correlate back to a thread, do so.
+    metadata = booking.get("metadata") or {}
+    thread_id = metadata.get("thread_id")
+
+    if trigger == "BOOKING_CREATED":
+        start = booking.get("startTime", "")
+        logger.info("Discovery call booked: uid=%s start=%s thread=%s", booking_uid, start, thread_id)
+        return {
+            "status": "ok",
+            "event": "booking_created",
+            "booking_uid": booking_uid,
+            "start": start,
+            "thread_id": thread_id,
+        }
+
+    if trigger == "BOOKING_CANCELLED":
+        reason = booking.get("cancellationReason", "")
+        logger.info("Discovery call cancelled: uid=%s reason=%s thread=%s", booking_uid, reason, thread_id)
+        return {
+            "status": "ok",
+            "event": "booking_cancelled",
+            "booking_uid": booking_uid,
+            "reason": reason,
+            "thread_id": thread_id,
+        }
+
+    if trigger == "BOOKING_RESCHEDULED":
+        new_start = booking.get("startTime", "")
+        logger.info("Discovery call rescheduled: uid=%s new_start=%s thread=%s", booking_uid, new_start, thread_id)
+        return {
+            "status": "ok",
+            "event": "booking_rescheduled",
+            "booking_uid": booking_uid,
+            "new_start": new_start,
+            "thread_id": thread_id,
+        }
+
+    # Unknown trigger — acknowledge to prevent Cal.com retries
+    logger.warning("Cal.com webhook: unhandled trigger=%s", trigger)
+    return {"status": "ok", "event": "unhandled", "trigger": trigger}
+
+
 # ── Entry point ────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
