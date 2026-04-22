@@ -152,17 +152,43 @@ uv run playwright install chromium
 ### Running
 
 ```bash
-# Start the API server
-uv run python -m agent.main
+# 0. One-time: sync tau2-bench submodule venv
+uv sync --directory eval/tau2-bench
 
-# Run τ²-Bench baseline
+# 1. Populate data/ (Crunchbase ODM + layoffs.fyi + job-posts snapshot)
+uv run python -m scripts.fetch_data
+
+# 2. τ²-Bench baseline (writes eval/score_log.json + eval/trace_log.jsonl + baseline.md)
 uv run python -m eval.harness
 
-# Process a single prospect (example)
+# 3. Enrichment → classify → draft pipeline over 25 prospects (writes outputs/e2e_summary.json)
+uv run python -m scripts.run_e2e_demo --n 25 --max-parallel 4
+
+# 4. One complete email+SMS+calendar thread for a synthetic prospect
+#    (Act II deliverable; kill-switch gated by default)
+uv run python -m scripts.run_full_thread_demo
+
+# 5. Rebuild baseline.md + report/interim_report.{md,pdf} from current artifacts
+uv run python -m scripts.build_report
+
+# Start the FastAPI server (webhook endpoints for inbound replies)
+uv run python -m agent.main
+
+# Process a single prospect ad-hoc
 curl -X POST http://localhost:8000/api/prospect/new \
   -H "Content-Type: application/json" \
   -d '{"company_name": "Example Corp", "contact_email": "cto@example.com"}'
 ```
+
+### Seed Materials (Day-0 deliverable from Tenacious)
+
+The per-challenge seed materials — `style_guide.md`, `bench_summary.md`,
+`pricing_sheet.md`, `email_sequences.md`, sales deck, case studies — are
+delivered by program staff on Day 0 into `tenacious-seeds-placeholder/seeds_placeholder/`.
+Until they arrive, the email drafter falls back to in-code defaults and logs
+four "Seed file not found" warnings per run. Drop the real files into that
+directory (unchanged filenames, `_PLACEHOLDER` suffix removed) and the warnings
+disappear.
 
 ## Data Handling Policy
 

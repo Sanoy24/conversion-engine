@@ -140,6 +140,9 @@ filterwarnings = [
     "error",                 # treat warnings as errors in test runs
     "ignore::DeprecationWarning:playwright.*",
     "ignore::DeprecationWarning:pydantic.*",
+    # datetime.utcnow() is deprecated in 3.12+; the codebase still uses it in a
+    # few places and the migration is an ongoing cleanup, not load-bearing here.
+    "ignore:datetime.datetime.utcnow\\(\\) is deprecated:DeprecationWarning",
 ]
 
 # ---------- Coverage (optional, if you use pytest-cov) ----------
@@ -159,6 +162,7 @@ exclude_lines = [
 dev = [
     "mypy>=1.20.1",
     "pre-commit>=4.5.1",
+    "pypandoc-binary>=1.17",
     "pytest>=9.0.3",
     "pytest-asyncio>=1.3.0",
     "pytest-cov>=7.1.0",
