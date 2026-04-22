@@ -1,0 +1,180 @@
+{
+  "company": "Consolety",
+  "segment": "abstain",
+  "confidence": "low",
+  "signal_brief": {
+    "prospect": {
+      "company": "Consolety",
+      "domain": "https://consolety.net",
+      "crunchbase_id": "16c96f49-5c3b-4ecc-a606-8f3c0c77f279",
+      "contact_name": "Alex Demo",
+      "contact_email": "alex@staff-sink.local",
+      "contact_phone": "+31\u2588\u2588\u2588618\u2588\u2588\u2588",
+      "contact_title": "CTO",
+      "hq_location": "[{'name': 'Amsterdam', 'permalink': 'amsterdam-noord-holland'}, {'name': 'Noord-Holland', 'permalink': 'noord-holland-the-netherlands'}, {'name': 'The Netherlands', 'permalink': 'the-netherlands'}, {'name': 'Europe', 'permalink': 'europe'}]",
+      "timezone": null,
+      "employee_count": 5,
+      "industry": "SEO",
+      "description": "Link Exchange network with wordpress plugin, Off-page SEO and Link Building optimized to perfection"
+    },
+    "enriched_at": "2026-04-20T23:09:34.459981",
+    "funding": {
+      "event": null,
+      "amount_usd": null,
+      "closed_at": null,
+      "confidence": "low",
+      "sources": [
+        {
+          "url": "https://www.crunchbase.com/organization/consolety",
+          "description": null
+        }
+      ]
+    },
+    "hiring": {
+      "open_eng_roles": null,
+      "ai_adjacent_eng_roles": null,
+      "delta_60d": null,
+      "confidence": "low",
+      "sources": []
+    },
+    "layoffs": {
+      "event": false,
+      "headcount_pct": null,
+      "closed_at": null,
+      "confidence": "high",
+      "sources": []
+    },
+    "leadership": {
+      "change": false,
+      "role": null,
+      "name": null,
+      "appointed_at": null,
+      "confidence": "low",
+      "sources": []
+    },
+    "ai_maturity": {
+      "score": 0,
+      "confidence": "low",
+      "inputs": [
+        {
+          "type": "named_ai_leadership",
+          "weight": "high",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "type": "github_activity",
+          "weight": "medium",
+          "evidence": "Not checked \u2014 absence is not proof of absence",
+          "url": null
+        }
+      ],
+      "language_notes": "No public AI signal detected. Score 0 means 'no public signal', not 'no AI work'. Use exploratory language: ask about AI plans rather than assuming absence. Low confidence overall \u2014 downstream agent should soften all AI-related assertions. 1 signal source(s) were not checked \u2014 score may undercount."
+    },
+    "pitch_guidance": {
+      "segment_4_viable": false,
+      "tone_for_segment_1": "stand_up_first",
+      "language_notes": "Segment 4 (capability gap) not viable at this AI maturity level."
+    },
+    "bench_match": {
+      "matched": false,
+      "gap": "bench_summary_not_loaded",
+      "thin": false
+    },
+    "requires_human_review": false,
+    "human_review_reason": null
+  },
+  "gap_brief": {
+    "prospect": {
+      "company": "Consolety",
+      "domain": "https://consolety.net",
+      "crunchbase_id": "16c96f49-5c3b-4ecc-a606-8f3c0c77f279",
+      "contact_name": "Alex Demo",
+      "contact_email": "alex@staff-sink.local",
+      "contact_phone": "+31\u2588\u2588\u2588618\u2588\u2588\u2588",
+      "contact_title": "CTO",
+      "hq_location": "[{'name': 'Amsterdam', 'permalink': 'amsterdam-noord-holland'}, {'name': 'Noord-Holland', 'permalink': 'noord-holland-the-netherlands'}, {'name': 'The Netherlands', 'permalink': 'the-netherlands'}, {'name': 'Europe', 'permalink': 'europe'}]",
+      "timezone": null,
+      "employee_count": 5,
+      "industry": "SEO",
+      "description": "Link Exchange network with wordpress plugin, Off-page SEO and Link Building optimized to perfection"
+    },
+    "sector": "SEO",
+    "size_band": "1-15",
+    "cohort": [
+      {
+        "company": "CBR Marketing",
+        "ai_maturity": 0,
+        "source_urls": [
+          "https://crunchbase.com/organization/"
+        ]
+      },
+      {
+        "company": "Alice June Graphics",
+        "ai_maturity": 0,
+        "source_urls": [
+          "https://crunchbase.com/organization/"
+        ]
+      },
+      {
+        "company": "Consisto",
+        "ai_maturity": 0,
+        "source_urls": [
+          "https://crunchbase.com/organization/"
+        ]
+      },
+      {
+        "company": "Mizz Marketing",
+        "ai_maturity": 0,
+        "source_urls": [
+          "https://crunchbase.com/organization/"
+        ]
+      },
+      {
+        "company": "Mition",
+        "ai_maturity": 0,
+        "source_urls": [
+          "https://crunchbase.com/organization/"
+        ]
+      },
+      {
+        "company": "WebPerf IO",
+        "ai_maturity": 0,
+        "source_urls": [
+          "https://crunchbase.com/organization/"
+        ]
+      },
+      {
+        "company": "CCDM",
+        "ai_maturity": 0,
+        "source_urls": [
+          "https://crunchbase.com/organization/"
+        ]
+      },
+      {
+        "company": "Untriel",
+        "ai_maturity": 0,
+        "source_urls": [
+          "https://crunchbase.com/organization/"
+        ]
+      },
+      {
+        "company": "Driver Media Worldwide",
+        "ai_maturity": 0,
+        "source_urls": [
+          "https://crunchbase.com/organization/"
+        ]
+      }
+    ],
+    "prospect_position": {
+      "percentile": 100,
+      "rank": "10 of 10"
+    },
+    "gaps": [],
+    "generated_at": "2026-04-20T23:09:34.462484"
+  },
+  "email_subject": "Exploring AI possibilities for Consolety",
+  "email_body": "Hi Alex,\n\nI noticed Consolety operates in the SEO space with a lean team. I'm curious if you've explored how AI could complement your workflows?\n\nNo pressure\u2014just sharing that we help startups like yours test small AI experiments without big commitments. Would a 15-minute chat make sense to explore this?",
+  "grounded_claims": [],
+  "pipeline_latency_ms": 15394.011
+}

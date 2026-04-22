@@ -1,0 +1,85 @@
+{
+  "run_id": "full_thread_20c1f2c4",
+  "thread_id": "thread_abce4ac1",
+  "kill_switch_active": true,
+  "prospect": {
+    "company": "Consolety",
+    "contact_name": "Alex Demo",
+    "contact_email": "demo-prospect@example.com",
+    "contact_phone": "+254700000000"
+  },
+  "classification": "abstain",
+  "pipeline_total_cost_usd": 0.001421,
+  "stages": [
+    {
+      "stage": "1_enrich_classify_draft",
+      "ok": true,
+      "latency_ms": 43625.0,
+      "timestamp": "2026-04-22T10:00:23.316120",
+      "thread_id": "thread_abce4ac1",
+      "segment": "abstain",
+      "confidence": "low",
+      "gap_brief_present": true,
+      "pipeline_latency_ms": 43635.558000000005,
+      "total_cost_usd": 0.001421,
+      "email_subject": "Exploring potential synergies with Consolety"
+    },
+    {
+      "stage": "2_email_send",
+      "ok": true,
+      "latency_ms": 16.0,
+      "timestamp": "2026-04-22T10:00:23.317631",
+      "resend_status": "sink",
+      "resend_id": "tr_ab81d96c",
+      "kill_switch_active": true,
+      "trace_id": "tr_ab81d96c"
+    },
+    {
+      "stage": "3_reply_received_and_warm_draft",
+      "ok": true,
+      "latency_ms": 10906.0,
+      "timestamp": "2026-04-22T10:00:34.224341",
+      "action": "warm_reply",
+      "requires_handoff": false,
+      "reply_chars": 175
+    },
+    {
+      "stage": "4_sms_scheduling",
+      "ok": true,
+      "latency_ms": 0.0,
+      "timestamp": "2026-04-22T10:00:34.228538",
+      "at_status": "sink",
+      "kill_switch_active": true,
+      "trace_id": "tr_c5a265a3"
+    },
+    {
+      "stage": "5_hubspot_contact_created",
+      "ok": true,
+      "latency_ms": 1406.0,
+      "timestamp": "2026-04-22T10:00:35.641694",
+      "hubspot_contact_id": "475094961883",
+      "error": null,
+      "trace_id": "tr_e0124006"
+    },
+    {
+      "stage": "5b_hubspot_note",
+      "ok": true,
+      "latency_ms": 1344.0,
+      "timestamp": "2026-04-22T10:00:36.975361",
+      "note_id": "365606493897",
+      "trace_id": "tr_8f56bbd8"
+    },
+    {
+      "stage": "6_calcom_booking",
+      "ok": true,
+      "latency_ms": 2250.0,
+      "timestamp": "2026-04-22T10:00:39.231655",
+      "booking_id": null,
+      "start_time": "2026-05-06T09:00:00Z",
+      "error": null,
+      "trace_id": "tr_e1f2fd17"
+    }
+  ],
+  "ok": true,
+  "total_latency_ms": 59547.0
+}

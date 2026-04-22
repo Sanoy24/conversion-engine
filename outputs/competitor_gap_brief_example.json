@@ -1,0 +1,89 @@
+{
+  "prospect": {
+    "company": "Consolety",
+    "domain": "https://consolety.net",
+    "crunchbase_id": "16c96f49-5c3b-4ecc-a606-8f3c0c77f279",
+    "contact_name": "Alex Demo",
+    "contact_email": "alex@staff-sink.local",
+    "contact_phone": "+31\u2588\u2588\u2588618\u2588\u2588\u2588",
+    "contact_title": "CTO",
+    "hq_location": "[{'name': 'Amsterdam', 'permalink': 'amsterdam-noord-holland'}, {'name': 'Noord-Holland', 'permalink': 'noord-holland-the-netherlands'}, {'name': 'The Netherlands', 'permalink': 'the-netherlands'}, {'name': 'Europe', 'permalink': 'europe'}]",
+    "timezone": null,
+    "employee_count": 5,
+    "industry": "SEO",
+    "description": "Link Exchange network with wordpress plugin, Off-page SEO and Link Building optimized to perfection"
+  },
+  "sector": "SEO",
+  "size_band": "1-15",
+  "cohort": [
+    {
+      "company": "CBR Marketing",
+      "ai_maturity": 0,
+      "source_urls": [
+        "https://crunchbase.com/organization/"
+      ]
+    },
+    {
+      "company": "Alice June Graphics",
+      "ai_maturity": 0,
+      "source_urls": [
+        "https://crunchbase.com/organization/"
+      ]
+    },
+    {
+      "company": "Consisto",
+      "ai_maturity": 0,
+      "source_urls": [
+        "https://crunchbase.com/organization/"
+      ]
+    },
+    {
+      "company": "Mizz Marketing",
+      "ai_maturity": 0,
+      "source_urls": [
+        "https://crunchbase.com/organization/"
+      ]
+    },
+    {
+      "company": "Mition",
+      "ai_maturity": 0,
+      "source_urls": [
+        "https://crunchbase.com/organization/"
+      ]
+    },
+    {
+      "company": "WebPerf IO",
+      "ai_maturity": 0,
+      "source_urls": [
+        "https://crunchbase.com/organization/"
+      ]
+    },
+    {
+      "company": "CCDM",
+      "ai_maturity": 0,
+      "source_urls": [
+        "https://crunchbase.com/organization/"
+      ]
+    },
+    {
+      "company": "Untriel",
+      "ai_maturity": 0,
+      "source_urls": [
+        "https://crunchbase.com/organization/"
+      ]
+    },
+    {
+      "company": "Driver Media Worldwide",
+      "ai_maturity": 0,
+      "source_urls": [
+        "https://crunchbase.com/organization/"
+      ]
+    }
+  ],
+  "prospect_position": {
+    "percentile": 100,
+    "rank": "10 of 10"
+  },
+  "gaps": [],
+  "generated_at": "2026-04-20T23:09:34.462484"
+}
