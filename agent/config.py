@@ -63,6 +63,7 @@ class Settings(BaseSettings):
     crunchbase_data_path: str = "./data/crunchbase_odm_sample.json"
     layoffs_data_path: str = "./data/layoffs.csv"
     job_posts_snapshot_path: str = "./data/job_posts_snapshot.json"
+    allow_synthetic_job_posts_snapshot: bool = False
 
     @property
     def seeds_path(self) -> Path:
