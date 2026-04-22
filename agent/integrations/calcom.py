@@ -46,32 +46,41 @@ class CalComClient:
         booking_data = {
             "eventTypeId": self.event_type_id,
             "start": start_time,
-            "responses": {
+            "attendee": {
                 "name": prospect.contact_name or prospect.company,
                 "email": prospect.contact_email or "",
+                "timeZone": prospect.timezone or "UTC",
+                "language": "en",
+            },
+            "bookingFieldsResponses": {
                 "notes": notes or f"Discovery call with {prospect.company}",
             },
             "metadata": {
                 "company": prospect.company,
-                "crunchbase_id": prospect.crunchbase_id,
                 "thread_source": "conversion_engine",
             },
-            "timeZone": prospect.timezone or "UTC",
-            "language": "en",
         }
 
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.post(
-                    f"{self.base_url}/api/bookings",
-                    params={"apiKey": self.api_key},
+                    f"{self.base_url}/v2/bookings",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "cal-api-version": "2024-08-13",
+                        "Content-Type": "application/json",
+                    },
                     json=booking_data,
                     timeout=15.0,
                 )
+                if not response.is_success:
+                    logger.error("Cal.com error body: %s", response.text)
                 response.raise_for_status()
                 result = response.json()
 
-            booking_id = result.get("id") or result.get("uid")
+            # v2 wraps response in {"status": "success", "data": {...}}
+            data = result.get("data", result)
+            booking_id = data.get("id") or data.get("uid") or result.get("id") or result.get("uid")
 
             trace = TraceRecord(
                 trace_id=trace_id,
@@ -119,17 +128,26 @@ class CalComClient:
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
-                    f"{self.base_url}/api/availability",
+                    f"{self.base_url}/v2/slots/available",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "cal-api-version": "2024-09-04",
+                    },
                     params={
-                        "apiKey": self.api_key,
                         "eventTypeId": self.event_type_id,
-                        "dateFrom": date_from,
-                        "dateTo": date_to,
+                        "startTime": date_from,
+                        "endTime": date_to,
+                        "duration": 30,
                     },
                     timeout=10.0,
                 )
-                response.raise_for_status()
-                return response.json().get("slots", {})
+                if not response.is_success:
+                    logger.warning("Cal.com slots error (%s): %s", response.status_code, response.text[:300])
+                    return []
+                body = response.json()
+                # v2 response: {"status":"success","data":{"slots":{"2026-04-25":[{...}]}}}
+                data = body.get("data", body)
+                return data.get("slots", {})
         except Exception as e:
             logger.error("Cal.com availability check failed: %s", str(e))
             return []

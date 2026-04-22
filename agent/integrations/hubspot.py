@@ -24,6 +24,18 @@ logger = logging.getLogger(__name__)
 
 HUBSPOT_API_BASE = "https://api.hubapi.com"
 
+_HS_EMP_BUCKETS = [(5, "1-5"), (25, "5-25"), (50, "25-50"), (100, "50-100"),
+                   (500, "100-500"), (1000, "500-1000")]
+
+
+def _employee_count_bucket(count: int | None) -> str | None:
+    if not count:
+        return None
+    for ceiling, label in _HS_EMP_BUCKETS:
+        if count <= ceiling:
+            return label
+    return "1000+"
+
 
 class HubSpotClient:
     """HubSpot CRM client for contact and deal management."""
@@ -47,7 +59,7 @@ class HubSpotClient:
         """
         trace_id = f"tr_{uuid.uuid4().hex[:8]}"
 
-        properties = {
+        raw_properties = {
             "email": prospect.contact_email
             or f"{prospect.company.lower().replace(' ', '')}@placeholder.com",
             "firstname": (prospect.contact_name or "").split()[0] if prospect.contact_name else "",
@@ -60,32 +72,12 @@ class HubSpotClient:
             "city": prospect.hq_location or "",
             "industry": prospect.industry or "",
             "website": prospect.domain or "",
-            "numemployees": str(prospect.employee_count) if prospect.employee_count else "",
+            "numemployees": _employee_count_bucket(prospect.employee_count),
         }
-
-        # Add enrichment data as notes/custom properties
-        enrichment_notes = []
-        if signal_brief:
-            enrichment_notes.append(f"Crunchbase ID: {prospect.crunchbase_id}")
-            enrichment_notes.append(f"Last enriched: {signal_brief.enriched_at}")
-            enrichment_notes.append(f"Funding: {signal_brief.funding.event or 'None'}")
-            enrichment_notes.append(f"AI Maturity: {signal_brief.ai_maturity.score}/3")
-            enrichment_notes.append(
-                f"Open Eng Roles: {signal_brief.hiring.open_eng_roles or 'Unknown'}"
-            )
-            enrichment_notes.append(f"Layoffs: {'Yes' if signal_brief.layoffs.event else 'No'}")
-            enrichment_notes.append(
-                f"Leadership Change: {'Yes' if signal_brief.leadership.change else 'No'}"
-            )
-
-        if classification:
-            enrichment_notes.append(f"ICP Segment: {classification.segment.value}")
-            enrichment_notes.append(f"Classification Confidence: {classification.confidence.value}")
+        # HubSpot rejects empty strings for typed fields — strip them out.
+        properties = {k: v for k, v in raw_properties.items() if v not in (None, "")}
 
         properties["hs_lead_status"] = "NEW"
-        # Store enrichment as a description note
-        if enrichment_notes:
-            properties["description"] = "\n".join(enrichment_notes)
 
         try:
             async with httpx.AsyncClient() as client:
@@ -95,6 +87,8 @@ class HubSpotClient:
                     json={"properties": properties},
                     timeout=10.0,
                 )
+                if not response.is_success:
+                    logger.error("HubSpot error body: %s", response.text)
                 response.raise_for_status()
                 result = response.json()
 
@@ -111,6 +105,36 @@ class HubSpotClient:
             logger.info("HubSpot contact created: %s (ID: %s)", prospect.company, result.get("id"))
             return result, trace
 
+        except httpx.HTTPStatusError as e:
+            # 409 Conflict = contact already exists; extract the existing ID and treat as success.
+            if e.response.status_code == 409:
+                body = e.response.json()
+                existing_id = None
+                msg = body.get("message", "")
+                if "Existing ID:" in msg:
+                    existing_id = msg.split("Existing ID:")[-1].strip().rstrip("}")
+                logger.info("HubSpot contact already exists for %s (ID: %s)", prospect.company, existing_id)
+                trace = TraceRecord(
+                    trace_id=trace_id,
+                    event_type="hubspot_contact_created",
+                    prospect_company=prospect.company,
+                    input_data={"properties_count": len(properties)},
+                    output_data={"contact_id": existing_id, "status": "already_exists"},
+                    cost_usd=0.0,
+                    success=True,
+                )
+                return {"id": existing_id, "status": "already_exists"}, trace
+            logger.error("HubSpot contact creation failed for %s: %s", prospect.company, str(e))
+            trace = TraceRecord(
+                trace_id=trace_id,
+                event_type="hubspot_contact_created",
+                prospect_company=prospect.company,
+                input_data=properties,
+                output_data={"error": str(e)},
+                success=False,
+                error=str(e),
+            )
+            return {"error": str(e)}, trace
         except Exception as e:
             logger.error("HubSpot contact creation failed for %s: %s", prospect.company, str(e))
             trace = TraceRecord(
