@@ -1,0 +1,221 @@
+"""Integration-style tests for the orchestrator workflow wiring."""
+
+from __future__ import annotations
+
+import pytest
+
+from agent.core import conversation as conversation_module
+from agent.core.orchestrator import handle_prospect_reply, process_new_prospect
+from agent.models import (
+    ChannelType,
+    CompetitorGapBrief,
+    EmailDraft,
+    EmailType,
+    GroundedClaim,
+    ProposedTime,
+    TraceRecord,
+)
+from tests.helpers import make_brief
+
+
+@pytest.fixture(autouse=True)
+def clear_conversation_state():
+    conversation_module._conversations.clear()
+    conversation_module._company_threads.clear()
+    yield
+    conversation_module._conversations.clear()
+    conversation_module._company_threads.clear()
+
+
+class _FakeHubSpotClient:
+    def __init__(self):
+        self.created = []
+        self.notes = []
+        self.status_updates = []
+
+    async def create_contact(self, prospect, signal_brief=None, classification=None):
+        self.created.append((prospect.company, classification.segment.value if classification else None))
+        return {"id": "hs_123"}, TraceRecord(trace_id="tr_hs_create", event_type="hubspot_contact_created")
+
+    async def add_note(self, contact_id, note_body, prospect_company=None):
+        self.notes.append((contact_id, note_body, prospect_company))
+        return {"id": "note_123"}, TraceRecord(trace_id="tr_hs_note", event_type="hubspot_note_added")
+
+    async def update_contact_status(self, contact_id, status, properties=None):
+        self.status_updates.append((contact_id, status, properties))
+        return {"id": contact_id, "status": status}
+
+
+class _FakeCalComClient:
+    def get_booking_link(self):
+        return "https://cal.fake/book/demo"
+
+    async def create_booking(self, prospect, start_time, end_time=None, notes=None):
+        return {
+            "id": "booking_123",
+            "start": start_time,
+            "end": end_time,
+            "notes": notes,
+        }, TraceRecord(trace_id="tr_booking", event_type="calcom_booking_created")
+
+
+@pytest.fixture
+def fake_signal_brief(sample_funded_prospect, sample_funding, sample_hiring, no_layoff):
+    return make_brief(
+        prospect=sample_funded_prospect,
+        funding=sample_funding,
+        hiring=sample_hiring,
+        layoffs=no_layoff,
+    )
+
+
+@pytest.fixture
+def fake_email_draft():
+    return EmailDraft(
+        thread_id="thread_test",
+        email_type=EmailType.COLD,
+        subject="A grounded subject",
+        body="A grounded body",
+        proposed_times=[
+            ProposedTime(
+                prospect_local="2026-04-22 10:00 CET",
+                utc="2026-04-22 09:00 UTC",
+            )
+        ],
+        calcom_link="https://cal.fake/book/demo",
+        grounded_claims=[
+            GroundedClaim(
+                claim="Series A, $10,000,000",
+                source_field="funding.event",
+                confidence="high",
+            )
+        ],
+    )
+
+
+@pytest.mark.asyncio
+async def test_process_new_prospect_wires_hubspot_and_email(
+    monkeypatch,
+    fake_signal_brief,
+    fake_email_draft,
+):
+    fake_hubspot = _FakeHubSpotClient()
+
+    async def fake_generate_signal_brief(**_kwargs):
+        return fake_signal_brief, CompetitorGapBrief(prospect=fake_signal_brief.prospect), []
+
+    async def fake_draft_email(**_kwargs):
+        return fake_email_draft, [TraceRecord(trace_id="tr_draft", event_type="email_draft")]
+
+    async def fake_send_email(to_email, draft, reply_to=None):
+        return {"status": "sink", "id": "email_123"}, TraceRecord(
+            trace_id="tr_email",
+            event_type="email_sent_sink",
+            thread_id=draft.thread_id,
+        )
+
+    monkeypatch.setattr("agent.core.orchestrator.generate_signal_brief", fake_generate_signal_brief)
+    monkeypatch.setattr("agent.core.orchestrator.draft_email", fake_draft_email)
+    monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
+    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+
+    result = await process_new_prospect(
+        company_name=fake_signal_brief.prospect.company,
+        contact_email=fake_signal_brief.prospect.contact_email,
+    )
+
+    assert result["hubspot_contact_id"] == "hs_123"
+    assert result["email_delivery"]["status"] == "sink"
+    assert fake_hubspot.created == [("FreshFund Inc", "segment_1_recently_funded")]
+    assert len(fake_hubspot.notes) == 1
+
+
+@pytest.mark.asyncio
+async def test_handle_prospect_reply_books_call_on_scheduling_intent(
+    monkeypatch,
+    fake_signal_brief,
+    fake_email_draft,
+):
+    fake_hubspot = _FakeHubSpotClient()
+    fake_calcom = _FakeCalComClient()
+
+    async def fake_generate_signal_brief(**_kwargs):
+        return fake_signal_brief, CompetitorGapBrief(prospect=fake_signal_brief.prospect), []
+
+    async def fake_draft_email(**_kwargs):
+        return fake_email_draft, []
+
+    async def fake_send_email(to_email, draft, reply_to=None):
+        return {"status": "sink"}, TraceRecord(trace_id="tr_email", event_type="email_sent_sink")
+
+    monkeypatch.setattr("agent.core.orchestrator.generate_signal_brief", fake_generate_signal_brief)
+    monkeypatch.setattr("agent.core.orchestrator.draft_email", fake_draft_email)
+    monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
+    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", lambda: fake_calcom)
+
+    created = await process_new_prospect(
+        company_name=fake_signal_brief.prospect.company,
+        contact_email=fake_signal_brief.prospect.contact_email,
+    )
+
+    reply = await handle_prospect_reply(
+        thread_id=created["thread_id"],
+        reply_content="Sounds good. Can we schedule a call tomorrow?",
+        channel=ChannelType.EMAIL,
+    )
+
+    assert reply["action"] == "booked_call"
+    assert reply["calcom_booking_id"] == "booking_123"
+    conversation = conversation_module.get_conversation(created["thread_id"])
+    assert conversation is not None
+    assert conversation.status.value == "call_booked"
+
+
+@pytest.mark.asyncio
+async def test_handle_prospect_reply_uses_sms_fallback_when_requested(
+    monkeypatch,
+    fake_signal_brief,
+    fake_email_draft,
+):
+    fake_signal_brief.prospect.contact_phone = "+15551234567"
+    fake_hubspot = _FakeHubSpotClient()
+
+    async def fake_generate_signal_brief(**_kwargs):
+        return fake_signal_brief, CompetitorGapBrief(prospect=fake_signal_brief.prospect), []
+
+    async def fake_draft_email(**_kwargs):
+        return fake_email_draft, []
+
+    async def fake_send_email(to_email, draft, reply_to=None):
+        return {"status": "sink"}, TraceRecord(trace_id="tr_email", event_type="email_sent_sink")
+
+    async def fake_send_sms(to_phone, message, thread_id=None):
+        return {"status": "sink", "to": to_phone}, TraceRecord(
+            trace_id="tr_sms",
+            event_type="sms_sent_sink",
+            thread_id=thread_id,
+        )
+
+    monkeypatch.setattr("agent.core.orchestrator.generate_signal_brief", fake_generate_signal_brief)
+    monkeypatch.setattr("agent.core.orchestrator.draft_email", fake_draft_email)
+    monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
+    monkeypatch.setattr("agent.core.orchestrator.send_sms", fake_send_sms)
+    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", lambda: _FakeCalComClient())
+
+    created = await process_new_prospect(
+        company_name=fake_signal_brief.prospect.company,
+        contact_email=fake_signal_brief.prospect.contact_email,
+    )
+
+    reply = await handle_prospect_reply(
+        thread_id=created["thread_id"],
+        reply_content="Text me to coordinate the meeting.",
+        channel=ChannelType.EMAIL,
+    )
+
+    assert reply["action"] == "sms_fallback"
+    conversation = conversation_module.get_conversation(created["thread_id"])
+    assert conversation is not None
+    assert conversation.status.value == "qualified"

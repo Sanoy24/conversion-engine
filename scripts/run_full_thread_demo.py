@@ -182,33 +182,26 @@ async def run(company_name: str, contact_name: str, contact_email: str,
     # ── 6. Book Cal.com discovery call ──────────────────────────────────
     t0 = time.monotonic()
     calcom = get_calcom_client()
-    # Fetch real available slots over the next 7 days and pick the first one.
-    _search_from = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
-    _search_to = (datetime.utcnow() + timedelta(days=7)).replace(microsecond=0).isoformat() + "Z"
-    _slots = await calcom.get_available_slots(_search_from, _search_to)
-    # slots is a dict of {date: [{time: "...", ...}]} — flatten and pick first
-    start, end = None, None
-    for _date_slots in (_slots.values() if isinstance(_slots, dict) else []):
-        if _date_slots:
-            _slot_time = _date_slots[0].get("time") or _date_slots[0].get("startTime")
-            if _slot_time:
-                from datetime import timezone as _tz
-                _st = datetime.fromisoformat(_slot_time.replace("Z", "+00:00"))
-                start = _slot_time if _slot_time.endswith("Z") else _st.strftime("%Y-%m-%dT%H:%M:%SZ")
-                end = (_st + timedelta(minutes=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
-                break
-    if not start:
-        # Fallback: 14 days ahead at 10:00 UTC — far enough to avoid slot conflicts from prior runs.
-        _fb = (datetime.utcnow() + timedelta(days=14)).replace(hour=10, minute=0, second=0, microsecond=0)
+    # Try candidate slots spread across future days/hours until Cal.com accepts one.
+    cal_resp, cal_trace = None, None
+    _candidate_offsets = [
+        (14, 9), (14, 11), (14, 14), (21, 9), (21, 11), (21, 14),
+        (28, 9), (28, 11), (28, 14), (35, 10),
+    ]
+    for _days, _hour in _candidate_offsets:
+        _fb = (datetime.utcnow() + timedelta(days=_days)).replace(
+            hour=_hour, minute=0, second=0, microsecond=0)
         start = _fb.isoformat() + "Z"
         end = (_fb + timedelta(minutes=30)).isoformat() + "Z"
-    cal_resp, cal_trace = await calcom.create_booking(
-        prospect=prospect,
-        start_time=start,
-        end_time=end,
-        notes=(f"Discovery call — segment={pipeline['classification']['segment']}, "
-               f"thread={thread_id}"),
-    )
+        cal_resp, cal_trace = await calcom.create_booking(
+            prospect=prospect,
+            start_time=start,
+            end_time=end,
+            notes=(f"Discovery call — segment={pipeline['classification']['segment']}, "
+                   f"thread={thread_id}"),
+        )
+        if cal_trace.success:
+            break  # booked successfully — stop trying
     _emit(_stage_record(
         "6_calcom_booking", t0, cal_trace.success,
         booking_id=cal_resp.get("id") or cal_resp.get("uid")
