@@ -1,0 +1,3698 @@
+[
+  {
+    "company": "Yellow.ai",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+3",
+    "source_url": "https://yellow.ai",
+    "synthetic": true,
+    "seed_cb_rank": "934"
+  },
+  {
+    "company": "CleanCapital",
+    "jobs": [
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      }
+    ],
+    "delta_60d": "+12",
+    "source_url": "http://www.cleancapital.com",
+    "synthetic": true,
+    "seed_cb_rank": "2218"
+  },
+  {
+    "company": "CrossBoundary",
+    "jobs": [
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      }
+    ],
+    "delta_60d": "0",
+    "source_url": "https://crossboundaryenergy.com",
+    "synthetic": true,
+    "seed_cb_rank": "2311"
+  },
+  {
+    "company": "Luna Daily",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      }
+    ],
+    "delta_60d": "-2",
+    "source_url": "https://luna-daily.com/",
+    "synthetic": true,
+    "seed_cb_rank": "3380"
+  },
+  {
+    "company": "Kindred Ventures",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "http://www.kindredventures.com",
+    "synthetic": true,
+    "seed_cb_rank": "3665"
+  },
+  {
+    "company": "The New England Conservatory of Music",
+    "jobs": [
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://necmusic.edu",
+    "synthetic": true,
+    "seed_cb_rank": "3834"
+  },
+  {
+    "company": "JD Health",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "-2",
+    "source_url": "https://jdhealth.com/",
+    "synthetic": true,
+    "seed_cb_rank": "4019"
+  },
+  {
+    "company": "LifeBrand",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://www.lifebrand.life",
+    "synthetic": true,
+    "seed_cb_rank": "5468"
+  },
+  {
+    "company": "Sigma Capital Group",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "http://www.sigmacapital.co.uk",
+    "synthetic": true,
+    "seed_cb_rank": "5691"
+  },
+  {
+    "company": "LOLA",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+3",
+    "source_url": "https://www.mylola.com/#!/",
+    "synthetic": true,
+    "seed_cb_rank": "7901"
+  },
+  {
+    "company": "Universidad Politécnica de Chiapas",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+12",
+    "source_url": "https://www.upchiapas.edu.mx/",
+    "synthetic": true,
+    "seed_cb_rank": "8969"
+  },
+  {
+    "company": "Hubei University",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "0",
+    "source_url": "http://www.hubu.edu.cn/",
+    "synthetic": true,
+    "seed_cb_rank": "9913"
+  },
+  {
+    "company": "Propeller",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://www.propellervc.com/",
+    "synthetic": true,
+    "seed_cb_rank": "12329"
+  },
+  {
+    "company": "Hannam University",
+    "jobs": [
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      }
+    ],
+    "delta_60d": "-2",
+    "source_url": "http://www.hannam.ac.kr/eng/html/main/main.html",
+    "synthetic": true,
+    "seed_cb_rank": "13297"
+  },
+  {
+    "company": "Prospera Energy",
+    "jobs": [
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      }
+    ],
+    "delta_60d": "+18",
+    "source_url": "https://prosperaenergy.com/",
+    "synthetic": true,
+    "seed_cb_rank": "13825"
+  },
+  {
+    "company": "BitStone Capital",
+    "jobs": [
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "https://www.bitstonecapital.com",
+    "synthetic": true,
+    "seed_cb_rank": "16192"
+  },
+  {
+    "company": "Chettinad Vidyashram",
+    "jobs": [
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://chettinadvidyashram.org",
+    "synthetic": true,
+    "seed_cb_rank": "17982"
+  },
+  {
+    "company": "Wickr",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://www.wickr.com",
+    "synthetic": true,
+    "seed_cb_rank": "19099"
+  },
+  {
+    "company": "Alpha College of Real Estate",
+    "jobs": [
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "0",
+    "source_url": "https://www.alphacollegeofrealestate.com",
+    "synthetic": true,
+    "seed_cb_rank": "19154"
+  },
+  {
+    "company": "Actuate Ventures",
+    "jobs": [
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "https://actuateventures.co",
+    "synthetic": true,
+    "seed_cb_rank": "22831"
+  },
+  {
+    "company": "Affinity Federal Credit Union",
+    "jobs": [
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+3",
+    "source_url": "https://www.affinityfcu.com",
+    "synthetic": true,
+    "seed_cb_rank": "24382"
+  },
+  {
+    "company": "Hoge School van Arnhem en Nijmegen",
+    "jobs": [
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "https://www.crunchbase.com/organization/hoge-school-van-arnhem-en-nijmegen",
+    "synthetic": true,
+    "seed_cb_rank": "24425"
+  },
+  {
+    "company": "Aventurine Partners",
+    "jobs": [
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+3",
+    "source_url": "https://aventurinepartners.com",
+    "synthetic": true,
+    "seed_cb_rank": "24487"
+  },
+  {
+    "company": "The Fine Art Group",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "http://www.fineartgroup.com",
+    "synthetic": true,
+    "seed_cb_rank": "25702"
+  },
+  {
+    "company": "Upswing",
+    "jobs": [
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "-2",
+    "source_url": "http://www.upswing.io",
+    "synthetic": true,
+    "seed_cb_rank": "26003"
+  },
+  {
+    "company": "Cook Inlet Region, Inc.",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "0",
+    "source_url": "http://ciri.com",
+    "synthetic": true,
+    "seed_cb_rank": "27773"
+  },
+  {
+    "company": "ForthStar",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      }
+    ],
+    "delta_60d": "+12",
+    "source_url": "https://www.forthstar.com/",
+    "synthetic": true,
+    "seed_cb_rank": "28239"
+  },
+  {
+    "company": "Jurassic Capital",
+    "jobs": [
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "0",
+    "source_url": "https://jurassiccapital.com/",
+    "synthetic": true,
+    "seed_cb_rank": "30459"
+  },
+  {
+    "company": "Corpora",
+    "jobs": [
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "https://www.corpora.us/",
+    "synthetic": true,
+    "seed_cb_rank": "32092"
+  },
+  {
+    "company": "IDIA Capital Investissement",
+    "jobs": [
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://www.ca-idia.com",
+    "synthetic": true,
+    "seed_cb_rank": "33364"
+  },
+  {
+    "company": "Heartland Water Technology",
+    "jobs": [
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      }
+    ],
+    "delta_60d": "+12",
+    "source_url": "http://www.heartlandtech.com",
+    "synthetic": true,
+    "seed_cb_rank": "33646"
+  },
+  {
+    "company": "Infinity Investment Partners",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "0",
+    "source_url": "https://www.infinityinvestmentpartners.com",
+    "synthetic": true,
+    "seed_cb_rank": "34818"
+  },
+  {
+    "company": "Rosewood Capital",
+    "jobs": [
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "http://www.rosewoodcap.com/",
+    "synthetic": true,
+    "seed_cb_rank": "36408"
+  },
+  {
+    "company": "Bank Of Canada",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "http://www.bankofcanada.ca",
+    "synthetic": true,
+    "seed_cb_rank": "37301"
+  },
+  {
+    "company": "Birch Lake Partners",
+    "jobs": [
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://birchlake.com/",
+    "synthetic": true,
+    "seed_cb_rank": "38900"
+  },
+  {
+    "company": "Viola Private Equity",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+18",
+    "source_url": "http://www.viola-group.com",
+    "synthetic": true,
+    "seed_cb_rank": "41067"
+  },
+  {
+    "company": "SeaPoint Ventures",
+    "jobs": [
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      }
+    ],
+    "delta_60d": "0",
+    "source_url": "http://www.seapointventures.com/home.cfm",
+    "synthetic": true,
+    "seed_cb_rank": "41123"
+  },
+  {
+    "company": "Blockchain Investment Group",
+    "jobs": [
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "-2",
+    "source_url": "http://www.big.fund/",
+    "synthetic": true,
+    "seed_cb_rank": "41277"
+  },
+  {
+    "company": "Startup Capital Ventures x SBI Fund",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "https://www.scv-sbi.com",
+    "synthetic": true,
+    "seed_cb_rank": "42314"
+  },
+  {
+    "company": "Ophirex",
+    "jobs": [
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "https://www.ophirex.com",
+    "synthetic": true,
+    "seed_cb_rank": "43033"
+  },
+  {
+    "company": "WISE",
+    "jobs": [
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+12",
+    "source_url": "https://www.wiseneuro.com/",
+    "synthetic": true,
+    "seed_cb_rank": "47774"
+  },
+  {
+    "company": "BlocTech Investment Group",
+    "jobs": [
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+12",
+    "source_url": "https://bloctech.investments/",
+    "synthetic": true,
+    "seed_cb_rank": "47911"
+  },
+  {
+    "company": "Aceiss",
+    "jobs": [
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://www.aceiss.com/",
+    "synthetic": true,
+    "seed_cb_rank": "50344"
+  },
+  {
+    "company": "DefiQ",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "https://getdefiq.com",
+    "synthetic": true,
+    "seed_cb_rank": "53467"
+  },
+  {
+    "company": "Ashoka India Equity Investment Trust",
+    "jobs": [
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+3",
+    "source_url": "http://www.ashokaindiaequity.com/",
+    "synthetic": true,
+    "seed_cb_rank": "53713"
+  },
+  {
+    "company": "Turntable",
+    "jobs": [
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+3",
+    "source_url": "https://www.turntable.so",
+    "synthetic": true,
+    "seed_cb_rank": "54573"
+  },
+  {
+    "company": "Waao Partners",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://www.crunchbase.com/organization/waao-partners",
+    "synthetic": true,
+    "seed_cb_rank": "55006"
+  },
+  {
+    "company": "Branch",
+    "jobs": [
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://www.ourbranch.com",
+    "synthetic": true,
+    "seed_cb_rank": "55878"
+  },
+  {
+    "company": "Wit.ai",
+    "jobs": [
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://www.wit.ai/",
+    "synthetic": true,
+    "seed_cb_rank": "58283"
+  },
+  {
+    "company": "SpotRight",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      }
+    ],
+    "delta_60d": "-2",
+    "source_url": "http://spotright.com",
+    "synthetic": true,
+    "seed_cb_rank": "59615"
+  },
+  {
+    "company": "DX.Partners",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "-2",
+    "source_url": "https://dx.partners/",
+    "synthetic": true,
+    "seed_cb_rank": "60544"
+  },
+  {
+    "company": "Dalton Capital",
+    "jobs": [
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://dalton-capital.com/",
+    "synthetic": true,
+    "seed_cb_rank": "61076"
+  },
+  {
+    "company": "Kingo Investment Partners",
+    "jobs": [
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      }
+    ],
+    "delta_60d": "+12",
+    "source_url": "http://kingo.co.kr",
+    "synthetic": true,
+    "seed_cb_rank": "61084"
+  },
+  {
+    "company": "AeroInnovate",
+    "jobs": [
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+3",
+    "source_url": "http://www.aeroinnovate.org/",
+    "synthetic": true,
+    "seed_cb_rank": "63076"
+  },
+  {
+    "company": "Aikai Electrical Appliances",
+    "jobs": [
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+18",
+    "source_url": "http://www.bhbxgw.com",
+    "synthetic": true,
+    "seed_cb_rank": "63189"
+  },
+  {
+    "company": "PvP Biologics",
+    "jobs": [
+      {
+        "title": "Senior ML Engineer"
+      },
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+18",
+    "source_url": "https://pvpbio.com/",
+    "synthetic": true,
+    "seed_cb_rank": "63474"
+  },
+  {
+    "company": "LNKO",
+    "jobs": [
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      }
+    ],
+    "delta_60d": "+12",
+    "source_url": "https://lnkobrand.com",
+    "synthetic": true,
+    "seed_cb_rank": "65203"
+  },
+  {
+    "company": "Chhattisgarh Investment Limited",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Data Platform Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Senior Backend Engineer"
+      }
+    ],
+    "delta_60d": "+7",
+    "source_url": "https://cginvest.co.in/",
+    "synthetic": true,
+    "seed_cb_rank": "66864"
+  },
+  {
+    "company": "Prisma",
+    "jobs": [
+      {
+        "title": "Applied Scientist"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Site Reliability Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Engineering Manager"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+5",
+    "source_url": "https://prismafinance.com",
+    "synthetic": true,
+    "seed_cb_rank": "68477"
+  },
+  {
+    "company": "Santander Corporate & Commercial",
+    "jobs": [
+      {
+        "title": "LLM Engineer"
+      },
+      {
+        "title": "MLOps Engineer"
+      },
+      {
+        "title": "AI Product Manager"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Senior Data Engineer"
+      },
+      {
+        "title": "Staff Software Engineer"
+      },
+      {
+        "title": "Full-Stack Engineer"
+      }
+    ],
+    "delta_60d": "+3",
+    "source_url": "http://www.santandercb.co.uk/",
+    "synthetic": true,
+    "seed_cb_rank": "69245"
+  }
+]

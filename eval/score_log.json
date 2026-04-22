@@ -1,0 +1,142 @@
+[
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 30,
+    "cost_per_run": 0.003427,
+    "total_cost": 0.1028,
+    "task_latency_p50_s": 26.76,
+    "task_latency_p95_s": 200.47,
+    "infrastructure_errors": 0,
+    "entry_type": "dev_tier_baseline",
+    "timestamp": "2026-04-21T13:05:47.191189",
+    "model": "openrouter/deepseek/deepseek-chat-v3-0324",
+    "domain": "retail",
+    "n_tasks": 6,
+    "n_trials": 5,
+    "temperature": 0.0,
+    "wall_clock_s": 725.81,
+    "run_id": "eval_dev_tier_baseline_20260421_125341_040f2f",
+    "results_path": "tau2-bench\\data\\simulations\\eval_dev_tier_baseline_20260421_125341_040f2f\\results.json",
+    "expected_simulations": 30,
+    "completed_simulations": 30,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 30,
+    "cost_per_run": 0.002537,
+    "total_cost": 0.0761,
+    "task_latency_p50_s": 25.34,
+    "task_latency_p95_s": 184.8,
+    "infrastructure_errors": 0,
+    "entry_type": "reproduction_check",
+    "timestamp": "2026-04-21T13:12:11.014959",
+    "model": "openrouter/deepseek/deepseek-chat-v3-0324",
+    "domain": "retail",
+    "n_tasks": 6,
+    "n_trials": 5,
+    "temperature": 0.0,
+    "wall_clock_s": 383.78,
+    "run_id": "eval_reproduction_check_20260421_130547_77d2fc",
+    "results_path": "tau2-bench\\data\\simulations\\eval_reproduction_check_20260421_130547_77d2fc\\results.json",
+    "expected_simulations": 30,
+    "completed_simulations": 30,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0933,
+    "ci_95": 0.0117,
+    "ci_95_range": [
+      0.0816,
+      0.105
+    ],
+    "per_trial_pass_at_1": [
+      0.1,
+      0.1,
+      0.0667,
+      0.1,
+      0.1
+    ],
+    "n_simulations": 150,
+    "cost_per_run": 0.002972,
+    "total_cost": 0.4458,
+    "task_latency_p50_s": 29.35,
+    "task_latency_p95_s": 480.54,
+    "infrastructure_errors": 0,
+    "entry_type": "dev_tier_baseline",
+    "timestamp": "2026-04-21T14:38:02.669218",
+    "model": "openrouter/deepseek/deepseek-chat-v3-0324",
+    "domain": "retail",
+    "n_tasks": 30,
+    "n_trials": 5,
+    "temperature": 0.0,
+    "wall_clock_s": 2540.94,
+    "run_id": "eval_dev_tier_baseline_20260421_135541_dc1abd",
+    "results_path": "tau2-bench\\data\\simulations\\eval_dev_tier_baseline_20260421_135541_dc1abd\\results.json",
+    "expected_simulations": 150,
+    "completed_simulations": 150,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0933,
+    "ci_95": 0.0117,
+    "ci_95_range": [
+      0.0816,
+      0.105
+    ],
+    "per_trial_pass_at_1": [
+      0.1,
+      0.1,
+      0.1,
+      0.0667,
+      0.1
+    ],
+    "n_simulations": 150,
+    "cost_per_run": 0.003252,
+    "total_cost": 0.4878,
+    "task_latency_p50_s": 31.26,
+    "task_latency_p95_s": 488.85,
+    "infrastructure_errors": 0,
+    "entry_type": "reproduction_check",
+    "timestamp": "2026-04-21T15:34:51.393117",
+    "model": "openrouter/deepseek/deepseek-chat-v3-0324",
+    "domain": "retail",
+    "n_tasks": 30,
+    "n_trials": 5,
+    "temperature": 0.0,
+    "wall_clock_s": 3408.59,
+    "run_id": "eval_reproduction_check_20260421_143802_3a6ac5",
+    "results_path": "tau2-bench\\data\\simulations\\eval_reproduction_check_20260421_143802_3a6ac5\\results.json",
+    "expected_simulations": 150,
+    "completed_simulations": 150,
+    "process_returncode": 0,
+    "run_status": "complete"
+  }
+]
