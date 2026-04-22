@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
+from datetime import UTC, datetime, timedelta
 
 from agent.llm import get_llm_client
 from agent.models import Confidence, LeadershipSignal, SourceRef, TraceRecord
@@ -90,6 +91,8 @@ def _check_crunchbase_people(record: dict) -> LeadershipSignal:
         if any(role in title for role in leadership_roles):
             # Check if appointment is recent (from available data)
             started_at = person.get("started_on") or person.get("joined_at")
+            if not _is_recent_transition(started_at):
+                continue
             return LeadershipSignal(
                 change=True,
                 role=person.get("title") or person.get("role"),
@@ -100,6 +103,29 @@ def _check_crunchbase_people(record: dict) -> LeadershipSignal:
             )
 
     return LeadershipSignal(confidence=Confidence.LOW)
+
+
+def _is_recent_transition(started_at: str | None, window_days: int = 90) -> bool:
+    """Return True only when the appointment date falls within the challenge window."""
+    parsed = _parse_date(started_at)
+    if parsed is None:
+        return False
+
+    cutoff = datetime.now(UTC) - timedelta(days=window_days)
+    return parsed >= cutoff
+
+
+def _parse_date(value: str | None) -> datetime | None:
+    """Parse the common date shapes seen in Crunchbase-derived records."""
+    if not value:
+        return None
+
+    for fmt in ("%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%m/%d/%Y"):
+        try:
+            return datetime.strptime(value.strip(), fmt).replace(tzinfo=UTC)
+        except ValueError:
+            continue
+    return None
 
 
 def _build_leadership_prompt(company_name: str, record: dict | None = None) -> str:

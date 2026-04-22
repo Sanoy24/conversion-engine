@@ -102,19 +102,29 @@ def _check_snapshot(company_name: str) -> HiringSignal | None:
     except (OSError, json.JSONDecodeError):
         return None
 
-    name_lower = company_name.lower().strip()
+    company_key = _normalize_company_name(company_name)
 
     # Handle list or dict format
     companies = snapshot if isinstance(snapshot, list) else snapshot.get("companies", [])
     for entry in companies:
-        entry_name = (entry.get("company") or entry.get("name") or "").lower().strip()
-        if name_lower in entry_name or entry_name in name_lower:
-            return _parse_snapshot_entry(entry)
+        entry_name = entry.get("company") or entry.get("name") or ""
+        entry_key = _normalize_company_name(entry_name)
+        if not company_key or company_key != entry_key:
+            continue
+
+        if _is_synthetic_snapshot(snapshot, entry) and not settings.allow_synthetic_job_posts_snapshot:
+            logger.warning(
+                "Ignoring synthetic job-post snapshot entry for %s; replace with a frozen or live public dataset.",
+                company_name,
+            )
+            return None
+
+        return _parse_snapshot_entry(entry, synthetic=_is_synthetic_snapshot(snapshot, entry))
 
     return None
 
 
-def _parse_snapshot_entry(entry: dict) -> HiringSignal:
+def _parse_snapshot_entry(entry: dict, *, synthetic: bool = False) -> HiringSignal:
     """Parse a snapshot entry into a HiringSignal."""
     jobs = entry.get("jobs") or entry.get("postings") or []
 
@@ -131,14 +141,33 @@ def _parse_snapshot_entry(entry: dict) -> HiringSignal:
     delta_60d = entry.get("delta_60d") or entry.get("velocity")
 
     confidence = Confidence.HIGH if eng_count > 0 else Confidence.LOW
+    if synthetic and confidence == Confidence.HIGH:
+        confidence = Confidence.LOW
+
+    source_description = "Synthetic placeholder snapshot" if synthetic else "Frozen snapshot"
 
     return HiringSignal(
         open_eng_roles=eng_count,
         ai_adjacent_eng_roles=ai_count,
         delta_60d=str(delta_60d) if delta_60d else None,
         confidence=confidence,
-        sources=[SourceRef(url=entry.get("source_url"), description="Frozen snapshot")],
+        sources=[SourceRef(url=entry.get("source_url"), description=source_description)],
     )
+
+
+def _is_synthetic_snapshot(snapshot: dict | list, entry: dict) -> bool:
+    if bool(entry.get("synthetic")):
+        return True
+    if isinstance(snapshot, dict):
+        metadata = snapshot.get("metadata")
+        if isinstance(metadata, dict) and bool(metadata.get("synthetic")):
+            return True
+        return bool(snapshot.get("synthetic"))
+    return False
+
+
+def _normalize_company_name(value: str) -> str:
+    return "".join(ch for ch in value.lower() if ch.isalnum())
 
 
 async def _scrape_live(

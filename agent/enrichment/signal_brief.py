@@ -174,8 +174,11 @@ def _check_bench_match() -> BenchMatch:
     Cross-reference prospect's implied need against bench_summary.
     Uses the placeholder bench data for now — will swap with real on Day 0.
     """
-    bench_path = settings.seeds_path / "bench_summary_PLACEHOLDER.md"
-    if not bench_path.exists():
+    bench_candidates = [
+        settings.seeds_path / "bench_summary.md",
+        settings.seeds_path / "bench_summary_PLACEHOLDER.md",
+    ]
+    if not any(path.exists() for path in bench_candidates):
         return BenchMatch(matched=False, gap="bench_summary_not_loaded")
 
     # For now, return a default match — will be enhanced with real bench parsing

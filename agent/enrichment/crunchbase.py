@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
+from urllib.parse import urlparse
 
 from agent.config import settings
 from agent.models import Confidence, FundingSignal, ProspectInfo, SourceRef
@@ -61,7 +62,7 @@ def search_company(
     """
     Search for a company in the Crunchbase ODM sample.
 
-    Priority: exact UUID match → exact name → fuzzy name → domain.
+    Priority: exact UUID match → exact name → normalized domain.
     """
     data = _load_crunchbase_data()
 
@@ -72,22 +73,16 @@ def search_company(
 
     if company_name:
         name_lower = company_name.lower().strip()
-        # Exact match first
         for record in data:
             rec_name = (record.get("name") or "").lower().strip()
             if rec_name == name_lower:
                 return record
-        # Fuzzy — contains
-        for record in data:
-            rec_name = (record.get("name") or "").lower().strip()
-            if name_lower in rec_name or rec_name in name_lower:
-                return record
 
     if domain:
-        domain_lower = domain.lower().strip()
+        domain_host = _normalize_domain(domain)
         for record in data:
-            rec_domain = (record.get("website") or record.get("url") or "").lower()
-            if domain_lower in rec_domain:
+            rec_domain = _normalize_domain(record.get("website") or record.get("url") or "")
+            if domain_host and rec_domain == domain_host:
                 return record
 
     return None
@@ -303,6 +298,20 @@ def _parse_json_field(value: object) -> object:
         return json.loads(str(value))
     except (json.JSONDecodeError, TypeError):
         return value
+
+
+def _normalize_domain(value: str) -> str:
+    """Normalize a company domain or URL to a comparable host string."""
+    raw = value.strip().lower()
+    if not raw:
+        return ""
+
+    parsed = urlparse(raw if "://" in raw else f"https://{raw}")
+    host = parsed.netloc or parsed.path
+    host = host.split("/")[0]
+    if host.startswith("www."):
+        host = host[4:]
+    return host
 
 
 def _parse_money(value: object) -> int | None:
