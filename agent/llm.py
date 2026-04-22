@@ -16,6 +16,7 @@ from openai import AsyncOpenAI
 
 from agent.config import settings
 from agent.models import TraceRecord
+from agent.observability.langfuse_client import log_generation
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +108,18 @@ class LLMClient:
                 usage.total_tokens if usage else "?",
                 cost,
                 elapsed_ms,
+            )
+
+            # Emit to Langfuse — non-blocking, failures are swallowed in log_generation
+            log_generation(
+                trace_id=trace_id,
+                name=trace_event,
+                model=self.model,
+                input_messages=messages,
+                output=content,
+                usage={"prompt_tokens": usage.prompt_tokens, "completion_tokens": usage.completion_tokens} if usage else None,
+                cost=cost,
+                metadata={"prospect_company": prospect_company, "thread_id": thread_id, "latency_ms": round(elapsed_ms, 1)},
             )
 
             return content, trace

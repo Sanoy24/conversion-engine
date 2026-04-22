@@ -1,5 +1,5 @@
 """
-Langfuse tracing client.
+Langfuse tracing client — compatible with Langfuse SDK v4.
 Per-trace cost attribution and prompt versioning.
 Every trace_id referenced in the evidence graph resolves here.
 """
@@ -18,41 +18,14 @@ _langfuse: Langfuse | None = None
 
 
 def get_langfuse() -> Langfuse:
-    """Get or create the Langfuse client."""
     global _langfuse
     if _langfuse is None:
         _langfuse = Langfuse(
             public_key=settings.langfuse_public_key,
             secret_key=settings.langfuse_secret_key,
-            host=settings.langfuse_host,
+            host=settings.langfuse_endpoint,
         )
     return _langfuse
-
-
-def log_trace(
-    trace_id: str,
-    name: str,
-    input_data: dict | None = None,
-    output_data: dict | None = None,
-    metadata: dict | None = None,
-    user_id: str | None = None,
-    session_id: str | None = None,
-):
-    """Log a trace to Langfuse."""
-    try:
-        lf = get_langfuse()
-        return lf.trace(
-            id=trace_id,
-            name=name,
-            input=input_data,
-            output=output_data,
-            metadata=metadata or {},
-            user_id=user_id,
-            session_id=session_id,
-        )
-    except Exception as e:
-        logger.warning("Langfuse trace logging failed for %s: %s", trace_id, str(e))
-        return None
 
 
 def log_generation(
@@ -65,28 +38,55 @@ def log_generation(
     cost: float | None = None,
     metadata: dict | None = None,
 ):
-    """Log an LLM generation event to Langfuse."""
+    """Log an LLM generation to Langfuse (SDK v4)."""
     try:
         lf = get_langfuse()
-        trace = lf.trace(id=trace_id, name=name)
-        trace.generation(
-            name=f"{name}_generation",
-            model=model,
+        with lf.start_as_current_observation(
+            name=name,
             input=input_messages,
             output=output,
-            usage=usage,
-            metadata=metadata or {},
-        )
-        return trace
+            model=model,
+            metadata={**(metadata or {}), "trace_id": trace_id, "cost_usd": cost},
+        ) as obs:
+            if usage:
+                obs.update(
+                    usage_details={
+                        "input": usage.get("prompt_tokens", 0),
+                        "output": usage.get("completion_tokens", 0),
+                    }
+                )
+        lf.flush()
     except Exception as e:
         logger.warning("Langfuse generation logging failed: %s", str(e))
-        return None
+
+
+def log_trace(
+    trace_id: str,
+    name: str,
+    input_data: dict | None = None,
+    output_data: dict | None = None,
+    metadata: dict | None = None,
+    user_id: str | None = None,
+    session_id: str | None = None,
+):
+    """Log a pipeline trace event to Langfuse (SDK v4)."""
+    try:
+        lf = get_langfuse()
+        with lf.start_as_current_observation(
+            name=name,
+            input=input_data,
+            output=output_data,
+            metadata={**(metadata or {}), "trace_id": trace_id},
+        ):
+            pass
+        lf.flush()
+    except Exception as e:
+        logger.warning("Langfuse trace logging failed for %s: %s", trace_id, str(e))
 
 
 def flush():
     """Flush all pending Langfuse events."""
     try:
-        lf = get_langfuse()
-        lf.flush()
+        get_langfuse().flush()
     except Exception as e:
         logger.warning("Langfuse flush failed: %s", str(e))

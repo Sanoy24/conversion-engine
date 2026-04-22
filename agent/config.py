@@ -48,6 +48,12 @@ class Settings(BaseSettings):
     langfuse_public_key: str = ""
     langfuse_secret_key: str = ""
     langfuse_host: str = "https://cloud.langfuse.com"
+    # .env may use LANGFUSE_BASE_URL instead of LANGFUSE_HOST — support both
+    langfuse_base_url: str = ""
+
+    @property
+    def langfuse_endpoint(self) -> str:
+        return self.langfuse_base_url or self.langfuse_host
 
     # --- Application ---
     app_env: Literal["development", "production"] = "development"
