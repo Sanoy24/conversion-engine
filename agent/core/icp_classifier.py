@@ -113,6 +113,20 @@ def classify_prospect(brief: HiringSignalBrief) -> ICPClassification:
     # ── Confidence calibration ──
     confidence = _calibrate_confidence(brief, best_segment)
 
+    if confidence == Confidence.LOW:
+        return ICPClassification(
+            prospect=p,
+            segment=ICPSegment.ABSTAIN,
+            confidence=Confidence.LOW,
+            evidence=evidence_map.get(best_segment, []),
+            disqualifiers_checked=disqualifiers_checked,
+            overlap_notes=(
+                f"Best candidate was {best_segment.value}, but confidence stayed below the "
+                "abstention threshold."
+            ),
+            pitch_guidance_ref=brief.pitch_guidance,
+        )
+
     # Overlap 2: Leadership transition + Segment 1/2
     secondary = None
     overlap_notes = None

@@ -46,10 +46,10 @@ async def draft_email(
     thread_id = thread_id or f"thread_{uuid.uuid4().hex[:8]}"
 
     # Load seed materials for context
-    style_guide = _load_seed_file("style_guide_PLACEHOLDER.md")
-    _load_seed_file("email_sequences_PLACEHOLDER.md")
-    pricing_sheet = _load_seed_file("pricing_sheet_PLACEHOLDER.md")
-    bench_summary = _load_seed_file("bench_summary_PLACEHOLDER.md")
+    style_guide = _load_seed_file(["style_guide.md", "style_guide_PLACEHOLDER.md"])
+    _load_seed_file(["email_sequences.md", "email_sequences_PLACEHOLDER.md"])
+    pricing_sheet = _load_seed_file(["pricing_sheet.md", "pricing_sheet_PLACEHOLDER.md"])
+    bench_summary = _load_seed_file(["bench_summary.md", "bench_summary_PLACEHOLDER.md"])
 
     # Build the grounded claims list
     grounded = _extract_grounded_claims(signal_brief)
@@ -366,10 +366,13 @@ def _extract_grounded_claims(brief: HiringSignalBrief) -> list[GroundedClaim]:
     return claims
 
 
-def _load_seed_file(filename: str) -> str:
-    """Load a seed material file."""
-    path = settings.seeds_path / filename
-    if path.exists():
-        return path.read_text(encoding="utf-8")
-    logger.warning("Seed file not found: %s", path)
+def _load_seed_file(filenames: str | list[str]) -> str:
+    """Load the first available seed material file from the configured seed path."""
+    candidates = [filenames] if isinstance(filenames, str) else filenames
+    for filename in candidates:
+        path = settings.seeds_path / filename
+        if path.exists():
+            return path.read_text(encoding="utf-8")
+
+    logger.warning("Seed file not found. Checked: %s", ", ".join(str(settings.seeds_path / f) for f in candidates))
     return ""
