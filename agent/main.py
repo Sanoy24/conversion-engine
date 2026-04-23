@@ -252,30 +252,50 @@ async def sms_inbound_webhook(request: Request):
 
         parsed = process_inbound_sms(payload)
 
+        # STOP / HELP are TCPA-compliance special cases; do not become
+        # conversation turns, but still route to the opt-out handler so the
+        # trace log records the event.
         if parsed["is_opt_out"]:
-            return {"status": "opt_out_processed", "from": parsed.get("from_phone")}
+            from agent.core.orchestrator import handle_sms_opt_out
+            result = await handle_sms_opt_out(from_phone=parsed.get("from_phone", ""))
+            return {"status": "opt_out_processed", "from": parsed.get("from_phone"),
+                    "downstream": result}
         if parsed["is_help"]:
-            return {"status": "help_requested", "from": parsed.get("from_phone")}
+            from agent.core.orchestrator import handle_sms_help
+            result = await handle_sms_help(from_phone=parsed.get("from_phone", ""))
+            return {"status": "help_requested", "from": parsed.get("from_phone"),
+                    "downstream": result}
 
-        # Look up the conversation by phone number and route to the same
-        # reply-handling path that email uses.
+        # Route every other inbound SMS to the conversation handler. If we
+        # can match the phone number to an existing thread, use that; if not,
+        # the orchestrator opens a new inbound-originated conversation so
+        # nothing dead-ends.
         from agent.core.conversation import get_conversation_by_phone
         from_phone = parsed.get("from_phone", "")
         conversation = get_conversation_by_phone(from_phone) if from_phone else None
 
-        if not conversation:
-            logger.info(
-                "SMS inbound from %s has no active conversation — acknowledging only",
-                from_phone,
+        if conversation:
+            result = await handle_prospect_reply(
+                thread_id=conversation.thread_id,
+                reply_content=parsed.get("message", ""),
+                channel=ChannelType.SMS,
             )
-            return {"status": "received", "action": "no_matching_thread", "parsed": parsed}
+            return JSONResponse(
+                content={"status": "routed", "action": "matched_existing_thread",
+                         "thread_id": conversation.thread_id, "result": result}
+            )
 
-        result = await handle_prospect_reply(
-            thread_id=conversation.thread_id,
-            reply_content=parsed.get("message", ""),
-            channel=ChannelType.SMS,
+        # No existing conversation — hand off to the inbound-SMS intake handler
+        # which opens a new thread and runs the same classify/reply pipeline.
+        from agent.core.orchestrator import handle_inbound_sms
+        result = await handle_inbound_sms(
+            from_phone=from_phone,
+            message=parsed.get("message", ""),
         )
-        return JSONResponse(content=result)
+        return JSONResponse(
+            content={"status": "routed", "action": "new_inbound_thread",
+                     "result": result}
+        )
 
     except Exception as e:
         logger.error("SMS webhook error: %s", str(e), exc_info=True)

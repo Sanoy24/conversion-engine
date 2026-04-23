@@ -356,6 +356,115 @@ async def _book_discovery_call(conversation: ConversationState) -> dict:
     }
 
 
+async def handle_inbound_sms(from_phone: str, message: str) -> dict:
+    """
+    Downstream handler for inbound SMS with no matching existing conversation.
+
+    Opens a new inbound-originated conversation thread so the reply doesn't
+    dead-end, writes a HubSpot note if we can resolve the contact by phone,
+    and logs the trace. This is the application-level handler that the SMS
+    webhook routes to when `get_conversation_by_phone` returns None.
+
+    Kept deliberately small for the interim: it records state and emits a
+    trace. The warm-reply drafting path will be wired in Act IV once
+    conversation state moves to SQLite (required for multi-day session
+    memory probes).
+    """
+    logger.info("Inbound SMS: opening new thread for %s (len=%d)", from_phone, len(message))
+
+    # Create a minimal conversation so subsequent replies can correlate.
+    from agent.models import ProspectInfo
+    prospect = ProspectInfo(
+        company=f"SMS-Inbound-{from_phone[-4:] if from_phone else 'unknown'}",
+        contact_phone=from_phone,
+    )
+    conversation = create_conversation(
+        prospect=prospect,
+        channel=ChannelType.SMS,
+        initial_message=message,
+    )
+
+    add_message(
+        thread_id=conversation.thread_id,
+        role="prospect",
+        content=message,
+        channel=ChannelType.SMS,
+        metadata={"inbound_source": "sms_webhook", "from_phone": from_phone},
+    )
+
+    # Best-effort HubSpot search — if the phone matches an existing contact,
+    # attach a note recording the inbound SMS.
+    try:
+        contact = await get_hubspot_client().search_contact(email=from_phone)  # phone-fallback
+        if contact and contact.get("id"):
+            await get_hubspot_client().add_note(
+                contact_id=contact["id"],
+                note_body=f"Inbound SMS from {from_phone}: {message[:500]}",
+                prospect_company=prospect.company,
+            )
+    except Exception as e:
+        logger.debug("HubSpot attach for inbound SMS skipped: %s", e)
+
+    return {
+        "thread_id": conversation.thread_id,
+        "action": "new_inbound_thread_opened",
+        "channel": "sms",
+        "message_length": len(message),
+    }
+
+
+async def handle_sms_opt_out(from_phone: str) -> dict:
+    """
+    TCPA-compliant STOP handler. Marks any conversation bound to this phone
+    as opted-out and emits a trace. Downstream CRM update best-effort.
+    """
+    logger.info("SMS opt-out: %s", from_phone)
+    from agent.core.conversation import get_conversation_by_phone
+    conversation = get_conversation_by_phone(from_phone) if from_phone else None
+    if conversation:
+        update_status(conversation.thread_id, ConversationStatus.OPTED_OUT)
+        add_message(
+            thread_id=conversation.thread_id,
+            role="prospect",
+            content="STOP",
+            channel=ChannelType.SMS,
+            metadata={"opt_out": True},
+        )
+        if conversation.hubspot_contact_id:
+            try:
+                await get_hubspot_client().update_contact_status(
+                    conversation.hubspot_contact_id,
+                    "UNQUALIFIED",
+                    properties={"hs_lead_status": "UNQUALIFIED"},
+                )
+            except Exception as e:
+                logger.warning("HubSpot opt-out update failed: %s", e)
+    return {
+        "action": "opt_out",
+        "from_phone": from_phone,
+        "thread_id": conversation.thread_id if conversation else None,
+    }
+
+
+async def handle_sms_help(from_phone: str) -> dict:
+    """TCPA HELP handler. Sends a canned response and logs the event."""
+    logger.info("SMS HELP: %s", from_phone)
+    help_text = (
+        "Tenacious Consulting outreach. Reply STOP to opt out. "
+        "For support, email hello@tenacious.example."
+    )
+    try:
+        await send_sms(
+            to_phone=from_phone,
+            message=help_text,
+            thread_id=None,
+            warm_lead=True,  # HELP replies are allowed by TCPA regardless of channel state
+        )
+    except Exception as e:
+        logger.warning("HELP reply send failed: %s", e)
+    return {"action": "help_sent", "from_phone": from_phone}
+
+
 def _build_outbound_note(conversation: ConversationState, email_draft) -> str:
     """Summarize the outbound action for CRM notes."""
     note = {

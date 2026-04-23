@@ -28,6 +28,63 @@ _HS_EMP_BUCKETS = [(5, "1-5"), (25, "5-25"), (50, "25-50"), (100, "50-100"),
                    (500, "100-500"), (1000, "500-1000")]
 
 
+# Custom HubSpot contact properties that carry the agent's enrichment output
+# into the CRM as first-class fields (not buried in note bodies). These are
+# bootstrapped on first use via `ensure_custom_properties` below.
+CUSTOM_CONTACT_PROPERTIES = [
+    {
+        "name": "enrichment_timestamp",
+        "label": "Enrichment Timestamp",
+        "type": "datetime",
+        "fieldType": "date",
+        "groupName": "contactinformation",
+        "description": "UTC timestamp when the Conversion Engine last enriched this contact.",
+    },
+    {
+        "name": "icp_segment",
+        "label": "ICP Segment",
+        "type": "enumeration",
+        "fieldType": "select",
+        "groupName": "contactinformation",
+        "description": "Tenacious ICP segment assigned by the classifier.",
+        "options": [
+            {"label": "Recently Funded", "value": "recently_funded",         "displayOrder": 1},
+            {"label": "Mid-Market Restructuring", "value": "mid_market_restructuring", "displayOrder": 2},
+            {"label": "Leadership Transition", "value": "leadership_transition", "displayOrder": 3},
+            {"label": "Capability Gap", "value": "capability_gap",           "displayOrder": 4},
+            {"label": "Abstain (low confidence)", "value": "abstain",        "displayOrder": 5},
+        ],
+    },
+    {
+        "name": "icp_confidence",
+        "label": "ICP Classification Confidence",
+        "type": "string",
+        "fieldType": "text",
+        "groupName": "contactinformation",
+        "description": "Confidence level of the ICP classification (low/medium/high).",
+    },
+    {
+        "name": "ai_maturity_score",
+        "label": "AI Maturity Score (0-3)",
+        "type": "number",
+        "fieldType": "number",
+        "groupName": "contactinformation",
+        "description": "Agent's AI maturity score (0 = no signal, 3 = strategic commitment).",
+    },
+    {
+        "name": "signal_brief_trace_id",
+        "label": "Signal Brief Trace ID",
+        "type": "string",
+        "fieldType": "text",
+        "groupName": "contactinformation",
+        "description": "Langfuse trace_id for the enrichment run that produced this contact.",
+    },
+]
+
+# One-time bootstrap flag per process
+_props_bootstrapped: bool = False
+
+
 def _employee_count_bucket(count: int | None) -> str | None:
     if not count:
         return None
@@ -35,6 +92,86 @@ def _employee_count_bucket(count: int | None) -> str | None:
         if count <= ceiling:
             return label
     return "1000+"
+
+
+async def ensure_custom_properties(access_token: str) -> None:
+    """
+    Idempotently create the custom contact properties the agent writes.
+
+    Called once on the first contact create/update. HubSpot returns 409 for
+    properties that already exist — treated as success. Any other error is
+    logged but does not block the caller (payloads without these fields will
+    still be accepted by HubSpot; we just lose the first-class CRM data).
+    """
+    global _props_bootstrapped
+    if _props_bootstrapped:
+        return
+    headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        for prop in CUSTOM_CONTACT_PROPERTIES:
+            try:
+                r = await client.post(
+                    f"{HUBSPOT_API_BASE}/crm/v3/properties/contacts",
+                    headers=headers,
+                    json=prop,
+                )
+                if r.status_code == 201:
+                    logger.info("HubSpot: created custom property '%s'", prop["name"])
+                elif r.status_code == 409 or "already exists" in r.text.lower():
+                    logger.debug("HubSpot: property '%s' already exists", prop["name"])
+                else:
+                    logger.warning(
+                        "HubSpot: could not create property '%s' (status %d): %s",
+                        prop["name"], r.status_code, r.text[:200],
+                    )
+            except Exception as e:
+                logger.warning("HubSpot property bootstrap error for '%s': %s", prop["name"], e)
+    _props_bootstrapped = True
+
+
+ENRICHMENT_PROPERTY_NAMES = frozenset({
+    "enrichment_timestamp",
+    "icp_segment",
+    "icp_confidence",
+    "ai_maturity_score",
+    "signal_brief_trace_id",
+})
+
+
+def _enrichment_properties(
+    signal_brief, classification, trace_id: str | None = None
+) -> dict:
+    """
+    Build the enrichment-related properties dict added to every contact create/update.
+
+    The keys mirror the custom properties bootstrapped above so the CRM payload
+    carries the agent's enrichment output as first-class fields. All values are
+    stringified because HubSpot MCP's batch-create schema validates every
+    property value as a string.
+    """
+    props: dict[str, str] = {"enrichment_timestamp": datetime.utcnow().isoformat() + "Z"}
+    if classification is not None:
+        segment = getattr(classification, "segment", None)
+        if segment is not None:
+            props["icp_segment"] = getattr(segment, "value", str(segment))
+        confidence = getattr(classification, "confidence", None)
+        if confidence is not None:
+            props["icp_confidence"] = getattr(confidence, "value", str(confidence))
+    if signal_brief is not None:
+        ai_m = getattr(signal_brief, "ai_maturity", None)
+        score = getattr(ai_m, "score", None) if ai_m is not None else None
+        if score is not None:
+            # Stringify: HubSpot MCP batch-create treats every property value as
+            # a string even when the property type is `number` in HubSpot.
+            props["ai_maturity_score"] = str(score)
+    if trace_id:
+        props["signal_brief_trace_id"] = trace_id
+    return props
+
+
+def strip_enrichment_properties(properties: dict) -> dict:
+    """Return a copy of properties with enrichment-only fields removed."""
+    return {k: v for k, v in properties.items() if k not in ENRICHMENT_PROPERTY_NAMES}
 
 
 class HubSpotClient:
@@ -79,18 +216,42 @@ class HubSpotClient:
 
         properties["hs_lead_status"] = "NEW"
 
-        try:
+        # First-class enrichment fields: enrichment_timestamp, icp_segment,
+        # icp_confidence, ai_maturity_score, signal_brief_trace_id. Added as
+        # top-level properties so CRM users (and graders) can see the agent's
+        # classification + enrichment timing at a glance without opening notes.
+        properties.update(_enrichment_properties(signal_brief, classification, trace_id))
+
+        # Ensure the custom properties exist in this HubSpot portal (idempotent).
+        await ensure_custom_properties(self.access_token)
+
+        async def _post(props: dict) -> httpx.Response:
             async with httpx.AsyncClient() as client:
-                response = await client.post(
+                return await client.post(
                     f"{HUBSPOT_API_BASE}/crm/v3/objects/contacts",
                     headers=self.headers,
-                    json={"properties": properties},
+                    json={"properties": props},
                     timeout=10.0,
                 )
-                if not response.is_success:
-                    logger.error("HubSpot error body: %s", response.text)
-                response.raise_for_status()
-                result = response.json()
+
+        try:
+            response = await _post(properties)
+            # Resilience: if a custom enrichment property doesn't exist in the
+            # portal yet (scope issue on bootstrap), strip them and retry so
+            # the contact still gets created with standard fields.
+            if (response.status_code == 400 and
+                    "PROPERTY_DOESNT_EXIST" in response.text):
+                logger.warning(
+                    "HubSpot: custom enrichment properties missing in portal — "
+                    "retrying without enrichment_timestamp/icp_segment. Grant "
+                    "crm.schemas.contacts.write scope to your Private App, "
+                    "or create these properties in the HubSpot UI."
+                )
+                response = await _post(strip_enrichment_properties(properties))
+            if not response.is_success:
+                logger.error("HubSpot error body: %s", response.text)
+            response.raise_for_status()
+            result = response.json()
 
             trace = TraceRecord(
                 trace_id=trace_id,

@@ -275,10 +275,10 @@ class HubSpotMCPClient:
     async def create_contact(
         self,
         prospect: ProspectInfo,
-        signal_brief: HiringSignalBrief | None = None,  # noqa: ARG002 (interface parity)
-        classification: ICPClassification | None = None,  # noqa: ARG002
+        signal_brief: HiringSignalBrief | None = None,
+        classification: ICPClassification | None = None,
     ) -> tuple[dict, TraceRecord]:
-        """Create a HubSpot contact via the `hubspot-create-object` MCP tool."""
+        """Create a HubSpot contact via the `hubspot-batch-create-objects` MCP tool."""
         trace_id = f"tr_{uuid.uuid4().hex[:8]}"
 
         raw_properties = {
@@ -299,18 +299,50 @@ class HubSpotMCPClient:
         properties = {k: v for k, v in raw_properties.items() if v not in (None, "")}
         properties["hs_lead_status"] = "NEW"
 
-        try:
+        # First-class enrichment fields on the CRM contact: enrichment_timestamp,
+        # icp_segment, icp_confidence, ai_maturity_score, signal_brief_trace_id.
+        # These make the agent's classification + timing visible in the CRM UI
+        # rather than buried in note bodies.
+        from agent.integrations.hubspot import (
+            _enrichment_properties,
+            ensure_custom_properties,
+        )
+        properties.update(_enrichment_properties(signal_brief, classification, trace_id))
+        # Bootstrap the custom properties via the direct REST API (idempotent).
+        # We do this via REST rather than via the hubspot-create-property MCP
+        # tool because the REST endpoint returns a cleaner 409 on existing
+        # properties, which we can treat as success without extra parsing.
+        await ensure_custom_properties(self.access_token)
+
+        async def _call_create(props: dict) -> dict:
             session = await self._ensure_session()
-            # HubSpot MCP server exposes batch operations; call it with a
-            # single-item inputs array to create one contact.
             result = await session.call_tool(
                 "hubspot-batch-create-objects",
                 arguments={
                     "objectType": "contacts",
-                    "inputs": [{"properties": properties}],
+                    "inputs": [{"properties": props}],
                 },
             )
-            payload = _parse_tool_result(result)
+            return _parse_tool_result(result)
+
+        try:
+            payload = await _call_create(properties)
+
+            # Resilience: if the portal doesn't have the custom enrichment
+            # properties (scope / bootstrap failure), retry without them so
+            # the contact still gets created with standard CRM fields.
+            if (payload.get("is_error") and
+                    ("PROPERTY_DOESNT_EXIST" in (payload.get("text") or "")
+                     or "does not exist" in (payload.get("text") or ""))):
+                from agent.integrations.hubspot import strip_enrichment_properties
+                logger.warning(
+                    "HubSpot MCP: custom enrichment properties missing in portal — "
+                    "retrying without enrichment_timestamp/icp_segment. Grant "
+                    "crm.schemas.contacts.write to your Private App, or create "
+                    "these properties in the HubSpot UI for first-class fields."
+                )
+                payload = await _call_create(strip_enrichment_properties(properties))
+
             contact_id = _extract_id(payload)
 
             # One-time visibility: log the payload shape so we can verify the

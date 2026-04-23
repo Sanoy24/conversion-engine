@@ -1,85 +1,94 @@
 {
-  "run_id": "full_thread_6384f19a",
-  "thread_id": "thread_e85c94d5",
+  "run_id": "full_thread_23b570de",
+  "thread_id": "thread_13cfe773",
   "kill_switch_active": true,
   "prospect": {
-    "company": "Umbra",
-    "contact_name": "Tom\u00e1s Diaz",
-    "contact_email": "tomas20@example.com",
-    "contact_phone": "+254700000020"
+    "company": "FeedbackFix2",
+    "contact_name": "Alex Demo",
+    "contact_email": "feedback2@example.com",
+    "contact_phone": "+254700000000"
   },
   "classification": "abstain",
-  "pipeline_total_cost_usd": 0.004966,
+  "pipeline_total_cost_usd": 0.004991,
   "stages": [
     {
       "stage": "1_enrich_classify_draft",
       "ok": true,
-      "latency_ms": 28469.0,
-      "timestamp": "2026-04-23T13:46:23.332286",
-      "thread_id": "thread_e85c94d5",
+      "latency_ms": 50578.0,
+      "timestamp": "2026-04-23T17:39:40.718594",
+      "thread_id": "thread_13cfe773",
       "segment": "abstain",
       "confidence": "low",
       "gap_brief_present": true,
-      "pipeline_latency_ms": 28468.868000000002,
-      "total_cost_usd": 0.004966,
-      "email_subject": "Question on your engineering team needs"
+      "pipeline_latency_ms": 50576.982,
+      "total_cost_usd": 0.004991,
+      "email_subject": "Question on your engineering roadmap"
     },
     {
       "stage": "2_email_send",
       "ok": true,
       "latency_ms": 0.0,
-      "timestamp": "2026-04-23T13:46:23.333918",
+      "timestamp": "2026-04-23T17:39:40.722597",
       "resend_status": "sink",
-      "resend_id": "tr_f0079605",
+      "resend_id": "tr_5e9a1ba5",
       "kill_switch_active": true,
-      "trace_id": "tr_f0079605"
+      "trace_id": "tr_5e9a1ba5"
     },
     {
       "stage": "3_reply_received_and_warm_draft",
       "ok": true,
-      "latency_ms": 39125.0,
-      "timestamp": "2026-04-23T13:47:02.464399",
+      "latency_ms": 33875.0,
+      "timestamp": "2026-04-23T17:40:14.597427",
       "action": "warm_reply",
       "requires_handoff": false,
-      "reply_chars": 176
+      "reply_chars": 175
     },
     {
       "stage": "4_sms_scheduling",
       "ok": true,
       "latency_ms": 0.0,
-      "timestamp": "2026-04-23T13:47:02.466910",
+      "timestamp": "2026-04-23T17:40:14.600044",
       "at_status": "sink",
       "kill_switch_active": true,
-      "trace_id": "tr_88a9c353"
+      "trace_id": "tr_a08687a2"
     },
     {
       "stage": "5_hubspot_contact_created",
       "ok": true,
-      "latency_ms": 640.0,
-      "timestamp": "2026-04-23T13:47:03.100705",
-      "hubspot_contact_id": "475738743494",
+      "latency_ms": 1234.0,
+      "timestamp": "2026-04-23T17:40:15.833134",
+      "hubspot_contact_id": "475897065186",
       "error": null,
-      "trace_id": "tr_7ef76125"
+      "trace_id": "tr_f6e6f77d"
     },
     {
       "stage": "5b_hubspot_note",
       "ok": true,
-      "latency_ms": 813.0,
-      "timestamp": "2026-04-23T13:47:03.919243",
-      "note_id": "365796810453",
-      "trace_id": "tr_0a49f4bf"
+      "latency_ms": 828.0,
+      "timestamp": "2026-04-23T17:40:16.657548",
+      "note_id": "365871442652",
+      "trace_id": "tr_e4677bda"
     },
     {
       "stage": "6_calcom_booking",
       "ok": true,
-      "latency_ms": 19234.0,
-      "timestamp": "2026-04-23T13:47:23.161606",
+      "latency_ms": 2610.0,
+      "timestamp": "2026-04-23T17:40:19.268391",
       "booking_id": null,
-      "start_time": "2026-06-17T09:30:00Z",
+      "start_time": "2026-05-21T10:30:00Z",
       "error": null,
-      "trace_id": "tr_ea5a02d9"
+      "trace_id": "tr_4a53b862"
+    },
+    {
+      "stage": "7_calcom_to_hubspot_link",
+      "ok": true,
+      "latency_ms": 1515.0,
+      "timestamp": "2026-04-23T17:40:20.778757",
+      "hubspot_contact_id": "475897065186",
+      "booking_id": null,
+      "trace_id": "tr_4198a01c"
     }
   ],
   "ok": true,
-  "total_latency_ms": 88281.0
+  "total_latency_ms": 90640.0
 }
