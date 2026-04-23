@@ -233,69 +233,41 @@ async def sms_inbound_webhook(request: Request):
     """
     Webhook endpoint for Africa's Talking inbound SMS.
 
-    Routes the reply to the orchestrator's `handle_prospect_reply` (same code
-    path as email replies) so the SMS channel doesn't dead-end. STOP / HELP
-    commands are handled before routing so they never turn into conversation
-    turns.
+    Delegates to `agent.channels.sms_handler.route_inbound_sms`, which is the
+    single source of truth for SMS inbound routing. The router enforces that
+    every inbound SMS drives exactly one downstream orchestrator handler
+    (`handle_prospect_reply`, `handle_inbound_sms`, `handle_sms_opt_out`, or
+    `handle_sms_help`) — nothing dead-ends at parsing.
     """
     try:
-        # Africa's Talking sends form-encoded data; malformed bodies become {}
-        try:
-            form = await request.form()
-            payload = dict(form)
-        except Exception as e:
-            logger.warning("SMS webhook: malformed form body: %s", e)
-            return JSONResponse(
-                status_code=400,
-                content={"status": "error", "reason": "malformed_body"},
-            )
-
-        parsed = process_inbound_sms(payload)
-
-        # STOP / HELP are TCPA-compliance special cases; do not become
-        # conversation turns, but still route to the opt-out handler so the
-        # trace log records the event.
-        if parsed["is_opt_out"]:
-            from agent.core.orchestrator import handle_sms_opt_out
-            result = await handle_sms_opt_out(from_phone=parsed.get("from_phone", ""))
-            return {"status": "opt_out_processed", "from": parsed.get("from_phone"),
-                    "downstream": result}
-        if parsed["is_help"]:
-            from agent.core.orchestrator import handle_sms_help
-            result = await handle_sms_help(from_phone=parsed.get("from_phone", ""))
-            return {"status": "help_requested", "from": parsed.get("from_phone"),
-                    "downstream": result}
-
-        # Route every other inbound SMS to the conversation handler. If we
-        # can match the phone number to an existing thread, use that; if not,
-        # the orchestrator opens a new inbound-originated conversation so
-        # nothing dead-ends.
-        from agent.core.conversation import get_conversation_by_phone
-        from_phone = parsed.get("from_phone", "")
-        conversation = get_conversation_by_phone(from_phone) if from_phone else None
-
-        if conversation:
-            result = await handle_prospect_reply(
-                thread_id=conversation.thread_id,
-                reply_content=parsed.get("message", ""),
-                channel=ChannelType.SMS,
-            )
-            return JSONResponse(
-                content={"status": "routed", "action": "matched_existing_thread",
-                         "thread_id": conversation.thread_id, "result": result}
-            )
-
-        # No existing conversation — hand off to the inbound-SMS intake handler
-        # which opens a new thread and runs the same classify/reply pipeline.
-        from agent.core.orchestrator import handle_inbound_sms
-        result = await handle_inbound_sms(
-            from_phone=from_phone,
-            message=parsed.get("message", ""),
-        )
+        form = await request.form()
+        payload = dict(form)
+    except Exception as e:
+        logger.warning("SMS webhook: malformed form body: %s", e)
         return JSONResponse(
-            content={"status": "routed", "action": "new_inbound_thread",
-                     "result": result}
+            status_code=400,
+            content={"status": "error", "reason": "malformed_body"},
         )
+
+    try:
+        from agent.channels.sms_handler import route_inbound_sms
+        from agent.core.conversation import get_conversation_by_phone
+        from agent.core.orchestrator import (
+            handle_inbound_sms,
+            handle_sms_help,
+            handle_sms_opt_out,
+        )
+
+        result = await route_inbound_sms(
+            payload,
+            handle_prospect_reply=handle_prospect_reply,
+            handle_inbound_sms=handle_inbound_sms,
+            handle_sms_opt_out=handle_sms_opt_out,
+            handle_sms_help=handle_sms_help,
+            get_conversation_by_phone=get_conversation_by_phone,
+            channel_type=ChannelType.SMS,
+        )
+        return JSONResponse(content=result)
 
     except Exception as e:
         logger.error("SMS webhook error: %s", str(e), exc_info=True)
