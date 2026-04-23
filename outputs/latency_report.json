@@ -1,0 +1,60 @@
+{
+  "runs": 20,
+  "per_stage": {
+    "1_enrich_classify_draft": {
+      "n": 20,
+      "p50_ms": 44000.0,
+      "p95_ms": 79610.0,
+      "mean_ms": 46562.5,
+      "max_ms": 85969.0
+    },
+    "2_email_send": {
+      "n": 20,
+      "p50_ms": 0.0,
+      "p95_ms": 15.0,
+      "mean_ms": 1.55,
+      "max_ms": 16.0
+    },
+    "3_reply_received_and_warm_draft": {
+      "n": 20,
+      "p50_ms": 28703.0,
+      "p95_ms": 37953.0,
+      "mean_ms": 27885.9,
+      "max_ms": 39125.0
+    },
+    "4_sms_scheduling": {
+      "n": 20,
+      "p50_ms": 0.0,
+      "p95_ms": 15.0,
+      "mean_ms": 1.55,
+      "max_ms": 16.0
+    },
+    "5_hubspot_contact_created": {
+      "n": 20,
+      "p50_ms": 703.0,
+      "p95_ms": 1500.0,
+      "mean_ms": 839.25,
+      "max_ms": 1532.0
+    },
+    "5b_hubspot_note": {
+      "n": 20,
+      "p50_ms": 844.0,
+      "p95_ms": 1047.0,
+      "mean_ms": 878.05,
+      "max_ms": 1218.0
+    },
+    "6_calcom_booking": {
+      "n": 20,
+      "p50_ms": 4938.0,
+      "p95_ms": 13859.0,
+      "mean_ms": 6317.35,
+      "max_ms": 19234.0
+    }
+  },
+  "end_to_end": {
+    "n": 20,
+    "p50_ms": 44000.0,
+    "p95_ms": 79610.0,
+    "mean_ms": 46562.5
+  }
+}

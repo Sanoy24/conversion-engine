@@ -1,142 +1,6113 @@
 [
   {
+    "run_name": "20260421_004759_retail_llm_agent_deepseek-chat-v3-0324_user_simulator_deepseek-chat-v3-0324",
+    "total_tasks": 1,
+    "passed": 0,
+    "failed": 1,
+    "average_reward": 0.0,
     "pass_at_1": 0.0,
-    "ci_95": 0.0,
-    "ci_95_range": [
-      0.0,
-      0.0
-    ],
-    "per_trial_pass_at_1": [
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-    ],
-    "n_simulations": 30,
-    "cost_per_run": 0.003427,
-    "total_cost": 0.1028,
-    "task_latency_p50_s": 26.76,
-    "task_latency_p95_s": 200.47,
-    "infrastructure_errors": 0,
-    "entry_type": "dev_tier_baseline",
-    "timestamp": "2026-04-21T13:05:47.191189",
-    "model": "openrouter/deepseek/deepseek-chat-v3-0324",
-    "domain": "retail",
-    "n_tasks": 6,
-    "n_trials": 5,
-    "temperature": 0.0,
-    "wall_clock_s": 725.81,
-    "run_id": "eval_dev_tier_baseline_20260421_125341_040f2f",
-    "results_path": "tau2-bench\\data\\simulations\\eval_dev_tier_baseline_20260421_125341_040f2f\\results.json",
-    "expected_simulations": 30,
-    "completed_simulations": 30,
-    "process_returncode": 0,
-    "run_status": "complete"
+    "pass_at_1_pct": "0.0%",
+    "total_cost_usd": 0.0018,
+    "avg_cost_per_task_usd": 0.0018,
+    "per_task": [
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016128000000000002,
+        "user_cost": 0.00021084,
+        "duration_s": 23.864831500002765,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      }
+    ]
   },
   {
+    "run_name": "20260421_005003_retail_llm_agent_deepseek-chat-v3-0324_user_simulator_deepseek-chat-v3-0324",
+    "total_tasks": 3,
+    "passed": 0,
+    "failed": 3,
+    "average_reward": 0.0,
     "pass_at_1": 0.0,
-    "ci_95": 0.0,
-    "ci_95_range": [
-      0.0,
-      0.0
-    ],
-    "per_trial_pass_at_1": [
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-    ],
-    "n_simulations": 30,
-    "cost_per_run": 0.002537,
-    "total_cost": 0.0761,
-    "task_latency_p50_s": 25.34,
-    "task_latency_p95_s": 184.8,
-    "infrastructure_errors": 0,
-    "entry_type": "reproduction_check",
-    "timestamp": "2026-04-21T13:12:11.014959",
-    "model": "openrouter/deepseek/deepseek-chat-v3-0324",
-    "domain": "retail",
-    "n_tasks": 6,
-    "n_trials": 5,
-    "temperature": 0.0,
-    "wall_clock_s": 383.78,
-    "run_id": "eval_reproduction_check_20260421_130547_77d2fc",
-    "results_path": "tau2-bench\\data\\simulations\\eval_reproduction_check_20260421_130547_77d2fc\\results.json",
-    "expected_simulations": 30,
-    "completed_simulations": 30,
-    "process_returncode": 0,
-    "run_status": "complete"
+    "pass_at_1_pct": "0.0%",
+    "total_cost_usd": 0.0051,
+    "avg_cost_per_task_usd": 0.0017,
+    "per_task": [
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016072,
+        "user_cost": 0.00012558,
+        "duration_s": 21.643056900000374,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00082782,
+        "user_cost": 6.314e-05,
+        "duration_s": 14.133999499994388,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00238504,
+        "user_cost": 0.00013972,
+        "duration_s": 27.255464299996675,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      }
+    ]
   },
   {
-    "pass_at_1": 0.0933,
-    "ci_95": 0.0117,
-    "ci_95_range": [
-      0.0816,
-      0.105
-    ],
-    "per_trial_pass_at_1": [
-      0.1,
-      0.1,
-      0.0667,
-      0.1,
-      0.1
-    ],
-    "n_simulations": 150,
-    "cost_per_run": 0.002972,
-    "total_cost": 0.4458,
-    "task_latency_p50_s": 29.35,
-    "task_latency_p95_s": 480.54,
-    "infrastructure_errors": 0,
-    "entry_type": "dev_tier_baseline",
-    "timestamp": "2026-04-21T14:38:02.669218",
-    "model": "openrouter/deepseek/deepseek-chat-v3-0324",
-    "domain": "retail",
-    "n_tasks": 30,
-    "n_trials": 5,
-    "temperature": 0.0,
-    "wall_clock_s": 2540.94,
-    "run_id": "eval_dev_tier_baseline_20260421_135541_dc1abd",
-    "results_path": "tau2-bench\\data\\simulations\\eval_dev_tier_baseline_20260421_135541_dc1abd\\results.json",
-    "expected_simulations": 150,
-    "completed_simulations": 150,
-    "process_returncode": 0,
-    "run_status": "complete"
+    "run_name": "eval_baseline_trial1",
+    "total_tasks": 30,
+    "passed": 3,
+    "failed": 27,
+    "average_reward": 0.1,
+    "pass_at_1": 0.1,
+    "pass_at_1_pct": "10.0%",
+    "total_cost_usd": 0.0841,
+    "avg_cost_per_task_usd": 0.0028,
+    "per_task": [
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159012,
+        "user_cost": 0.00012026,
+        "duration_s": 19.79689530000178,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015925,
+        "user_cost": 0.00010024,
+        "duration_s": 17.893252499998198,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016482200000000002,
+        "user_cost": 0.0001449,
+        "duration_s": 23.785369700002775,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015656200000000002,
+        "user_cost": 8.274000000000001e-05,
+        "duration_s": 15.73597009999503,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015723400000000002,
+        "user_cost": 7.504000000000001e-05,
+        "duration_s": 15.84575980000227,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157458,
+        "user_cost": 0.00018326,
+        "duration_s": 15.294498200004455,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024332,
+        "user_cost": 0.00022218000000000002,
+        "duration_s": 26.05439430000115,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00330106,
+        "user_cost": 0.0002674,
+        "duration_s": 37.138398700000835,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159838,
+        "user_cost": 0.00016702,
+        "duration_s": 18.52685279999423,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.004281340000000001,
+        "user_cost": 0.00051254,
+        "duration_s": 53.998645799998485,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00158032,
+        "user_cost": 8.764000000000001e-05,
+        "duration_s": 14.533247500003199,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0024376800000000002,
+        "user_cost": 0.00024150000000000002,
+        "duration_s": 32.11015000000043,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00397418,
+        "user_cost": 0.00033866000000000007,
+        "duration_s": 35.93700579999859,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015941800000000002,
+        "user_cost": 7.000000000000001e-05,
+        "duration_s": 18.596739599997818,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158326,
+        "user_cost": 0.00011928000000000001,
+        "duration_s": 19.610223399999086,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024731,
+        "user_cost": 0.00028084000000000003,
+        "duration_s": 33.69274620000215,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00078372,
+        "user_cost": 7.196000000000001e-05,
+        "duration_s": 12.800953400001163,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015958600000000002,
+        "user_cost": 0.00014364,
+        "duration_s": 14.182127100000798,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016216199999999998,
+        "user_cost": 0.00022246000000000004,
+        "duration_s": 31.039216800003487,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160818,
+        "user_cost": 0.00013972,
+        "duration_s": 27.658551200001966,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024402000000000004,
+        "user_cost": 0.00046424000000000004,
+        "duration_s": 95.38208049999957,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0035322,
+        "user_cost": 0.00038500000000000003,
+        "duration_s": 69.60342800000217,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016324,
+        "user_cost": 0.0001386,
+        "duration_s": 15.66425850000087,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00168686,
+        "user_cost": 0.00021406000000000002,
+        "duration_s": 30.87399590000132,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00080962,
+        "user_cost": 7.378000000000002e-05,
+        "duration_s": 23.03277149999485,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016126600000000001,
+        "user_cost": 0.0001358,
+        "duration_s": 24.469717500003753,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015957200000000001,
+        "user_cost": 0.00015554000000000002,
+        "duration_s": 20.497169300004316,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015688400000000002,
+        "user_cost": 7.07e-05,
+        "duration_s": 22.092709599994123,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015932000000000001,
+        "user_cost": 0.00017948000000000004,
+        "duration_s": 26.057769299994106,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.014621880000000002,
+        "user_cost": 0.0071771000000000005,
+        "duration_s": 1002.3705319000001,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      }
+    ]
   },
   {
+    "run_name": "eval_dev_tier_baseline_20260420_225555_3a373b",
+    "total_tasks": 63,
+    "passed": 6,
+    "failed": 57,
+    "average_reward": 0.0952,
+    "pass_at_1": 0.0952,
+    "pass_at_1_pct": "9.5%",
+    "total_cost_usd": 0.2734,
+    "avg_cost_per_task_usd": 0.0043,
+    "per_task": [
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015946,
+        "user_cost": 9.100000000000002e-05,
+        "duration_s": 17.63849279999704,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159824,
+        "user_cost": 0.00010822000000000002,
+        "duration_s": 19.223682899995765,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00161714,
+        "user_cost": 0.00012516,
+        "duration_s": 20.36032790000172,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0025592,
+        "user_cost": 0.00030618,
+        "duration_s": 51.950691999998526,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158368,
+        "user_cost": 9.786000000000002e-05,
+        "duration_s": 16.804852199995366,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015821400000000001,
+        "user_cost": 7.63e-05,
+        "duration_s": 14.48116409999784,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032691400000000002,
+        "user_cost": 0.0002534,
+        "duration_s": 34.741954799996165,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0038876600000000002,
+        "user_cost": 7.728e-05,
+        "duration_s": 27.088577599999553,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006147680000000001,
+        "user_cost": 0.00233744,
+        "duration_s": 470.51621299999533,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0016027200000000002,
+        "user_cost": 8.204000000000001e-05,
+        "duration_s": 20.07577339999989,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00300748,
+        "user_cost": 0.00055944,
+        "duration_s": 74.41609140000219,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016063600000000003,
+        "user_cost": 8.274000000000001e-05,
+        "duration_s": 19.44838940000045,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015892800000000002,
+        "user_cost": 8.064e-05,
+        "duration_s": 18.491559699999925,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016023,
+        "user_cost": 9.044000000000001e-05,
+        "duration_s": 20.212429999999586,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.015382640000000001,
+        "user_cost": 0.004750900000000001,
+        "duration_s": 522.7316978999952,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015874600000000002,
+        "user_cost": 9.226e-05,
+        "duration_s": 19.67806230000133,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016513,
+        "user_cost": 0.00018606000000000002,
+        "duration_s": 22.714007599999604,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.004095140000000001,
+        "user_cost": 0.0004102,
+        "duration_s": 47.82624560000113,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016294600000000001,
+        "user_cost": 0.00017402000000000002,
+        "duration_s": 22.43701699999656,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0033945800000000003,
+        "user_cost": 0.0003514000000000001,
+        "duration_s": 44.66043279999576,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160818,
+        "user_cost": 0.00016842000000000002,
+        "duration_s": 16.835854400000244,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00419244,
+        "user_cost": 0.00038234000000000006,
+        "duration_s": 41.97932650000439,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0007894600000000001,
+        "user_cost": 0.00012936,
+        "duration_s": 20.084666700000525,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0007889,
+        "user_cost": 8.176e-05,
+        "duration_s": 10.747239700001955,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032655,
+        "user_cost": 0.00030212,
+        "duration_s": 36.31527089999872,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015561000000000001,
+        "user_cost": 0.00015162,
+        "duration_s": 12.479648599997745,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00456722,
+        "user_cost": 0.00097832,
+        "duration_s": 74.31031470000016,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.01694714,
+        "user_cost": 0.00949984,
+        "duration_s": 979.5114083000008,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.027765920000000006,
+        "user_cost": 0.0143626,
+        "duration_s": 985.2043554999982,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00171052,
+        "user_cost": 0.0003241,
+        "duration_s": 28.293819899998198,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016451400000000002,
+        "user_cost": 0.00028868000000000003,
+        "duration_s": 22.513674800000445,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0008212400000000001,
+        "user_cost": 0.00013272000000000002,
+        "duration_s": 13.724883199996839,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00155302,
+        "user_cost": 0.0001799,
+        "duration_s": 13.549089600004663,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016335200000000003,
+        "user_cost": 0.00023464000000000002,
+        "duration_s": 22.649585600003775,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00238616,
+        "user_cost": 0.00027790000000000003,
+        "duration_s": 21.919082299995353,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016126600000000001,
+        "user_cost": 0.00024486,
+        "duration_s": 18.74285680000321,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00242396,
+        "user_cost": 0.00029008,
+        "duration_s": 25.85604240000248,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015777999999999999,
+        "user_cost": 0.00023226000000000003,
+        "duration_s": 14.782515999999305,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00233422,
+        "user_cost": 0.00017822,
+        "duration_s": 18.900924900000973,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0033273800000000004,
+        "user_cost": 0.0004781,
+        "duration_s": 45.901977599998645,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0024106600000000002,
+        "user_cost": 0.00030282000000000003,
+        "duration_s": 32.08780970000225,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00521402,
+        "user_cost": 0.0009343600000000001,
+        "duration_s": 90.97691540000233,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00156464,
+        "user_cost": 0.00012488,
+        "duration_s": 27.671807700004138,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024490200000000005,
+        "user_cost": 0.00030744,
+        "duration_s": 33.11413529999845,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00783006,
+        "user_cost": 0.0027302800000000003,
+        "duration_s": 498.60724669999763,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00327978,
+        "user_cost": 0.00049588,
+        "duration_s": 35.80675070000143,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005818960000000001,
+        "user_cost": 0.0006384000000000001,
+        "duration_s": 56.32803810000041,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160468,
+        "user_cost": 0.00018424,
+        "duration_s": 17.143992099998286,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006109880000000001,
+        "user_cost": 0.0011810400000000002,
+        "duration_s": 82.32983319999767,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0035399000000000003,
+        "user_cost": 0.00077574,
+        "duration_s": 66.54546990000381,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016269400000000001,
+        "user_cost": 0.00021112,
+        "duration_s": 23.460098999996262,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0034354600000000004,
+        "user_cost": 0.0006286,
+        "duration_s": 50.47907359999954,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016584400000000002,
+        "user_cost": 0.00017108,
+        "duration_s": 29.285310300001584,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0016448600000000002,
+        "user_cost": 0.00024304,
+        "duration_s": 21.62309760000062,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160482,
+        "user_cost": 0.00010416,
+        "duration_s": 16.272488700000395,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015785,
+        "user_cost": 0.00013636,
+        "duration_s": 29.117005100000824,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024451000000000004,
+        "user_cost": 0.0003164,
+        "duration_s": 42.35013210000034,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160342,
+        "user_cost": 0.00016086,
+        "duration_s": 26.46608400000696,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015965600000000003,
+        "user_cost": 9.212e-05,
+        "duration_s": 42.00326230000064,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0061537,
+        "user_cost": 0.0024299800000000004,
+        "duration_s": 475.80975609999587,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00153902,
+        "user_cost": 5.068e-05,
+        "duration_s": 17.430929000001925,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006160840000000001,
+        "user_cost": 0.0024213000000000004,
+        "duration_s": 486.72042109999893,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00445242,
+        "user_cost": 0.0007390600000000002,
+        "duration_s": 233.61445470000035,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      }
+    ]
+  },
+  {
+    "run_name": "eval_dev_tier_baseline_20260421_112845_81edfe",
+    "total_tasks": 51,
+    "passed": 5,
+    "failed": 46,
+    "average_reward": 0.098,
+    "pass_at_1": 0.098,
+    "pass_at_1_pct": "9.8%",
+    "total_cost_usd": 0.1623,
+    "avg_cost_per_task_usd": 0.0032,
+    "per_task": [
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00079072,
+        "user_cost": 0.00016352,
+        "duration_s": 14.946344700001646,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0007798000000000001,
+        "user_cost": 9.268000000000001e-05,
+        "duration_s": 12.497476000004099,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023709,
+        "user_cost": 0.00029498,
+        "duration_s": 34.52492520000669,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159194,
+        "user_cost": 0.00024234000000000001,
+        "duration_s": 37.604006099994876,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.001582,
+        "user_cost": 0.00016450000000000001,
+        "duration_s": 14.979829299991252,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0014436800000000001,
+        "user_cost": 0.00020454000000000002,
+        "duration_s": 17.63685140000598,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00418684,
+        "user_cost": 0.00043932,
+        "duration_s": 41.83903049999208,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00404362,
+        "user_cost": 0.00044520000000000003,
+        "duration_s": 43.80782750000071,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160216,
+        "user_cost": 0.00020972,
+        "duration_s": 16.94964710000204,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00156254,
+        "user_cost": 0.00012026000000000002,
+        "duration_s": 12.980931800004328,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00479612,
+        "user_cost": 0.00036708,
+        "duration_s": 35.29899359999399,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00150178,
+        "user_cost": 0.00016968000000000002,
+        "duration_s": 15.67671960000007,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00815766,
+        "user_cost": 0.00036372,
+        "duration_s": 54.120419500002754,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024416000000000004,
+        "user_cost": 0.0003269000000000001,
+        "duration_s": 33.2912204000022,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00156114,
+        "user_cost": 7.49e-05,
+        "duration_s": 11.941914800001541,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00313992,
+        "user_cost": 0.00017976,
+        "duration_s": 23.541901799995685,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024456599999999997,
+        "user_cost": 0.00038934000000000006,
+        "duration_s": 25.10465559999284,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016283400000000003,
+        "user_cost": 0.00019278,
+        "duration_s": 19.101982599997427,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00415422,
+        "user_cost": 0.00058562,
+        "duration_s": 40.01287669999874,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.004190760000000001,
+        "user_cost": 0.00051884,
+        "duration_s": 41.95263010000053,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00420224,
+        "user_cost": 0.00055244,
+        "duration_s": 45.7621691999957,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160398,
+        "user_cost": 0.00020229999999999998,
+        "duration_s": 17.44772350000858,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00242634,
+        "user_cost": 0.00032312000000000004,
+        "duration_s": 22.93519990000641,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024857000000000004,
+        "user_cost": 0.00033474000000000004,
+        "duration_s": 35.39731879999454,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006151740000000001,
+        "user_cost": 0.00015764000000000002,
+        "duration_s": 476.0974881000002,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015772400000000002,
+        "user_cost": 0.00021224000000000001,
+        "duration_s": 15.126786299995729,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00247954,
+        "user_cost": 0.00046452000000000006,
+        "duration_s": 29.194582099997206,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00359898,
+        "user_cost": 0.0007382199999999999,
+        "duration_s": 56.85112690000096,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006156080000000001,
+        "user_cost": 8.428e-05,
+        "duration_s": 481.578877500011,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016196600000000002,
+        "user_cost": 0.00021588,
+        "duration_s": 19.82873140000447,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016203600000000002,
+        "user_cost": 0.00014952,
+        "duration_s": 19.758227300000726,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015891400000000002,
+        "user_cost": 0.00013314000000000002,
+        "duration_s": 17.091957800003,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015772400000000002,
+        "user_cost": 0.00022568000000000002,
+        "duration_s": 16.127224899988505,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0070792400000000005,
+        "user_cost": 0.00083916,
+        "duration_s": 90.13211109999975,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0042385,
+        "user_cost": 0.00059374,
+        "duration_s": 58.99552219999896,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00236768,
+        "user_cost": 0.00014504,
+        "duration_s": 26.583566199988127,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024600800000000003,
+        "user_cost": 0.00024668,
+        "duration_s": 38.64347379999526,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157822,
+        "user_cost": 0.00011410000000000001,
+        "duration_s": 19.090944700001273,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00535178,
+        "user_cost": 3.6400000000000004e-05,
+        "duration_s": 464.42939950000437,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00469588,
+        "user_cost": 0.00011424000000000002,
+        "duration_s": 32.67262499999197,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015755600000000002,
+        "user_cost": 0.00012838,
+        "duration_s": 22.853844999990542,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00617484,
+        "user_cost": 9.786000000000002e-05,
+        "duration_s": 461.76616040000226,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0048308399999999994,
+        "user_cost": 0.00043694000000000003,
+        "duration_s": 50.36121310001181,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015822800000000001,
+        "user_cost": 0.00010122000000000001,
+        "duration_s": 16.99867540001287,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016168600000000003,
+        "user_cost": 0.00013258,
+        "duration_s": 20.7389017999958,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159642,
+        "user_cost": 0.00015484,
+        "duration_s": 16.185899299991434,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015722000000000002,
+        "user_cost": 5.936e-05,
+        "duration_s": 14.345734700007597,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0034921600000000002,
+        "user_cost": 0.00061236,
+        "duration_s": 67.25462669999979,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024145800000000004,
+        "user_cost": 0.00022274000000000003,
+        "duration_s": 23.342676800006302,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00236642,
+        "user_cost": 0.00016730000000000003,
+        "duration_s": 22.022751799988328,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00247422,
+        "user_cost": 0.00024794000000000004,
+        "duration_s": 33.205266700009815,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      }
+    ]
+  },
+  {
+    "run_name": "eval_dev_tier_baseline_20260421_125341_040f2f",
+    "total_tasks": 30,
+    "passed": 0,
+    "failed": 30,
+    "average_reward": 0.0,
+    "pass_at_1": 0.0,
+    "pass_at_1_pct": "0.0%",
+    "total_cost_usd": 0.1028,
+    "avg_cost_per_task_usd": 0.0034,
+    "per_task": [
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016398200000000002,
+        "user_cost": 0.00028378,
+        "duration_s": 24.066824900000938,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015898400000000001,
+        "user_cost": 0.00020636,
+        "duration_s": 21.067117699989467,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160202,
+        "user_cost": 0.00032144000000000004,
+        "duration_s": 26.763026899992838,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023620800000000003,
+        "user_cost": 0.00023646,
+        "duration_s": 26.57842750000418,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015841000000000002,
+        "user_cost": 0.00018844,
+        "duration_s": 21.24039900000207,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00161812,
+        "user_cost": 0.00014167999999999999,
+        "duration_s": 24.122273500004667,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0008008000000000001,
+        "user_cost": 9.506e-05,
+        "duration_s": 13.05138249999436,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015366400000000001,
+        "user_cost": 3.752000000000001e-05,
+        "duration_s": 12.969112600010703,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00408786,
+        "user_cost": 0.00053774,
+        "duration_s": 44.551055000003544,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157584,
+        "user_cost": 0.00021140000000000004,
+        "duration_s": 15.713586900004884,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015988,
+        "user_cost": 0.0003437,
+        "duration_s": 18.57453009999881,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024228400000000003,
+        "user_cost": 0.00027552,
+        "duration_s": 30.50368249999883,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00415072,
+        "user_cost": 0.00060886,
+        "duration_s": 52.75140169999213,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016839200000000002,
+        "user_cost": 0.00028826000000000004,
+        "duration_s": 30.140127799997572,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00720622,
+        "user_cost": 0.00119924,
+        "duration_s": 105.963142099994,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015995000000000002,
+        "user_cost": 0.00015316,
+        "duration_s": 18.460619300007238,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024693200000000005,
+        "user_cost": 0.00030898,
+        "duration_s": 31.10363870000583,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016527,
+        "user_cost": 0.00029974,
+        "duration_s": 30.68270209999173,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015808800000000002,
+        "user_cost": 0.00015442,
+        "duration_s": 22.684788300000946,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015968400000000002,
+        "user_cost": 0.00011760000000000001,
+        "duration_s": 19.144318299993756,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006543740000000001,
+        "user_cost": 0.0008412599999999999,
+        "duration_s": 110.56573249999201,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00408044,
+        "user_cost": 0.0004293800000000001,
+        "duration_s": 61.228507899999386,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023947,
+        "user_cost": 0.00022876,
+        "duration_s": 26.031420200000866,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016294600000000001,
+        "user_cost": 0.00025326,
+        "duration_s": 23.986031199994613,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157346,
+        "user_cost": 0.00020118000000000002,
+        "duration_s": 17.26689400000032,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.012661320000000002,
+        "user_cost": 0.0025466,
+        "duration_s": 200.46957380000094,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0033615400000000005,
+        "user_cost": 0.00042280000000000003,
+        "duration_s": 41.45101970000542,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00352492,
+        "user_cost": 0.0004459,
+        "duration_s": 72.32808190000651,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0048279,
+        "user_cost": 0.0010448200000000001,
+        "duration_s": 114.08390720000898,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0053571,
+        "user_cost": 8.708000000000001e-05,
+        "duration_s": 476.68593669999973,
+        "reward_breakdown": null
+      }
+    ]
+  },
+  {
+    "run_name": "eval_dev_tier_baseline_20260421_135541_dc1abd",
+    "total_tasks": 150,
+    "passed": 14,
+    "failed": 136,
+    "average_reward": 0.0933,
     "pass_at_1": 0.0933,
-    "ci_95": 0.0117,
-    "ci_95_range": [
-      0.0816,
-      0.105
-    ],
-    "per_trial_pass_at_1": [
-      0.1,
-      0.1,
-      0.1,
-      0.0667,
-      0.1
-    ],
-    "n_simulations": 150,
-    "cost_per_run": 0.003252,
-    "total_cost": 0.4878,
-    "task_latency_p50_s": 31.26,
-    "task_latency_p95_s": 488.85,
-    "infrastructure_errors": 0,
-    "entry_type": "reproduction_check",
-    "timestamp": "2026-04-21T15:34:51.393117",
-    "model": "openrouter/deepseek/deepseek-chat-v3-0324",
-    "domain": "retail",
-    "n_tasks": 30,
-    "n_trials": 5,
-    "temperature": 0.0,
-    "wall_clock_s": 3408.59,
-    "run_id": "eval_reproduction_check_20260421_143802_3a6ac5",
-    "results_path": "tau2-bench\\data\\simulations\\eval_reproduction_check_20260421_143802_3a6ac5\\results.json",
-    "expected_simulations": 150,
-    "completed_simulations": 150,
-    "process_returncode": 0,
-    "run_status": "complete"
+    "pass_at_1_pct": "9.3%",
+    "total_cost_usd": 0.4458,
+    "avg_cost_per_task_usd": 0.003,
+    "per_task": [
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0,
+        "user_cost": 3.01e-05,
+        "duration_s": 8.02630300000601,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0007667800000000001,
+        "user_cost": 9.618e-05,
+        "duration_s": 5.268009499995969,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158858,
+        "user_cost": 0.00013496000000000002,
+        "duration_s": 27.505076999994344,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157094,
+        "user_cost": 0.00012838000000000001,
+        "duration_s": 18.125083200007793,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016086000000000002,
+        "user_cost": 0.0001078,
+        "duration_s": 24.463006600009976,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015817200000000002,
+        "user_cost": 0.00011830000000000002,
+        "duration_s": 26.1252661000035,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015701,
+        "user_cost": 7.630000000000001e-05,
+        "duration_s": 29.337368300009985,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0034203400000000004,
+        "user_cost": 0.00036204000000000005,
+        "duration_s": 100.2129694000032,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00326382,
+        "user_cost": 0.00026516,
+        "duration_s": 59.12291020000703,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005485200000000001,
+        "user_cost": 0.0011634000000000002,
+        "duration_s": 162.11421030000201,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005714240000000001,
+        "user_cost": 0.0013993,
+        "duration_s": 177.95866099999694,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00158354,
+        "user_cost": 8.302e-05,
+        "duration_s": 20.51593789999606,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157682,
+        "user_cost": 0.00010416,
+        "duration_s": 31.4170146999968,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0040374600000000005,
+        "user_cost": 0.00013818,
+        "duration_s": 61.616927700000815,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032086600000000003,
+        "user_cost": 0.00014826000000000002,
+        "duration_s": 65.94350759999361,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016126600000000001,
+        "user_cost": 0.00012082000000000003,
+        "duration_s": 29.613734799990198,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0033132400000000003,
+        "user_cost": 0.00031486,
+        "duration_s": 56.91278009999951,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016251200000000003,
+        "user_cost": 0.00011438,
+        "duration_s": 37.43809729999339,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015715,
+        "user_cost": 0.00010542,
+        "duration_s": 126.80042509999475,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00244062,
+        "user_cost": 0.00036596,
+        "duration_s": 35.25775240000803,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032726400000000003,
+        "user_cost": 0.00038626000000000003,
+        "duration_s": 62.008113700008835,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016352000000000003,
+        "user_cost": 0.00019348000000000002,
+        "duration_s": 50.748009300004924,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016485000000000002,
+        "user_cost": 0.00027622,
+        "duration_s": 28.734993400008534,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00160398,
+        "user_cost": 0.00011844,
+        "duration_s": 29.32797310000751,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015778000000000003,
+        "user_cost": 8.960000000000001e-05,
+        "duration_s": 20.302892099993187,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0072245600000000005,
+        "user_cost": 0.00122626,
+        "duration_s": 121.30358640001214,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024158400000000003,
+        "user_cost": 0.00022064,
+        "duration_s": 29.37785079999594,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015983800000000002,
+        "user_cost": 0.00011018,
+        "duration_s": 19.231610199989518,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158354,
+        "user_cost": 0.00015078,
+        "duration_s": 22.01783319999231,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0061383,
+        "user_cost": 5.95e-05,
+        "duration_s": 512.5959385000024,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0,
+        "user_cost": 2.59e-05,
+        "duration_s": 5.855023800002527,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015834,
+        "user_cost": 9.183999999999999e-05,
+        "duration_s": 330.22117610000714,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015779400000000003,
+        "user_cost": 9.450000000000002e-05,
+        "duration_s": 19.447159499992267,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158676,
+        "user_cost": 0.00014238,
+        "duration_s": 23.814876199990977,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015737400000000001,
+        "user_cost": 0.00013426,
+        "duration_s": 27.740627499995753,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157024,
+        "user_cost": 7.644e-05,
+        "duration_s": 17.306806900000083,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015671600000000002,
+        "user_cost": 0.00010808000000000001,
+        "duration_s": 22.80344139999943,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015808800000000002,
+        "user_cost": 0.00018578000000000003,
+        "duration_s": 27.82894779999333,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0039088,
+        "user_cost": 0.00025732000000000006,
+        "duration_s": 49.802674000005936,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00471898,
+        "user_cost": 0.0003115,
+        "duration_s": 46.515167200006545,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00615944,
+        "user_cost": 7.280000000000001e-05,
+        "duration_s": 488.7658725000074,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005352480000000001,
+        "user_cost": 3.1920000000000006e-05,
+        "duration_s": 480.5419503000012,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0027536600000000002,
+        "user_cost": 0.0004088,
+        "duration_s": 58.320274399986374,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159614,
+        "user_cost": 0.00012614,
+        "duration_s": 27.21004650001123,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0070926800000000005,
+        "user_cost": 0.00074564,
+        "duration_s": 108.53118049999466,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00233758,
+        "user_cost": 8.007999999999999e-05,
+        "duration_s": 29.346977599998354,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.004163600000000001,
+        "user_cost": 0.0003801,
+        "duration_s": 96.2556687000033,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0044798600000000004,
+        "user_cost": 0.00074872,
+        "duration_s": 115.56492289999733,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032956000000000005,
+        "user_cost": 0.00045682000000000003,
+        "duration_s": 60.108758000002126,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032033400000000003,
+        "user_cost": 0.00019894000000000004,
+        "duration_s": 36.870439699996496,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.004298140000000001,
+        "user_cost": 0.0007203000000000001,
+        "duration_s": 79.18770779999613,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159026,
+        "user_cost": 0.0001694,
+        "duration_s": 21.510628899995936,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00159474,
+        "user_cost": 0.00015680000000000002,
+        "duration_s": 22.05297590000555,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016051000000000001,
+        "user_cost": 0.00011284000000000001,
+        "duration_s": 27.555018400002155,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00161756,
+        "user_cost": 0.00014098000000000002,
+        "duration_s": 24.065546699988772,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159712,
+        "user_cost": 0.00013622000000000002,
+        "duration_s": 21.53386640000099,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00078246,
+        "user_cost": 0.00011424000000000002,
+        "duration_s": 11.283913499995833,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00246722,
+        "user_cost": 0.00035224000000000003,
+        "duration_s": 36.3400549999933,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024612,
+        "user_cost": 0.00021238000000000002,
+        "duration_s": 35.986325599995325,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0008129800000000001,
+        "user_cost": 9.449999999999999e-05,
+        "duration_s": 12.494930300003034,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00237944,
+        "user_cost": 0.00019488000000000003,
+        "duration_s": 28.0735382999992,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00078582,
+        "user_cost": 8.05e-05,
+        "duration_s": 11.873656800002209,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00163072,
+        "user_cost": 0.00010626,
+        "duration_s": 28.867974399996456,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00409332,
+        "user_cost": 0.00038276,
+        "duration_s": 48.3890231000114,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024784200000000003,
+        "user_cost": 0.00024934,
+        "duration_s": 36.36297899999772,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157682,
+        "user_cost": 0.00012054000000000001,
+        "duration_s": 21.49159900000086,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00156422,
+        "user_cost": 0.00015386000000000002,
+        "duration_s": 24.926609599991934,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00616966,
+        "user_cost": 7.882000000000001e-05,
+        "duration_s": 481.4417276000022,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158326,
+        "user_cost": 0.00014546000000000003,
+        "duration_s": 28.04787999999826,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00615524,
+        "user_cost": 7.154000000000001e-05,
+        "duration_s": 487.7307290000026,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00310842,
+        "user_cost": 0.00013188000000000002,
+        "duration_s": 31.928606400004355,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015761200000000003,
+        "user_cost": 7.560000000000001e-05,
+        "duration_s": 16.864751300003263,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00416332,
+        "user_cost": 0.00037240000000000005,
+        "duration_s": 56.78853239999444,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00156128,
+        "user_cost": 0.00010654,
+        "duration_s": 17.772250399997574,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00156674,
+        "user_cost": 9.198e-05,
+        "duration_s": 18.535796199998003,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00324996,
+        "user_cost": 0.00025214,
+        "duration_s": 35.331458000000566,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.007932960000000001,
+        "user_cost": 0.0008685600000000001,
+        "duration_s": 107.43306679998932,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0033485200000000007,
+        "user_cost": 0.00030534000000000003,
+        "duration_s": 44.88804630000959,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00393162,
+        "user_cost": 0.0003213,
+        "duration_s": 36.90345260000322,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00441448,
+        "user_cost": 0.0008993600000000001,
+        "duration_s": 84.1206116000103,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00168084,
+        "user_cost": 0.00022176000000000002,
+        "duration_s": 30.557186500009266,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.003941,
+        "user_cost": 0.00024010000000000004,
+        "duration_s": 33.98288090000278,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00080024,
+        "user_cost": 8.862e-05,
+        "duration_s": 11.840161499989335,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016245600000000002,
+        "user_cost": 0.00012166,
+        "duration_s": 28.023642500003916,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00242354,
+        "user_cost": 0.00023324,
+        "duration_s": 28.504173200009973,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016321200000000001,
+        "user_cost": 0.0002793,
+        "duration_s": 24.479182499999297,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00329616,
+        "user_cost": 0.00048202,
+        "duration_s": 40.54529999999795,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00162232,
+        "user_cost": 0.00029652000000000004,
+        "duration_s": 21.946842099991045,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00551628,
+        "user_cost": 0.00131278,
+        "duration_s": 92.54096959999879,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00165592,
+        "user_cost": 0.00026376000000000004,
+        "duration_s": 25.1155093999987,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159362,
+        "user_cost": 0.00017178,
+        "duration_s": 16.708686199999647,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0007662200000000001,
+        "user_cost": 5.53e-05,
+        "duration_s": 8.844659199996386,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015736,
+        "user_cost": 0.00016786000000000004,
+        "duration_s": 17.640398000003188,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015722,
+        "user_cost": 9.954e-05,
+        "duration_s": 17.152695400000084,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.004663820000000001,
+        "user_cost": 0.00022904000000000002,
+        "duration_s": 34.07119239999156,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015894200000000002,
+        "user_cost": 0.00015596000000000002,
+        "duration_s": 17.458178499990026,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00616266,
+        "user_cost": 8.386e-05,
+        "duration_s": 486.92699139998876,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0033300400000000003,
+        "user_cost": 0.0003955,
+        "duration_s": 44.101001000002725,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0078155,
+        "user_cost": 0.00019068,
+        "duration_s": 481.90823469999305,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0032320400000000003,
+        "user_cost": 0.00035532,
+        "duration_s": 37.60907679999946,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00326032,
+        "user_cost": 0.00037436,
+        "duration_s": 39.92301139999472,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00637952,
+        "user_cost": 0.0012537,
+        "duration_s": 105.85680809999758,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00156842,
+        "user_cost": 9.408000000000001e-05,
+        "duration_s": 21.584654199992656,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015687000000000001,
+        "user_cost": 0.00016128000000000003,
+        "duration_s": 17.526912599991192,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024045000000000004,
+        "user_cost": 0.00017864,
+        "duration_s": 27.23095930001,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0030772000000000004,
+        "user_cost": 0.00023268,
+        "duration_s": 58.45899600000121,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.002422,
+        "user_cost": 0.00014588,
+        "duration_s": 28.514498799995636,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015824200000000002,
+        "user_cost": 0.00011242000000000001,
+        "duration_s": 19.919431499991333,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00259448,
+        "user_cost": 0.00031332,
+        "duration_s": 45.49607619999733,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015097600000000002,
+        "user_cost": 0.00016842000000000002,
+        "duration_s": 22.704879099997925,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00246778,
+        "user_cost": 0.0003290000000000001,
+        "duration_s": 41.244785199989565,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015978200000000002,
+        "user_cost": 0.00012026000000000002,
+        "duration_s": 30.54714399999648,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0033481000000000006,
+        "user_cost": 0.00040404000000000004,
+        "duration_s": 56.35461579999537,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160538,
+        "user_cost": 0.0001575,
+        "duration_s": 29.430006399998092,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00152516,
+        "user_cost": 0.00014308000000000002,
+        "duration_s": 28.987298799998825,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023884,
+        "user_cost": 0.00011802000000000001,
+        "duration_s": 29.272865499995532,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024234,
+        "user_cost": 0.00023548000000000002,
+        "duration_s": 33.618379000006826,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015822800000000001,
+        "user_cost": 0.00013566,
+        "duration_s": 23.53911070000322,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00391356,
+        "user_cost": 0.00011844000000000001,
+        "duration_s": 39.83124349999707,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0007950600000000001,
+        "user_cost": 7.364e-05,
+        "duration_s": 15.630658800000674,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016185400000000001,
+        "user_cost": 0.00019040000000000002,
+        "duration_s": 31.538928000009037,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0007858200000000001,
+        "user_cost": 8.680000000000001e-05,
+        "duration_s": 15.608546200004639,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158368,
+        "user_cost": 0.00012418000000000002,
+        "duration_s": 21.42346209999232,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00153986,
+        "user_cost": 7.994e-05,
+        "duration_s": 15.860374399999273,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015827000000000003,
+        "user_cost": 0.00010766000000000001,
+        "duration_s": 20.194190800000797,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023700600000000002,
+        "user_cost": 0.00011522000000000001,
+        "duration_s": 27.661103799997363,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0033047000000000003,
+        "user_cost": 0.000343,
+        "duration_s": 43.734689699995215,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023735600000000003,
+        "user_cost": 0.00017654000000000001,
+        "duration_s": 27.64250610000454,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00233758,
+        "user_cost": 0.0001218,
+        "duration_s": 26.042073799995705,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00238014,
+        "user_cost": 0.00014784000000000002,
+        "duration_s": 29.734900099996594,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00160048,
+        "user_cost": 6.356000000000001e-05,
+        "duration_s": 18.42497910000384,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016135,
+        "user_cost": 0.00010402000000000001,
+        "duration_s": 21.29884750000201,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00459354,
+        "user_cost": 9.702e-05,
+        "duration_s": 37.1599040000001,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015653400000000001,
+        "user_cost": 9.758000000000001e-05,
+        "duration_s": 23.36982419999549,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157192,
+        "user_cost": 4.158e-05,
+        "duration_s": 13.945367099993746,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00400904,
+        "user_cost": 0.00039984000000000005,
+        "duration_s": 37.73135950000142,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00584444,
+        "user_cost": 0.0007238,
+        "duration_s": 67.8569056999986,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0041741,
+        "user_cost": 0.00046242000000000006,
+        "duration_s": 48.549249499992584,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00162092,
+        "user_cost": 0.00023926000000000004,
+        "duration_s": 19.4682296999963,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032529000000000004,
+        "user_cost": 0.00044590000000000005,
+        "duration_s": 32.50627739999618,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016646,
+        "user_cost": 0.00032116,
+        "duration_s": 23.573393599988776,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0056495600000000005,
+        "user_cost": 0.00048174000000000003,
+        "duration_s": 50.319700699998066,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0008379,
+        "user_cost": 0.00015092,
+        "duration_s": 14.71180390000518,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015996400000000003,
+        "user_cost": 0.00022764,
+        "duration_s": 19.73704779999389,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0069134800000000005,
+        "user_cost": 0.0014961800000000002,
+        "duration_s": 117.35144579999906,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00322504,
+        "user_cost": 0.00038948,
+        "duration_s": 32.00373499999114,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015708000000000002,
+        "user_cost": 0.0002142,
+        "duration_s": 14.821322599993437,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00242942,
+        "user_cost": 0.00038318,
+        "duration_s": 28.525589800003218,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00417326,
+        "user_cost": 0.00059892,
+        "duration_s": 78.15205059999425,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006137740000000001,
+        "user_cost": 4.354000000000001e-05,
+        "duration_s": 486.28973390000465,
+        "reward_breakdown": null
+      }
+    ]
+  },
+  {
+    "run_name": "eval_reproduction_check_20260421_130547_77d2fc",
+    "total_tasks": 30,
+    "passed": 0,
+    "failed": 30,
+    "average_reward": 0.0,
+    "pass_at_1": 0.0,
+    "pass_at_1_pct": "0.0%",
+    "total_cost_usd": 0.0761,
+    "avg_cost_per_task_usd": 0.0025,
+    "per_task": [
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00079646,
+        "user_cost": 0.00016226,
+        "duration_s": 16.87698439999076,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015993600000000002,
+        "user_cost": 0.00029946,
+        "duration_s": 24.683110700003454,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016112600000000002,
+        "user_cost": 0.00021644000000000004,
+        "duration_s": 25.141922699986026,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0007810600000000001,
+        "user_cost": 0.00015918,
+        "duration_s": 11.19664080000075,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024178,
+        "user_cost": 0.0003945200000000001,
+        "duration_s": 29.99215410000761,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00245588,
+        "user_cost": 0.00043358000000000003,
+        "duration_s": 30.399910099993576,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005241180000000001,
+        "user_cost": 0.0009454200000000001,
+        "duration_s": 74.78416789999756,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00164598,
+        "user_cost": 0.00022806,
+        "duration_s": 25.317919200009783,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00238518,
+        "user_cost": 0.00020916,
+        "duration_s": 25.442333300001337,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00236278,
+        "user_cost": 0.00018368000000000003,
+        "duration_s": 22.64317939999455,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159964,
+        "user_cost": 0.00011662,
+        "duration_s": 21.628295699993032,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0007974400000000001,
+        "user_cost": 0.00012572,
+        "duration_s": 12.530577099998482,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00326354,
+        "user_cost": 0.00037604,
+        "duration_s": 35.83951990000787,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00236642,
+        "user_cost": 0.00021504,
+        "duration_s": 25.208809899995686,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015673000000000002,
+        "user_cost": 0.00013342000000000003,
+        "duration_s": 16.330220699994243,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00329868,
+        "user_cost": 0.00036498,
+        "duration_s": 39.07145980000496,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00253624,
+        "user_cost": 0.00045052,
+        "duration_s": 43.08209130000614,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015927800000000002,
+        "user_cost": 0.00016604000000000003,
+        "duration_s": 17.073866199993063,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00238476,
+        "user_cost": 0.00021406000000000002,
+        "duration_s": 34.489388999994844,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016772000000000002,
+        "user_cost": 0.00011284000000000001,
+        "duration_s": 234.55716609999945,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024456600000000005,
+        "user_cost": 0.00036344000000000003,
+        "duration_s": 184.8026605999912,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015772400000000002,
+        "user_cost": 0.00020216000000000003,
+        "duration_s": 17.521293500001775,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158368,
+        "user_cost": 0.00011256,
+        "duration_s": 28.69615150000027,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023874200000000003,
+        "user_cost": 0.00020187999999999998,
+        "duration_s": 32.606909399997676,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015808800000000002,
+        "user_cost": 0.00014714,
+        "duration_s": 16.34365359999356,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00164332,
+        "user_cost": 0.00016716000000000002,
+        "duration_s": 25.339948300010292,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016161600000000002,
+        "user_cost": 0.0001778,
+        "duration_s": 19.349704799999017,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016179800000000002,
+        "user_cost": 9.674000000000001e-05,
+        "duration_s": 21.099650599993765,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00510832,
+        "user_cost": 0.00081382,
+        "duration_s": 84.03893360000802,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00550242,
+        "user_cost": 0.00086982,
+        "duration_s": 118.51167439999699,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      }
+    ]
+  },
+  {
+    "run_name": "eval_reproduction_check_20260421_143802_3a6ac5",
+    "total_tasks": 150,
+    "passed": 14,
+    "failed": 136,
+    "average_reward": 0.0933,
+    "pass_at_1": 0.0933,
+    "pass_at_1_pct": "9.3%",
+    "total_cost_usd": 0.4878,
+    "avg_cost_per_task_usd": 0.0033,
+    "per_task": [
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016097200000000002,
+        "user_cost": 0.00025438,
+        "duration_s": 21.099031699995976,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00241962,
+        "user_cost": 0.00019124000000000002,
+        "duration_s": 29.100334800008568,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00242354,
+        "user_cost": 0.00023100000000000003,
+        "duration_s": 28.125126400002046,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015881600000000001,
+        "user_cost": 0.00021140000000000004,
+        "duration_s": 17.807070800001384,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00156814,
+        "user_cost": 0.00015624,
+        "duration_s": 15.839875200006645,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00327544,
+        "user_cost": 0.00045010000000000004,
+        "duration_s": 36.58879610001168,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158816,
+        "user_cost": 0.00019796,
+        "duration_s": 18.246512400000938,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0037566200000000004,
+        "user_cost": 0.00034622,
+        "duration_s": 31.263416400004644,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.009005640000000002,
+        "user_cost": 0.0009203600000000001,
+        "duration_s": 71.72451449999062,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00154476,
+        "user_cost": 0.0002695,
+        "duration_s": 29.28319710001233,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00412692,
+        "user_cost": 0.00058954,
+        "duration_s": 45.25262070000463,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015114400000000002,
+        "user_cost": 0.00012838000000000001,
+        "duration_s": 22.0039500999992,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00156506,
+        "user_cost": 0.00014714000000000003,
+        "duration_s": 15.31351240001095,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015897,
+        "user_cost": 0.00017206,
+        "duration_s": 16.575251500005834,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015631,
+        "user_cost": 0.00017920000000000002,
+        "duration_s": 14.67625190000399,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015898400000000001,
+        "user_cost": 0.00013496,
+        "duration_s": 18.271367499997723,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015400000000000001,
+        "user_cost": 0.00024332,
+        "duration_s": 24.37677210000402,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0054817,
+        "user_cost": 0.0012376000000000002,
+        "duration_s": 86.97966080000333,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005355980000000001,
+        "user_cost": 4.284e-05,
+        "duration_s": 491.07659050000075,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006146840000000001,
+        "user_cost": 0.00012278000000000001,
+        "duration_s": 471.486321400007,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00324394,
+        "user_cost": 0.00036764,
+        "duration_s": 33.578274400002556,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015799000000000002,
+        "user_cost": 0.00023814000000000005,
+        "duration_s": 15.185704299990903,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0034315400000000003,
+        "user_cost": 0.000322,
+        "duration_s": 49.69082459999481,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00699986,
+        "user_cost": 0.00022568,
+        "duration_s": 494.0202281999955,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00159166,
+        "user_cost": 0.00021084,
+        "duration_s": 16.32648540000082,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160888,
+        "user_cost": 0.00021896000000000003,
+        "duration_s": 19.700047699996503,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00245378,
+        "user_cost": 0.00031948,
+        "duration_s": 27.66156680000131,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015450400000000001,
+        "user_cost": 8.568e-05,
+        "duration_s": 13.068363400001545,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023990400000000003,
+        "user_cost": 0.00025214000000000004,
+        "duration_s": 24.743559800001094,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00245546,
+        "user_cost": 0.00036540000000000005,
+        "duration_s": 29.34292199999618,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016263800000000002,
+        "user_cost": 0.00031192000000000004,
+        "duration_s": 20.603076900006272,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016576000000000002,
+        "user_cost": 0.00021588000000000003,
+        "duration_s": 24.3699026999966,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015738800000000002,
+        "user_cost": 0.00014560000000000002,
+        "duration_s": 15.761521200009156,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024108000000000003,
+        "user_cost": 0.00034958000000000005,
+        "duration_s": 37.66797600001155,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015703800000000001,
+        "user_cost": 0.00019012,
+        "duration_s": 16.50205840000126,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0038861200000000003,
+        "user_cost": 0.00033012000000000004,
+        "duration_s": 30.839545299997553,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015729000000000001,
+        "user_cost": 0.00018158000000000003,
+        "duration_s": 16.82174220000161,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00322392,
+        "user_cost": 0.00037366,
+        "duration_s": 32.726874100000714,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023640400000000004,
+        "user_cost": 0.00030212,
+        "duration_s": 24.59416510000301,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005029360000000001,
+        "user_cost": 0.0005766600000000001,
+        "duration_s": 50.74072339999839,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0015810200000000003,
+        "user_cost": 0.00021154000000000002,
+        "duration_s": 17.673813100002008,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00392462,
+        "user_cost": 0.00029386000000000006,
+        "duration_s": 33.291218400001526,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015962800000000003,
+        "user_cost": 0.00017836000000000002,
+        "duration_s": 17.99163450000924,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157094,
+        "user_cost": 0.0001743,
+        "duration_s": 17.113105299999006,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00395696,
+        "user_cost": 0.00035462000000000004,
+        "duration_s": 32.86645169999974,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005599440000000001,
+        "user_cost": 0.0004527600000000001,
+        "duration_s": 52.19513749999169,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00234766,
+        "user_cost": 0.00026208000000000004,
+        "duration_s": 20.318402100005187,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016137800000000002,
+        "user_cost": 0.00017822,
+        "duration_s": 19.234733999997843,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024316600000000004,
+        "user_cost": 0.00017598,
+        "duration_s": 26.83734659999027,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0025242000000000003,
+        "user_cost": 0.0004895800000000001,
+        "duration_s": 39.81126220000442,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00241976,
+        "user_cost": 0.00030758,
+        "duration_s": 26.088021400006255,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016527,
+        "user_cost": 0.0002674,
+        "duration_s": 24.602874900010647,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00414862,
+        "user_cost": 0.0005427800000000001,
+        "duration_s": 46.909409599989885,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00244972,
+        "user_cost": 0.00030996,
+        "duration_s": 29.277341199995135,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00532462,
+        "user_cost": 0.0012644800000000001,
+        "duration_s": 84.28640509999241,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016338,
+        "user_cost": 0.00026992,
+        "duration_s": 20.322765400007484,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00342356,
+        "user_cost": 0.00042490000000000003,
+        "duration_s": 45.48141920000489,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00233562,
+        "user_cost": 0.00016324000000000002,
+        "duration_s": 18.00360830000136,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160972,
+        "user_cost": 0.00027552,
+        "duration_s": 19.734723600005964,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00080108,
+        "user_cost": 0.00011564000000000001,
+        "duration_s": 11.63296299999638,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00250502,
+        "user_cost": 0.00036862000000000006,
+        "duration_s": 31.690725599997677,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0035394800000000002,
+        "user_cost": 0.0006944,
+        "duration_s": 56.48666599999706,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157332,
+        "user_cost": 0.00023674,
+        "duration_s": 16.223967099998845,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032190200000000004,
+        "user_cost": 0.00029974,
+        "duration_s": 31.07213960000081,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160216,
+        "user_cost": 0.00016954,
+        "duration_s": 20.85891160000756,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0031949400000000003,
+        "user_cost": 0.00038668000000000003,
+        "duration_s": 30.83479969999462,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015841000000000002,
+        "user_cost": 0.00017934,
+        "duration_s": 17.304824799997732,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00158032,
+        "user_cost": 0.00017976000000000003,
+        "duration_s": 15.834109499992337,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00487522,
+        "user_cost": 0.00056154,
+        "duration_s": 45.20413009999902,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00157332,
+        "user_cost": 0.00020594000000000002,
+        "duration_s": 15.409751700004563,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023735600000000003,
+        "user_cost": 0.00020412,
+        "duration_s": 21.99653340000077,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00163058,
+        "user_cost": 0.00013986,
+        "duration_s": 20.964915899996413,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00243908,
+        "user_cost": 0.00025466,
+        "duration_s": 29.07407129999774,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015845200000000003,
+        "user_cost": 0.00023114,
+        "duration_s": 15.961981200001901,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00312368,
+        "user_cost": 0.00020314000000000004,
+        "duration_s": 26.956290299989632,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00159516,
+        "user_cost": 0.00021406000000000002,
+        "duration_s": 18.871000800005277,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032937800000000005,
+        "user_cost": 0.00050022,
+        "duration_s": 35.887332999991486,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00616378,
+        "user_cost": 7.868e-05,
+        "duration_s": 451.7278770999983,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00426258,
+        "user_cost": 0.0007813400000000002,
+        "duration_s": 51.224015300002065,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016354800000000001,
+        "user_cost": 0.00031304,
+        "duration_s": 24.54120919998968,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.004302200000000001,
+        "user_cost": 0.0006067600000000001,
+        "duration_s": 51.932893899997,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0025191600000000003,
+        "user_cost": 0.00028098,
+        "duration_s": 34.27476449999085,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0033511799999999996,
+        "user_cost": 0.00050078,
+        "duration_s": 38.681776600002195,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0034400800000000003,
+        "user_cost": 0.0006937,
+        "duration_s": 50.970141600002535,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032153800000000003,
+        "user_cost": 0.0003808,
+        "duration_s": 36.71660189999966,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00612878,
+        "user_cost": 5.9220000000000006e-05,
+        "duration_s": 454.1895000000077,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00071568,
+        "user_cost": 0.00011508000000000002,
+        "duration_s": 23.11009909999848,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023961000000000004,
+        "user_cost": 0.00036708,
+        "duration_s": 38.49667920000502,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0061544,
+        "user_cost": 0.00017612,
+        "duration_s": 496.5620990000025,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160832,
+        "user_cost": 0.00017668000000000002,
+        "duration_s": 30.508368099996005,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00259574,
+        "user_cost": 0.00041538,
+        "duration_s": 49.51329080000869,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00071148,
+        "user_cost": 9.352000000000001e-05,
+        "duration_s": 32.1144374999858,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015997800000000003,
+        "user_cost": 0.00012712,
+        "duration_s": 20.988897300005192,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0047362,
+        "user_cost": 0.00036554000000000003,
+        "duration_s": 75.56429129999015,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005936,
+        "user_cost": 0.00121016,
+        "duration_s": 121.95183320000069,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015097600000000002,
+        "user_cost": 0.00024304000000000003,
+        "duration_s": 28.816584300002432,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006511960000000001,
+        "user_cost": 0.00071148,
+        "duration_s": 180.03087689999666,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006532260000000001,
+        "user_cost": 0.0018093600000000003,
+        "duration_s": 131.17554089998885,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.004872700000000001,
+        "user_cost": 0.00060578,
+        "duration_s": 78.08761089999462,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.003970960000000001,
+        "user_cost": 0.000399,
+        "duration_s": 96.27634209999815,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00144018,
+        "user_cost": 8.624e-05,
+        "duration_s": 30.916101000009803,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0014355600000000002,
+        "user_cost": 0.00010668000000000002,
+        "duration_s": 28.87493989999348,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00316484,
+        "user_cost": 0.00015764000000000002,
+        "duration_s": 69.28496889999951,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0061551,
+        "user_cost": 9.352000000000001e-05,
+        "duration_s": 503.3724702000036,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015839600000000001,
+        "user_cost": 0.000154,
+        "duration_s": 32.23274409999431,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0030644600000000006,
+        "user_cost": 0.00011438000000000001,
+        "duration_s": 56.64123490000202,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015841000000000002,
+        "user_cost": 6.86e-05,
+        "duration_s": 26.784539000000223,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024211600000000003,
+        "user_cost": 0.00020286000000000002,
+        "duration_s": 33.344066000005114,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160986,
+        "user_cost": 0.0001554,
+        "duration_s": 26.98811299999943,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015712200000000001,
+        "user_cost": 8.246e-05,
+        "duration_s": 29.10431549999339,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0061528600000000004,
+        "user_cost": 8.204000000000001e-05,
+        "duration_s": 488.331157099994,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00331562,
+        "user_cost": 0.00036694000000000006,
+        "duration_s": 47.936032099998556,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160202,
+        "user_cost": 0.00015764,
+        "duration_s": 24.567198299992015,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00079226,
+        "user_cost": 6.230000000000001e-05,
+        "duration_s": 21.06858839999768,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00239232,
+        "user_cost": 0.00013356000000000002,
+        "duration_s": 58.301177599991206,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157262,
+        "user_cost": 0.00010836,
+        "duration_s": 18.667652600008296,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00163114,
+        "user_cost": 0.00013538000000000002,
+        "duration_s": 45.18003000000317,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006136480000000001,
+        "user_cost": 6.104e-05,
+        "duration_s": 509.6845900000044,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00616532,
+        "user_cost": 0.00011102,
+        "duration_s": 479.7796188000066,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "1",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016150400000000003,
+        "user_cost": 0.00016002,
+        "duration_s": 40.28291130000434,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "25",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00616462,
+        "user_cost": 8.638000000000001e-05,
+        "duration_s": 486.8394832000049,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "4",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0007645400000000001,
+        "user_cost": 5.054e-05,
+        "duration_s": 7.692036600012216,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "3",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0023954,
+        "user_cost": 0.00014322000000000003,
+        "duration_s": 31.78558390001126,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "5",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015944600000000002,
+        "user_cost": 0.00013846000000000003,
+        "duration_s": 28.54175450000912,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "7",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015737400000000001,
+        "user_cost": 7.840000000000001e-05,
+        "duration_s": 34.156661799992435,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "8",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00450674,
+        "user_cost": 0.00042966000000000006,
+        "duration_s": 89.86922429999686,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "0",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006171200000000001,
+        "user_cost": 9.548e-05,
+        "duration_s": 500.01979050000955,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "6",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005320419999999999,
+        "user_cost": 0.0005787600000000001,
+        "duration_s": 182.12861729999713,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "10",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0046754399999999995,
+        "user_cost": 0.00012936,
+        "duration_s": 33.45633820000512,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "11",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015744400000000003,
+        "user_cost": 0.00010262,
+        "duration_s": 25.516022000010707,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "9",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0033444599999999996,
+        "user_cost": 0.00048468000000000003,
+        "duration_s": 77.76255980000133,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "12",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.00237314,
+        "user_cost": 0.0001127,
+        "duration_s": 40.584806800005026,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "13",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157332,
+        "user_cost": 8.834e-05,
+        "duration_s": 23.316762999995262,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "14",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015738800000000002,
+        "user_cost": 8.078000000000001e-05,
+        "duration_s": 26.303865900001256,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "17",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157304,
+        "user_cost": 9.492e-05,
+        "duration_s": 17.635209700005362,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "18",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00342104,
+        "user_cost": 0.00035014,
+        "duration_s": 49.991772999987006,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "16",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00242676,
+        "user_cost": 0.00021266000000000004,
+        "duration_s": 89.54659260000335,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "15",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.004245080000000001,
+        "user_cost": 0.00027692000000000005,
+        "duration_s": 111.78909800000838,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "19",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00161728,
+        "user_cost": 0.00013524,
+        "duration_s": 30.084848899990902,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "20",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0032064199999999998,
+        "user_cost": 0.00019474000000000002,
+        "duration_s": 48.772054700006265,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "23",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0015936200000000002,
+        "user_cost": 0.00014308,
+        "duration_s": 20.525858099994366,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "22",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.005639760000000001,
+        "user_cost": 0.00022050000000000005,
+        "duration_s": 55.83093209999788,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "2",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.006167980000000001,
+        "user_cost": 7.840000000000001e-05,
+        "duration_s": 488.8465548999957,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "25",
+        "reward": 1.0,
+        "passed": true,
+        "agent_cost": 0.0008520400000000001,
+        "user_cost": 9.968e-05,
+        "duration_s": 29.99265960000048,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "24",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0016524200000000001,
+        "user_cost": 0.00015246000000000001,
+        "duration_s": 39.27907240000786,
+        "reward_breakdown": {
+          "DB": 1.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "26",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00157164,
+        "user_cost": 0.00011704,
+        "duration_s": 31.45218130000285,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "27",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00160482,
+        "user_cost": 0.00010864000000000002,
+        "duration_s": 40.22586410000804,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 1.0
+        }
+      },
+      {
+        "task_id": "29",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0024185000000000005,
+        "user_cost": 0.00015568,
+        "duration_s": 56.8159275999933,
+        "reward_breakdown": {
+          "DB": 0.0,
+          "NL_ASSERTION": 0.0
+        }
+      },
+      {
+        "task_id": "28",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.0086926,
+        "user_cost": 0.0005159,
+        "duration_s": 184.0368790999928,
+        "reward_breakdown": null
+      },
+      {
+        "task_id": "21",
+        "reward": 0,
+        "passed": false,
+        "agent_cost": 0.00900956,
+        "user_cost": 0.00043652,
+        "duration_s": 561.0315433000069,
+        "reward_breakdown": null
+      }
+    ]
   }
 ]

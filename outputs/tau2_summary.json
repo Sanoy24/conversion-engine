@@ -1,0 +1,8 @@
+{
+  "best_run": "eval_baseline_trial1",
+  "pass_at_1": 0.1,
+  "pass_at_1_pct": "10.0%",
+  "average_reward": 0.1,
+  "total_tasks": 30,
+  "total_runs": 9
+}

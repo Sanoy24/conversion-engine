@@ -1,28 +1,27 @@
 {
   "n_total": 25,
-  "n_success": 25,
-  "n_failed": 0,
+  "n_success": 20,
+  "n_failed": 5,
   "kill_switch_enabled": true,
   "pipeline_latency_ms": {
-    "p50": 19679.2,
-    "p95": 30378.1,
-    "min": 11623.6,
-    "max": 35625.9,
-    "mean": 20996.9
+    "p50": 64052.2,
+    "p95": 91099.7,
+    "min": 47820.0,
+    "max": 91099.7,
+    "mean": 63172.7
   },
   "cost_usd": {
-    "total": 0.0352,
+    "total": 0.102,
     "per_prospect": {
-      "p50": 0.00142,
-      "p95": 0.001506,
-      "min": 0.001259,
-      "max": 0.001516,
-      "mean": 0.001409
+      "p50": 0.005121,
+      "p95": 0.005231,
+      "min": 0.004986,
+      "max": 0.005231,
+      "mean": 0.005101
     }
   },
   "segment_distribution": {
-    "segment_1_recently_funded": 13,
-    "abstain": 12
+    "abstain": 20
   },
-  "gap_brief_coverage": 25
+  "gap_brief_coverage": 20
 }
