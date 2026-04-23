@@ -57,6 +57,26 @@ def get_conversation(thread_id: str) -> ConversationState | None:
     return _conversations.get(thread_id)
 
 
+def get_conversation_by_phone(phone: str) -> ConversationState | None:
+    """
+    Look up the most recently updated conversation for a given phone number.
+
+    Used by the inbound-SMS webhook to correlate a reply back to an existing
+    thread so it can be routed through `handle_prospect_reply`. Returns None
+    if no conversation has that phone recorded (e.g. someone texted the
+    shortcode without a prior email outreach).
+    """
+    if not phone:
+        return None
+    matches = [
+        c for c in _conversations.values()
+        if c.prospect and c.prospect.contact_phone == phone
+    ]
+    if not matches:
+        return None
+    return max(matches, key=lambda c: c.updated_at)
+
+
 def add_message(
     thread_id: str,
     role: str,

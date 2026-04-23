@@ -227,14 +227,54 @@ async def run(company_name: str, contact_name: str, contact_email: str,
         if cal_trace.success:
             booked = True
             break  # booked successfully — stop trying
+    _booking_id = (cal_resp.get("id") or cal_resp.get("uid")
+                   if isinstance(cal_resp, dict) else None)
     _emit(_stage_record(
         "6_calcom_booking", t0, cal_trace.success,
-        booking_id=cal_resp.get("id") or cal_resp.get("uid")
-                   if isinstance(cal_resp, dict) else None,
+        booking_id=_booking_id,
         start_time=start,
         error=cal_resp.get("error") if isinstance(cal_resp, dict) else None,
         trace_id=cal_trace.trace_id,
     ))
+
+    # ── 7. Link Cal.com booking → HubSpot update (rubric 3.3) ──────────
+    # A completed Cal.com booking triggers a corresponding HubSpot record
+    # update: lead status → CALL_BOOKED plus an engagement note with the
+    # booking metadata. Skipped if the booking failed or we don't have a
+    # HubSpot contact id to attach to.
+    if cal_trace.success and hs_contact_id:
+        t0 = time.monotonic()
+        try:
+            await hubspot.update_contact_status(
+                contact_id=hs_contact_id,
+                status="CALL_BOOKED",
+                properties={"hs_lead_status": "CALL_BOOKED"},
+            )
+            booking_note = (
+                f"Discovery call booked via Cal.com.\n"
+                f"Booking ID: {_booking_id}\n"
+                f"Scheduled: {start}\n"
+                f"Segment: {pipeline['classification']['segment']}\n"
+                f"Thread: {thread_id}"
+            )
+            _, _link_note_trace = await hubspot.add_note(
+                contact_id=hs_contact_id,
+                note_body=booking_note,
+                prospect_company=prospect.company,
+            )
+            _emit(_stage_record(
+                "7_calcom_to_hubspot_link", t0, _link_note_trace.success,
+                hubspot_contact_id=hs_contact_id,
+                booking_id=_booking_id,
+                trace_id=_link_note_trace.trace_id,
+            ))
+        except Exception as e:
+            logger.error("Cal.com → HubSpot link failed: %s", e)
+            _emit(_stage_record(
+                "7_calcom_to_hubspot_link", t0, False,
+                error=str(e),
+                hubspot_contact_id=hs_contact_id,
+            ))
 
     summary = {
         "run_id": f"full_thread_{uuid.uuid4().hex[:8]}",

@@ -169,44 +169,120 @@ async def system_metrics():
 
 @app.post("/webhooks/email/reply")
 async def email_reply_webhook(request: Request):
-    """Webhook endpoint for Resend email replies."""
+    """
+    Webhook endpoint for Resend email events.
+
+    Resend fans out multiple event types (delivered, bounced, complained, etc.)
+    to the same URL. We route only actual inbound replies to the conversation
+    handler; bounces and delivery pings are acknowledged and logged but NOT
+    treated as replies (which would create spurious conversation turns).
+    """
     try:
         payload = await request.json()
-        parsed = process_reply_webhook(payload)
+    except Exception as e:
+        logger.warning("Email webhook: malformed JSON body: %s", e)
+        return JSONResponse(
+            status_code=400,
+            content={"status": "error", "reason": "malformed_json"},
+        )
 
-        if parsed.get("thread_id"):
-            result = await handle_prospect_reply(
-                thread_id=parsed["thread_id"],
-                reply_content=parsed.get("body", ""),
-            )
-            return JSONResponse(content=result)
+    parsed = process_reply_webhook(payload)
 
+    # Suppression signal — bounced/complained addresses should not get
+    # further sends. Surfaced to the caller so observability layers can see
+    # the event; a real deployment would mark the prospect as undeliverable.
+    if parsed.get("is_bounce"):
+        return {
+            "status": "received",
+            "event_type": parsed["event_type"],
+            "action": "suppressed",
+            "from_email": parsed.get("from_email"),
+        }
+
+    if parsed.get("event_type") == "malformed":
+        return JSONResponse(
+            status_code=400,
+            content={"status": "error", "reason": parsed.get("parse_error")},
+        )
+
+    if not parsed.get("is_reply"):
+        # Delivery pings, opens, clicks — acknowledge but don't treat as a reply.
+        return {"status": "received", "event_type": parsed["event_type"], "action": "ignored"}
+
+    if not parsed.get("thread_id"):
+        logger.warning("Email reply without X-Thread-ID header from %s", parsed.get("from_email"))
         return {"status": "received", "warning": "No thread_id found in reply"}
 
+    try:
+        result = await handle_prospect_reply(
+            thread_id=parsed["thread_id"],
+            reply_content=parsed.get("body", ""),
+        )
+        return JSONResponse(content=result)
     except Exception as e:
-        logger.error("Email webhook error: %s", str(e))
-        return {"status": "error", "error": str(e)}
+        logger.error("Email reply handling failed for thread %s: %s",
+                     parsed.get("thread_id"), e, exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "error": str(e)},
+        )
 
 
 @app.post("/webhooks/sms/inbound")
 async def sms_inbound_webhook(request: Request):
-    """Webhook endpoint for Africa's Talking inbound SMS."""
+    """
+    Webhook endpoint for Africa's Talking inbound SMS.
+
+    Routes the reply to the orchestrator's `handle_prospect_reply` (same code
+    path as email replies) so the SMS channel doesn't dead-end. STOP / HELP
+    commands are handled before routing so they never turn into conversation
+    turns.
+    """
     try:
-        # Africa's Talking sends form-encoded data
-        form = await request.form()
-        payload = dict(form)
+        # Africa's Talking sends form-encoded data; malformed bodies become {}
+        try:
+            form = await request.form()
+            payload = dict(form)
+        except Exception as e:
+            logger.warning("SMS webhook: malformed form body: %s", e)
+            return JSONResponse(
+                status_code=400,
+                content={"status": "error", "reason": "malformed_body"},
+            )
+
         parsed = process_inbound_sms(payload)
 
         if parsed["is_opt_out"]:
-            return {"status": "opt_out_processed"}
+            return {"status": "opt_out_processed", "from": parsed.get("from_phone")}
         if parsed["is_help"]:
-            return {"status": "help_requested"}
+            return {"status": "help_requested", "from": parsed.get("from_phone")}
 
-        return {"status": "received", "parsed": parsed}
+        # Look up the conversation by phone number and route to the same
+        # reply-handling path that email uses.
+        from agent.core.conversation import get_conversation_by_phone
+        from_phone = parsed.get("from_phone", "")
+        conversation = get_conversation_by_phone(from_phone) if from_phone else None
+
+        if not conversation:
+            logger.info(
+                "SMS inbound from %s has no active conversation — acknowledging only",
+                from_phone,
+            )
+            return {"status": "received", "action": "no_matching_thread", "parsed": parsed}
+
+        result = await handle_prospect_reply(
+            thread_id=conversation.thread_id,
+            reply_content=parsed.get("message", ""),
+            channel=ChannelType.SMS,
+        )
+        return JSONResponse(content=result)
 
     except Exception as e:
-        logger.error("SMS webhook error: %s", str(e))
-        return {"status": "error", "error": str(e)}
+        logger.error("SMS webhook error: %s", str(e), exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "error": str(e)},
+        )
 
 
 @app.post("/webhooks/calcom")

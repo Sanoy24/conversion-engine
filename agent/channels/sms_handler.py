@@ -34,17 +34,34 @@ def _get_at_client():
     return _at_sms
 
 
+class SMSChannelPolicyError(RuntimeError):
+    """Raised when SMS is called for cold outreach. Enforces the channel hierarchy."""
+
+
 async def send_sms(
     to_phone: str,
     message: str,
     thread_id: str | None = None,
+    warm_lead: bool = True,
 ) -> tuple[dict, TraceRecord]:
     """
     Send an SMS via Africa's Talking sandbox.
 
+    Channel policy (hard-enforced): SMS is a WARM-LEAD channel only. The
+    Tenacious prospect persona (founders, CTOs, VPs Engineering) regards cold
+    SMS as intrusive. Callers must pass `warm_lead=True` explicitly (the
+    default) and only after a prior email reply has graduated the thread to
+    warm status. Passing `warm_lead=False` raises `SMSChannelPolicyError`.
+
     Kill switch: when LIVE_OUTBOUND_ENABLED is False, logs instead of sending.
-    NEVER use for cold outbound — SMS is only for warm leads.
     """
+    if not warm_lead:
+        raise SMSChannelPolicyError(
+            "SMS is a warm-lead channel only; cold SMS outreach is not permitted "
+            "by the Tenacious channel policy. Caller must confirm the prospect "
+            "has replied by email before switching to SMS."
+        )
+
     trace_id = f"tr_{uuid.uuid4().hex[:8]}"
 
     if not settings.live_outbound_enabled:

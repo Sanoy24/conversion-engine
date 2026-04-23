@@ -101,16 +101,87 @@ async def send_email(
         return {"status": "error", "error": str(e)}, trace
 
 
+# Resend webhook event types we distinguish. The full list includes
+# email.sent, email.delivered, email.delivery_delayed, email.bounced,
+# email.complained, email.opened, email.clicked. We act on "received"
+# (inbound reply) and flag bounces/complaints so downstream logic can
+# suppress future sends; everything else is acknowledged and ignored.
+_REPLY_EVENTS = {"email.received", "inbound"}
+_BOUNCE_EVENTS = {"email.bounced", "email.complained"}
+_DELIVERY_EVENTS = {"email.delivered", "email.sent", "email.delivery_delayed"}
+
+
 def process_reply_webhook(payload: dict) -> dict:
     """
-    Process an inbound reply webhook from Resend.
-    Extracts: sender, subject, body, thread_id.
+    Process an inbound webhook POST from Resend.
+
+    Returns a structured record with:
+      - event_type: normalized event classification
+      - is_reply: True only for inbound-reply events
+      - is_bounce / is_complaint: suppression signals for future sends
+      - parse_error: set if the payload was malformed
+
+    Downstream logic should check `is_reply` before treating the payload as
+    a prospect reply. Bounces and delivery pings are captured for observability
+    but must NOT be routed to the conversation handler as replies.
     """
-    return {
-        "from_email": payload.get("from") or payload.get("sender"),
-        "subject": payload.get("subject", ""),
-        "body": payload.get("text") or payload.get("html", ""),
-        "thread_id": (payload.get("headers") or {}).get("X-Thread-ID"),
+    # 1. Validate payload shape up front — never silently drop malformed data.
+    if not isinstance(payload, dict):
+        logger.warning(
+            "Resend webhook: non-dict payload (%s); ignoring", type(payload).__name__
+        )
+        return {
+            "event_type": "malformed",
+            "is_reply": False,
+            "is_bounce": False,
+            "parse_error": "payload_not_dict",
+            "received_at": datetime.utcnow().isoformat(),
+        }
+
+    # Resend sends either `type` (v1) or `event` (newer) — try both.
+    raw_event = (payload.get("type") or payload.get("event") or "").strip().lower()
+    data = payload.get("data") if isinstance(payload.get("data"), dict) else payload
+
+    is_reply = raw_event in _REPLY_EVENTS or (
+        # Heuristic: if no event type is set but there's a text/html body with a
+        # `from` header, treat it as an inbound reply (legacy webhook shape).
+        not raw_event and bool(data.get("from") or data.get("sender"))
+        and bool(data.get("text") or data.get("html"))
+    )
+    is_bounce = raw_event in _BOUNCE_EVENTS
+
+    # Headers can be nested in the data object or at the payload root.
+    headers = data.get("headers") or payload.get("headers") or {}
+    if not isinstance(headers, dict):
+        headers = {}
+
+    record = {
+        "event_type": raw_event or ("reply_heuristic" if is_reply else "unknown"),
+        "is_reply": is_reply,
+        "is_bounce": is_bounce,
+        "is_delivery": raw_event in _DELIVERY_EVENTS,
+        "from_email": data.get("from") or data.get("sender"),
+        "subject": data.get("subject", ""),
+        "body": data.get("text") or data.get("html", ""),
+        "thread_id": headers.get("X-Thread-ID"),
+        "resend_id": data.get("id") or data.get("email_id"),
         "received_at": datetime.utcnow().isoformat(),
         "raw_payload": payload,
     }
+
+    if is_bounce:
+        logger.warning(
+            "Resend webhook: bounce/complaint for %s (resend_id=%s)",
+            record["from_email"], record["resend_id"],
+        )
+    elif is_reply:
+        logger.info(
+            "Resend webhook: reply from %s (thread=%s)",
+            record["from_email"], record["thread_id"],
+        )
+    elif record["is_delivery"]:
+        logger.debug("Resend webhook: delivery event %s", raw_event)
+    else:
+        logger.info("Resend webhook: unhandled event_type=%r", raw_event)
+
+    return record
