@@ -1,44 +1,44 @@
 {
-  "run_id": "full_thread_20c1f2c4",
-  "thread_id": "thread_abce4ac1",
+  "run_id": "full_thread_8e6e5d3e",
+  "thread_id": "thread_d52235e0",
   "kill_switch_active": true,
   "prospect": {
-    "company": "Consolety",
+    "company": "MCPFinal",
     "contact_name": "Alex Demo",
-    "contact_email": "demo-prospect@example.com",
+    "contact_email": "mcpfinal@example.com",
     "contact_phone": "+254700000000"
   },
   "classification": "abstain",
-  "pipeline_total_cost_usd": 0.001421,
+  "pipeline_total_cost_usd": 0.0032489999999999997,
   "stages": [
     {
       "stage": "1_enrich_classify_draft",
       "ok": true,
-      "latency_ms": 43625.0,
-      "timestamp": "2026-04-22T10:00:23.316120",
-      "thread_id": "thread_abce4ac1",
+      "latency_ms": 49125.0,
+      "timestamp": "2026-04-23T08:58:47.513916",
+      "thread_id": "thread_d52235e0",
       "segment": "abstain",
       "confidence": "low",
       "gap_brief_present": true,
-      "pipeline_latency_ms": 43635.558000000005,
-      "total_cost_usd": 0.001421,
-      "email_subject": "Exploring potential synergies with Consolety"
+      "pipeline_latency_ms": 49118.589,
+      "total_cost_usd": 0.0032489999999999997,
+      "email_subject": "Exploring AI engineering capacity needs"
     },
     {
       "stage": "2_email_send",
       "ok": true,
-      "latency_ms": 16.0,
-      "timestamp": "2026-04-22T10:00:23.317631",
+      "latency_ms": 0.0,
+      "timestamp": "2026-04-23T08:58:47.514938",
       "resend_status": "sink",
-      "resend_id": "tr_ab81d96c",
+      "resend_id": "tr_379cbaf2",
       "kill_switch_active": true,
-      "trace_id": "tr_ab81d96c"
+      "trace_id": "tr_379cbaf2"
     },
     {
       "stage": "3_reply_received_and_warm_draft",
       "ok": true,
-      "latency_ms": 10906.0,
-      "timestamp": "2026-04-22T10:00:34.224341",
+      "latency_ms": 31844.0,
+      "timestamp": "2026-04-23T08:59:19.359541",
       "action": "warm_reply",
       "requires_handoff": false,
       "reply_chars": 175
@@ -47,39 +47,39 @@
       "stage": "4_sms_scheduling",
       "ok": true,
       "latency_ms": 0.0,
-      "timestamp": "2026-04-22T10:00:34.228538",
+      "timestamp": "2026-04-23T08:59:19.361553",
       "at_status": "sink",
       "kill_switch_active": true,
-      "trace_id": "tr_c5a265a3"
+      "trace_id": "tr_f3e68dd3"
     },
     {
       "stage": "5_hubspot_contact_created",
       "ok": true,
-      "latency_ms": 1406.0,
-      "timestamp": "2026-04-22T10:00:35.641694",
-      "hubspot_contact_id": "475094961883",
+      "latency_ms": 984.0,
+      "timestamp": "2026-04-23T08:59:20.341231",
+      "hubspot_contact_id": "475655291603",
       "error": null,
-      "trace_id": "tr_e0124006"
+      "trace_id": "tr_4ffb696b"
     },
     {
       "stage": "5b_hubspot_note",
       "ok": true,
-      "latency_ms": 1344.0,
-      "timestamp": "2026-04-22T10:00:36.975361",
-      "note_id": "365606493897",
-      "trace_id": "tr_8f56bbd8"
+      "latency_ms": 1438.0,
+      "timestamp": "2026-04-23T08:59:21.783185",
+      "note_id": "365790543579",
+      "trace_id": "tr_ca660c5b"
     },
     {
       "stage": "6_calcom_booking",
-      "ok": true,
-      "latency_ms": 2250.0,
-      "timestamp": "2026-04-22T10:00:39.231655",
+      "ok": false,
+      "latency_ms": 22203.0,
+      "timestamp": "2026-04-23T08:59:43.977861",
       "booking_id": null,
-      "start_time": "2026-05-06T09:00:00Z",
-      "error": null,
-      "trace_id": "tr_e1f2fd17"
+      "start_time": "2026-05-28T10:00:00Z",
+      "error": "Client error '400 Bad Request' for url 'https://api.cal.com/v2/bookings'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "trace_id": "tr_62cb327d"
     }
   ],
-  "ok": true,
-  "total_latency_ms": 59547.0
+  "ok": false,
+  "total_latency_ms": 105594.0
 }

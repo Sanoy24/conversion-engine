@@ -231,6 +231,10 @@ class HubSpotClient:
             logger.error("HubSpot contact update failed: %s", str(e))
             return {"error": str(e)}
 
+    async def close(self) -> None:
+        """No-op for interface parity with HubSpotMCPClient."""
+        return
+
     async def search_contact(self, email: str) -> dict | None:
         """Search for a contact by email."""
         try:
@@ -263,10 +267,40 @@ class HubSpotClient:
 
 # Module-level singleton
 _hubspot: HubSpotClient | None = None
+_hubspot_client_impl: object | None = None  # may be MCP or direct, decided once at first call
 
 
-def get_hubspot_client() -> HubSpotClient:
-    global _hubspot
+def get_hubspot_client():
+    """
+    Return the active HubSpot client.
+
+    If `USE_HUBSPOT_MCP=true` in settings, returns a `HubSpotMCPClient` that
+    routes every CRM write through the official HubSpot MCP server. Otherwise
+    returns the direct REST-API `HubSpotClient`. Both expose the same interface
+    (create_contact, add_note, update_contact_status, search_contact).
+
+    The MCP path degrades gracefully: if the MCP server can't be started
+    (Node.js missing, bad token, etc.), this function falls back to the
+    direct-API client with a one-time warning.
+    """
+    global _hubspot, _hubspot_client_impl
+
+    if _hubspot_client_impl is not None:
+        return _hubspot_client_impl
+
+    if settings.use_hubspot_mcp:
+        try:
+            from agent.integrations.hubspot_mcp import get_hubspot_mcp_client
+            _hubspot_client_impl = get_hubspot_mcp_client()
+            logger.info("HubSpot: routing via MCP server (@hubspot/mcp-server)")
+            return _hubspot_client_impl
+        except Exception as e:
+            logger.warning(
+                "HubSpot MCP unavailable (%s); falling back to direct REST API", e
+            )
+
     if _hubspot is None:
         _hubspot = HubSpotClient()
-    return _hubspot
+    _hubspot_client_impl = _hubspot
+    logger.info("HubSpot: routing via direct REST API")
+    return _hubspot_client_impl

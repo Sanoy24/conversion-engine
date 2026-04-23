@@ -38,6 +38,15 @@ class Settings(BaseSettings):
     # --- CRM (HubSpot) ---
     hubspot_access_token: str = ""
     hubspot_portal_id: str = ""
+    # When True, route CRM calls through the official HubSpot MCP server
+    # (@hubspot/mcp-server, launched Feb 2026) instead of the direct REST API.
+    # Requires Node.js / npx on the host. If MCP setup fails at runtime,
+    # the factory falls back to the direct-API client with a warning.
+    use_hubspot_mcp: bool = False
+    # npx command to launch the HubSpot MCP server. Override if you've pinned
+    # a specific version or installed it globally.
+    hubspot_mcp_command: str = "npx"
+    hubspot_mcp_args: str = "-y,@hubspot/mcp-server"
 
     # --- Calendar (Cal.com) ---
     calcom_api_key: str = ""

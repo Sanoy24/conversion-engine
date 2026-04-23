@@ -56,8 +56,9 @@ async def run(company_name: str, contact_name: str, contact_email: str,
               contact_phone: str, contact_title: str) -> dict:
     OUTPUTS.mkdir(exist_ok=True)
     traces_path = OUTPUTS / "full_thread_traces.jsonl"
+    # Per-run summary is overwritten; aggregate traces are appended across runs
+    # so 20 prospect runs produce a 20-run latency sample for the report.
     result_path = OUTPUTS / "full_thread_trace.json"
-    traces_path.unlink(missing_ok=True)
 
     stages: list[dict] = []
     thread_id: str | None = None
@@ -235,6 +236,26 @@ async def run(company_name: str, contact_name: str, contact_email: str,
         "stages_failed": [s["stage"] for s in stages if not s["ok"]],
         "total_latency_ms": summary["total_latency_ms"],
     }, indent=2))
+
+    # Tear down the HubSpot client from the same task that created it.
+    # This avoids anyio's "cancel scope exited in a different task" warning
+    # when a long-lived MCP stdio session gets garbage-collected at interpreter
+    # shutdown. No-op for the direct-API client.
+    try:
+        await get_hubspot_client().close()
+    except Exception as e:
+        logger.warning("HubSpot client close failed: %s", e)
+    # Reset module singletons so a fresh session is created on the next run
+    # (when this script is invoked as part of a multi-run batch).
+    import agent.integrations.hubspot as _hs_mod
+    _hs_mod._hubspot = None
+    _hs_mod._hubspot_client_impl = None
+    try:
+        import agent.integrations.hubspot_mcp as _hs_mcp_mod
+        _hs_mcp_mod._hubspot_mcp = None
+    except ImportError:
+        pass
+
     return summary
 
 

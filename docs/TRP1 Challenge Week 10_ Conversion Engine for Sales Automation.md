@@ -27,7 +27,7 @@ The ideal-customer-profile (ICP) definition, provided in the seed materials, ide
 | Engineering-leadership transitions | Companies with a new CTO or VP Engineering appointed in the last 90 days. | New leaders routinely reassess vendor contracts and offshore mix in their first 6 months. This is a narrow but high-conversion window. |
 | Specialized capability gaps | Companies attempting a specific build — ML platform migration, agentic systems, data contracts — where in-house skills do not match the need. | Project-based consulting, not outsourcing. Higher margin, shorter commitment, portfolio value. |
 
-## **Current pain (from Tenacious executive interviews)**
+## **Current pain** 
 
 The Tenacious CEO and CFO describe three linked problems. Outbound prospecting is manual: a partner or senior engineer identifies promising companies in an ad-hoc way, often through personal network or LinkedIn browsing, with no systematic coverage of the market. Qualification is inconsistent: two prospects with identical firmographics get very different first messages because the person reaching out applies intuition rather than a repeatable playbook. Follow-up is slow: once a prospect responds, the person who initiated the conversation must personally handle the thread, which queues behind delivery work and loses momentum.
 
@@ -63,9 +63,9 @@ Seed materials are delivered to you via a private repo on Day 0\. They are the r
 
 * **Bench-to-brief match.** A check that the prospect's stated or inferred need (for example, Python data engineers) matches current bench availability. The agent must never commit to capacity that the bench summary does not show.
 
-## **What replaces CFPB complaints — the hiring signal brief**
+## **The hiring signal brief**
 
-In the compliance-software version of this challenge, the agent grounded the conversation in CFPB complaint data. For Tenacious, there is no regulator database. Instead, the agent grounds the conversation in a hiring signal brief — a combination of public signals that make the prospect's buying window concrete and verifiable.
+For Tenacious, the agent grounds the conversation in a hiring signal brief — a combination of public signals that make the prospect's buying window concrete and verifiable.
 
 | Signal | Source | What it tells the agent |
 | :---- | :---- | :---- |
@@ -101,7 +101,7 @@ The agent must carry confidence with the score. A readiness of 2 inferred from w
 
 The hiring signal brief transforms a cold outreach from ‘you might need offshore engineering capacity’ to ‘you closed a $14M Series B in February and your open Python-engineering roles tripled since then — the typical bottleneck for teams in that state is recruiting capacity, not budget’. The difference is the second message is verifiable against the prospect's own public record and is therefore hard to object to.
 
-The same honesty constraint from the compliance version applies. The agent refuses to make claims it cannot ground in the brief. If the job-post signal is weak (fewer than five open roles), the agent does not claim ‘you are scaling aggressively’ — it asks rather than asserts. Over-claiming damages Tenacious's reputation with a potential client more than silence would.
+You must apply an honesty constraint. The agent refuses to make claims it cannot ground in the brief. If the job-post signal is weak (fewer than five open roles), the agent does not claim ‘you are scaling aggressively’ — it asks rather than asserts. Over-claiming damages Tenacious's reputation with a potential client more than silence would.
 
 ## **Baseline numbers**
 
@@ -177,7 +177,7 @@ Same principles as the Ethiopia-friendly version of this challenge: no credit-ca
 | Calendar | Cal.com self-hosted | Docker Compose; Tenacious team calendars mocked by program-provided sample calendars. |
 | Backbone LLM (dev tier) | OpenRouter with Qwen3-Next-80B-A3B or DeepSeek V3.2 | Probe and ablation development. Target under $4 Days 1–4. |
 | Backbone LLM (eval tier) | Claude Sonnet 4.6 or GPT-5 class | Sealed held-out scoring only. Target under $12 Days 5–7. |
-| Enrichment / signal collection | Playwright \+ FastAPI wrapper | Job-post scraping \+ layoffs.fyi parsing \+ Crunchbase ODM lookup. |
+| Enrichment / signal collection | TinyFish or Playwright \+ FastAPI wrapper | Job-post scraping \+ layoffs.fyi parsing \+ Crunchbase ODM lookup. |
 | Observability | Langfuse (cloud free tier) | Per-trace cost attribution. |
 | Evaluation harness | τ²-Bench | Non-substitutable benchmark anchor. |
 
