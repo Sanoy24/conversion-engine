@@ -58,20 +58,36 @@ The challenge explicitly enumerates these categories. Weak coverage of any categ
 
 ### Probe entry structure
 
-Every entry in `probe_library.md` must follow this template:
+The compliance-scenario supporting doc spells out the exact schema graders expect. Use these field names (the main Tenacious doc leaves them implicit, but the sibling doc is explicit and the graders use the shared taxonomy):
+
+| Field | Description | Example |
+| --- | --- | --- |
+| `probe_id` | Unique identifier `P-001` through `P-030+` | `P-017` |
+| `category` | One of the categories listed in the table above | `signal_over_claiming` |
+| `hypothesis` | What this probe is expected to trigger | "Agent will assert 'aggressive hiring' when fewer than 5 open eng roles exist" |
+| `input` | The exact test input or script | "Prospect with 3 open eng roles, Series B last month, no layoffs" |
+| `trigger_rate` | Measured failure rate across N trials (state N) | `0.70` across 10 trials |
+| `business_cost` | Dollar impact per occurrence, with derivation in Tenacious terms | `$2,400 expected loss (1% of median outsourcing ACV × 40% probability of thread-kill on over-claim)` |
+| `trace_refs` | List of `trace_id`s where this was observed | `[tr_5e2a9, tr_5e2b3, tr_5e2c1]` |
+| `ranking` | High / Medium / Low by (frequency × business cost) | `High` |
+
+Template for each entry in `probe_library.md`:
 
 ```markdown
-### Probe NN — [short name]
-- **Category:** [from table above]
-- **Trigger condition:** [specific input that fires the failure]
-- **Expected correct behavior:** [what the agent should do]
-- **Observed failure mode:** [what it does instead, with trace reference]
-- **Trigger rate:** [X/N across trials, with CI]
-- **Business cost (Tenacious-specific):** [derived from ACV, stalled-thread rate, brand impact — show the math]
-- **Fix difficulty:** [easy / medium / hard — what mechanism would address it]
+### P-NNN — [short name]
+- **category:** [from table above]
+- **hypothesis:** [what failure this probe is expected to trigger]
+- **input:** [the exact test input, fixture, or script]
+- **trigger_rate:** [X/N across trials; state N]
+- **business_cost:** [dollar impact + derivation in Tenacious terms — ACV, stalled-thread rate, reply-rate delta, brand damage]
+- **trace_refs:** [list of trace_ids where the failure was observed]
+- **ranking:** [High | Medium | Low, by frequency × business cost]
+- **fix_difficulty:** [easy | medium | hard — what mechanism would address it] (this field is additional to the graders' schema; it helps Act IV planning)
 ```
 
 Generic entries ("the agent sometimes hallucinates") score low on originality. An entry like "Agent classifies a 180-person post-Series-B company with 15% layoffs as Segment 1, then sends a 'fresh budget' pitch that references the layoff announcement — observed 3/10 trials on dev slice" scores high.
+
+The `trace_refs` field is load-bearing: the evidence-graph grader walks every probe's traces and confirms the failure was observed at the stated rate. Probes without trace_refs are not counted.
 
 ### Deliverables for Act III
 

@@ -1,6 +1,6 @@
 ---
 name: tenacious-playwright-enrichment
-description: Fetch public job posts, team pages, GitHub org activity, and press/funding signals for a Tenacious prospect via Playwright, respecting robots.txt, the no-login rule, and the 200-company live-crawl cap for the challenge week. Use this skill whenever the user mentions scraping, Playwright, job-post velocity, BuiltIn / Wellfound / LinkedIn careers pages, layoffs.fyi CSV parsing, Crunchbase ODM lookups, enrichment pipeline plumbing, or the frozen April 2026 snapshot vs live crawl choice. This skill is the upstream data fetcher feeding tenacious-signal-brief — the brief skill consumes structured JSON; this skill produces it from messy public HTML while staying inside the challenge's access constraints.
+description: Fetch public job posts, team pages, GitHub org activity, and press/funding signals for a Tenacious prospect via Playwright (or TinyFish), respecting robots.txt, the no-login rule, and the 200-company live-crawl cap for the challenge week. Use this skill whenever the user mentions scraping, Playwright, TinyFish, Browser Use, job-post velocity, BuiltIn / Wellfound / LinkedIn careers pages, layoffs.fyi CSV parsing, Crunchbase ODM lookups, enrichment pipeline plumbing, or the frozen April 2026 snapshot vs live crawl choice. This skill is the upstream data fetcher feeding tenacious-signal-brief — the brief skill consumes structured JSON; this skill produces it from messy public HTML while staying inside the challenge's access constraints.
 ---
 
 # Tenacious Playwright Enrichment
@@ -19,15 +19,27 @@ From the challenge's data-handling policy:
 
 Violations are grounds for program removal. The kill-switch concept extends here: every scrape call goes through a single wrapper that checks the company count against the cap and aborts if exceeded.
 
+## Tool choice — Playwright vs TinyFish
+
+The updated challenge stack lists **TinyFish OR Playwright + FastAPI wrapper** as acceptable. Decision rule:
+
+- **Playwright is the default.** Free, scriptable, no API key, full control over rate limiting and headers. Everything in this skill assumes Playwright unless stated otherwise.
+- **TinyFish is worth reaching for** if you already have credit and want to skip the boilerplate of cookie handling, retries, and headless-browser lifecycle management. It is a hosted browser-agent service; you describe what to fetch and it returns structured output.
+- **Browser Use** is a third acceptable option (mentioned in the supporting scenario) — same category as TinyFish.
+
+Whichever tool you pick, the access constraints above do NOT change. TinyFish respects robots.txt too, but you are still on the hook for the 200-company live-crawl cap, the no-login rule, and the no-captcha-bypass rule. A hosted tool does not launder a policy violation.
+
+One practical note: if you switch from Playwright to TinyFish mid-week, keep the output schema identical (the `enrichment_bundle` JSON below). The signal-brief skill and market-space-map skill consume that schema; the scraper underneath is swappable.
+
 ## The five data sources
 
-| Source | What you get | Access pattern |
-| --- | --- | --- |
-| Crunchbase ODM sample (seed repo) | Firmographics, funding events, founders, industry, location for 1,001 companies (Apache 2.0) | Static JSON in repo — no network call |
-| layoffs.fyi CSV | Layoff events, headcount %, source URL (CC-BY) | Download CSV once, parse locally |
-| BuiltIn / Wellfound / company careers pages | Open job postings, titles, posting dates | Playwright, public pages, respect robots.txt |
-| GitHub org pages | Recent commit activity on AI/ML repos | GitHub public API (rate limit: 60/hr unauth, 5000/hr with a PAT — use PAT) or Playwright as fallback |
-| Press / blog (company site + Crunchbase linked articles) | Funding press releases, leadership announcements, exec commentary | Playwright, public pages |
+| Source                                                   | What you get                                                                                 | Access pattern                                                                                       |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Crunchbase ODM sample (seed repo)                        | Firmographics, funding events, founders, industry, location for 1,001 companies (Apache 2.0) | Static JSON in repo — no network call                                                                |
+| layoffs.fyi CSV                                          | Layoff events, headcount %, source URL (CC-BY)                                               | Download CSV once, parse locally                                                                     |
+| BuiltIn / Wellfound / company careers pages              | Open job postings, titles, posting dates                                                     | Playwright, public pages, respect robots.txt                                                         |
+| GitHub org pages                                         | Recent commit activity on AI/ML repos                                                        | GitHub public API (rate limit: 60/hr unauth, 5000/hr with a PAT — use PAT) or Playwright as fallback |
+| Press / blog (company site + Crunchbase linked articles) | Funding press releases, leadership announcements, exec commentary                            | Playwright, public pages                                                                             |
 
 ## Snapshot vs. live crawl
 
@@ -51,11 +63,11 @@ This skill writes one JSON file per company, consumed by `tenacious-signal-brief
   "firmographics": {
     "industry": "string",
     "employee_count_band": "15-80 | 80-200 | 200-2000 | 2000+",
-    "hq_location": {"country": "string", "city": "string", "timezone": "string"},
+    "hq_location": { "country": "string", "city": "string", "timezone": "string" },
     "source": "crunchbase_odm"
   },
   "funding": {
-    "last_round": {"stage": "Series B", "amount_usd": 14000000, "closed_at": "2026-02-14"},
+    "last_round": { "stage": "Series B", "amount_usd": 14000000, "closed_at": "2026-02-14" },
     "sources": ["url", "url"],
     "scrape_success": true
   },
@@ -71,19 +83,22 @@ This skill writes one JSON file per company, consumed by `tenacious-signal-brief
     "scrape_failures": []
   },
   "layoffs": {
-    "events_last_120d": [
-      {"date": "2026-01-10", "pct": 12, "count": 80, "source": "layoffs.fyi"}
-    ],
+    "events_last_120d": [{ "date": "2026-01-10", "pct": 12, "count": 80, "source": "layoffs.fyi" }],
     "source": "layoffs_fyi_csv_2026-04-15"
   },
   "leadership": {
     "changes_last_90d": [
-      {"role": "VP Engineering", "name": "...", "announced_at": "2026-03-01", "source": "press_url"}
+      {
+        "role": "VP Engineering",
+        "name": "...",
+        "announced_at": "2026-03-01",
+        "source": "press_url"
+      }
     ]
   },
   "github_org": {
     "org_name": "string | null",
-    "ai_ml_repo_activity": {"commits_last_30d": 3, "active_repos": ["inference-toolkit"]},
+    "ai_ml_repo_activity": { "commits_last_30d": 3, "active_repos": ["inference-toolkit"] },
     "scrape_success": true
   },
   "team_page": {
@@ -94,7 +109,7 @@ This skill writes one JSON file per company, consumed by `tenacious-signal-brief
   },
   "exec_commentary": {
     "signals": [
-      {"type": "keynote", "title": "AI in production", "date": "2025-11-10", "source_url": "..."}
+      { "type": "keynote", "title": "AI in production", "date": "2025-11-10", "source_url": "..." }
     ]
   },
   "scrape_log": {
@@ -112,6 +127,7 @@ This skill writes one JSON file per company, consumed by `tenacious-signal-brief
 Scrapers fail more than their authors expect. The honesty rule from `tenacious-signal-brief` extends here: **a failed scrape is null, not a guess.**
 
 Rules:
+
 - **Blocked by robots.txt.** Set the relevant field to null, log the block in `scrape_log.blocked_urls`, do not retry from a different user agent.
 - **Captcha or login wall encountered.** Same — null + log.
 - **Timeout (>30s per page).** One retry with exponential backoff. On second failure: null + log.
@@ -142,6 +158,7 @@ The Crunchbase sample is 1,001 records, Apache 2.0, in the seed repo. It is a da
 ## layoffs.fyi — the simplest source
 
 Download the CSV once per week. Parse with pandas or equivalent. Filter by:
+
 - Company name exact match (case-insensitive).
 - Date within last 120 days (the signal-brief's cutoff).
 
@@ -152,10 +169,12 @@ The CSV is CC-BY; credit layoffs.fyi in any external output that quotes layoff n
 Unauthenticated GitHub API: 60 requests/hour. You will blow through this on the first ten companies.
 
 Options:
+
 - **With PAT:** 5000/hour. The PAT is user-scoped and read-only for public data; no policy conflict.
 - **Scraped from github.com/{org} pages:** slower, but no API rate limit. Use as fallback.
 
 What to fetch:
+
 - Repos matching patterns: `*llm*`, `*inference*`, `*model*`, `*training*`, `*rag*`, `*agent*`.
 - For each matching repo: commit count in last 30 days (public).
 - Do not clone repos. Metadata only.
@@ -175,6 +194,7 @@ What to fetch:
 ## Cost envelope
 
 This is the cheap part of the pipeline. Playwright is free; GitHub PAT is free. The costs to watch:
+
 - Time budget (you are capped at 200 live-crawl companies, not by dollars).
 - Egress if running on a cloud VM — usually negligible.
 - Re-run cost if a scraper fails silently and you do not notice for a day.
