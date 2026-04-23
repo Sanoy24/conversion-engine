@@ -169,19 +169,51 @@ def _generate_pitch_guidance(ai_score: int, ai_confidence: Confidence) -> PitchG
     )
 
 
-def _check_bench_match() -> BenchMatch:
+def _check_bench_match(required_stacks: list[str] | None = None) -> BenchMatch:
     """
-    Cross-reference prospect's implied need against bench_summary.
-    Uses the placeholder bench data for now — will swap with real on Day 0.
+    Cross-reference prospect's implied need against bench_summary.json.
+    Reads the real bench capacity data from seed/bench_summary.json.
     """
-    bench_candidates = [
-        settings.seeds_path / "bench_summary.md",
-        settings.seeds_path / "bench_summary_PLACEHOLDER.md",
-    ]
-    if not any(path.exists() for path in bench_candidates):
+    import json
+
+    bench_path = settings.seeds_path / "bench_summary.json"
+    if not bench_path.exists():
         return BenchMatch(matched=False, gap="bench_summary_not_loaded")
 
-    # For now, return a default match — will be enhanced with real bench parsing
+    try:
+        with bench_path.open(encoding="utf-8") as f:
+            bench = json.load(f)
+    except (json.JSONDecodeError, OSError) as e:
+        logger.warning("Failed to load bench_summary.json: %s", e)
+        return BenchMatch(matched=False, gap=f"bench_summary_load_error: {e}")
+
+    stacks = bench.get("stacks", {})
+    total_available = bench.get("total_engineers_on_bench", 0)
+
+    if not required_stacks:
+        # No specific requirement — just check overall availability
+        return BenchMatch(
+            matched=total_available > 0,
+            thin=total_available < 5,
+        )
+
+    # Check each required stack against actual capacity
+    gaps = []
+    for stack in required_stacks:
+        stack_lower = stack.lower()
+        stack_info = stacks.get(stack_lower)
+        if not stack_info:
+            gaps.append(stack_lower)
+        elif stack_info.get("available_engineers", 0) == 0:
+            gaps.append(f"{stack_lower} (0 available)")
+
+    if gaps:
+        return BenchMatch(
+            matched=False,
+            thin=True,
+            gap=f"No bench capacity for: {', '.join(gaps)}",
+        )
+
     return BenchMatch(matched=True, thin=False)
 
 

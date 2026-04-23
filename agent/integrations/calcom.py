@@ -74,7 +74,17 @@ class CalComClient:
                     timeout=15.0,
                 )
                 if not response.is_success:
-                    logger.error("Cal.com error body: %s", response.text)
+                    # "Slot already booked" is a routine retry condition when
+                    # the demo sweeps candidate offsets — log it as DEBUG to
+                    # avoid scaring the operator. Real failures (auth, 500s)
+                    # still bubble up as ERROR below via raise_for_status.
+                    body_text = response.text
+                    if (response.status_code == 400
+                            and "already has booking" in body_text):
+                        logger.debug("Cal.com slot taken (retry next offset): %s",
+                                     body_text[:200])
+                    else:
+                        logger.error("Cal.com error body: %s", body_text)
                 response.raise_for_status()
                 result = response.json()
 
@@ -107,7 +117,16 @@ class CalComClient:
             return result, trace
 
         except Exception as e:
-            logger.error("Cal.com booking failed for %s: %s", prospect.company, str(e))
+            # "Slot already booked" during offset sweep = expected retry,
+            # demote to WARNING. Caller's loop will try the next slot.
+            msg = str(e)
+            if "already has booking" in msg or "400 Bad Request" in msg:
+                logger.warning(
+                    "Cal.com slot unavailable for %s (retrying next offset)",
+                    prospect.company,
+                )
+            else:
+                logger.error("Cal.com booking failed for %s: %s", prospect.company, msg)
             trace = TraceRecord(
                 trace_id=trace_id,
                 event_type="calcom_booking_created",

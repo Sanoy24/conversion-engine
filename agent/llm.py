@@ -166,20 +166,56 @@ class LLMClient:
             thread_id=thread_id,
         )
 
-        try:
-            parsed = json.loads(content)
+        def _try_parse(s: str) -> dict | None:
+            try:
+                return json.loads(s)
+            except json.JSONDecodeError:
+                return None
+
+        # Happy path: strict JSON
+        parsed = _try_parse(content)
+        if parsed is not None:
             return parsed, trace
-        except json.JSONDecodeError:
-            # Try to extract JSON from markdown code blocks
-            if "```json" in content:
-                json_str = content.split("```json")[1].split("```")[0].strip()
-                parsed = json.loads(json_str)
-                return parsed, trace
-            if "```" in content:
-                json_str = content.split("```")[1].split("```")[0].strip()
-                parsed = json.loads(json_str)
-                return parsed, trace
-            raise
+
+        # Strip markdown code fences if the model wrapped JSON in ```json ... ```
+        if "```json" in content:
+            try:
+                stripped = content.split("```json", 1)[1].split("```", 1)[0].strip()
+                parsed = _try_parse(stripped)
+                if parsed is not None:
+                    return parsed, trace
+            except IndexError:
+                pass
+        if "```" in content:
+            try:
+                stripped = content.split("```", 1)[1].split("```", 1)[0].strip()
+                parsed = _try_parse(stripped)
+                if parsed is not None:
+                    return parsed, trace
+            except IndexError:
+                pass
+
+        # Last resort: json_repair. Handles unterminated strings, unescaped
+        # quotes, trailing commas, and truncated output — all common LLM
+        # failures even when response_format=json_object is set.
+        try:
+            from json_repair import repair_json
+            repaired = repair_json(content, return_objects=True)
+            if isinstance(repaired, dict):
+                logger.warning(
+                    "LLM call %s: JSON repaired (original length=%d)",
+                    trace.trace_id, len(content),
+                )
+                return repaired, trace
+        except Exception as e:
+            logger.error("json_repair fallback failed: %s", e)
+
+        # Surface the first 300 chars of the raw content to make debugging easy
+        logger.error(
+            "LLM call %s: could not parse or repair JSON. content[:300]=%r",
+            trace.trace_id, content[:300],
+        )
+        raise json.JSONDecodeError("Unparseable and unrepairable LLM JSON", content, 0)
 
     @property
     def total_cost(self) -> float:

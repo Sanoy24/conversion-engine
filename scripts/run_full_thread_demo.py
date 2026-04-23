@@ -184,14 +184,37 @@ async def run(company_name: str, contact_name: str, contact_email: str,
     t0 = time.monotonic()
     calcom = get_calcom_client()
     # Try candidate slots spread across future days/hours until Cal.com accepts one.
+    # We have 1 calendar owner across the whole demo, so each 30-min slot can
+    # only take one prospect. Generate a wide pool (many days × many hours) so
+    # 20+ back-to-back runs don't exhaust it.
+    #
+    # Policy: bookings must land AFTER the challenge week ends (Sat Apr 25,
+    # 2026, 21:00 UTC). We anchor the floor at Mon May 4, 2026 — 9 days past
+    # the deadline — so no demo booking can fall inside a staff member's
+    # challenge-week calendar, even if someone re-runs this before today.
+    CHALLENGE_END = datetime(2026, 4, 25, 21, 0, 0)
+    BOOKING_FLOOR = datetime(2026, 5, 4, 0, 0, 0)  # Mon after challenge week
+    today_floor = datetime.utcnow() + timedelta(days=14)
+    booking_base = max(today_floor, BOOKING_FLOOR)
+
     cal_resp, cal_trace = None, None
-    _candidate_offsets = [
-        (14, 9), (14, 11), (14, 14), (21, 9), (21, 11), (21, 14),
-        (28, 9), (28, 11), (28, 14), (35, 10),
-    ]
-    for _days, _hour in _candidate_offsets:
-        _fb = (datetime.utcnow() + timedelta(days=_days)).replace(
-            hour=_hour, minute=0, second=0, microsecond=0)
+    _candidate_offsets: list[tuple[int, int, int]] = []
+    for _days in range(0, 42):                           # ~6 weeks starting from the floor
+        for _hour in (9, 10, 11, 13, 14, 15, 16):        # 7 business-hour slots
+            for _minute in (0, 30):                      # two half-hour starts
+                _candidate_offsets.append((_days, _hour, _minute))
+    # Deterministic shuffle per-run so different prospects try different slots
+    # first (keeps the failure-then-retry log noise short on average).
+    import random as _random
+    _random.Random(thread_id).shuffle(_candidate_offsets)
+
+    booked = False
+    for _days, _hour, _minute in _candidate_offsets:
+        _fb = (booking_base + timedelta(days=_days)).replace(
+            hour=_hour, minute=_minute, second=0, microsecond=0)
+        # Hard safety check: never propose a slot during the challenge week.
+        if _fb <= CHALLENGE_END:
+            continue
         start = _fb.isoformat() + "Z"
         end = (_fb + timedelta(minutes=30)).isoformat() + "Z"
         cal_resp, cal_trace = await calcom.create_booking(
@@ -202,6 +225,7 @@ async def run(company_name: str, contact_name: str, contact_email: str,
                    f"thread={thread_id}"),
         )
         if cal_trace.success:
+            booked = True
             break  # booked successfully — stop trying
     _emit(_stage_record(
         "6_calcom_booking", t0, cal_trace.success,

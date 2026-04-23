@@ -428,11 +428,7 @@ now preserves partial runs instead of discarding them on CLI failure.
 
 **Not working / limitations.**
 
-1. Seed placeholder files (`tenacious-seeds-placeholder/seeds_placeholder/…`)
-   are still placeholders — `style_guide.md`, `bench_summary.md`, and
-   `pricing_sheet.md` fall back to in-code defaults. Swap in real seeds on
-   Day 0 of the grading window.
-2. Job-posts snapshot is synthesized from Crunchbase names; this must be
+1. Job-posts snapshot is synthesized from Crunchbase names; this must be
    replaced before submission.
 3. Act I is not complete until both tau2 runs produce the required artifacts.
 4. Act II evidence is not complete until live outbound is enabled against a

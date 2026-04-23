@@ -72,13 +72,13 @@ def test_leadership_change_requires_recent_start_date():
     assert recent_signal.change is True
 
 
-def test_seed_loader_prefers_real_filename_over_placeholder(monkeypatch):
+def test_seed_loader_resolves_real_filename(monkeypatch):
+    """The loader returns the first matching file from the candidate list."""
     temp_dir = Path("tests") / "_seed_loader_tmp"
     temp_dir.mkdir(exist_ok=True)
     monkeypatch.setattr(settings, "seeds_dir", str(temp_dir))
     (temp_dir / "style_guide.md").write_text("real style guide", encoding="utf-8")
-    (temp_dir / "style_guide_PLACEHOLDER.md").write_text("placeholder", encoding="utf-8")
 
-    loaded = _load_seed_file(["style_guide.md", "style_guide_PLACEHOLDER.md"])
+    loaded = _load_seed_file(["style_guide.md"])
 
     assert loaded == "real style guide"

@@ -74,7 +74,7 @@ class Settings(BaseSettings):
     live_outbound_enabled: bool = False
 
     # --- Seed Data Paths ---
-    seeds_dir: str = "./tenacious-seeds-placeholder/seeds_placeholder"
+    seeds_dir: str = "./tenacious_sales_data/seed"
     crunchbase_data_path: str = "./data/crunchbase_odm_sample.json"
     layoffs_data_path: str = "./data/layoffs.csv"
     job_posts_snapshot_path: str = "./data/job_posts_snapshot.json"

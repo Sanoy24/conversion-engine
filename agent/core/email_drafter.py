@@ -45,21 +45,36 @@ async def draft_email(
     traces: list[TraceRecord] = []
     thread_id = thread_id or f"thread_{uuid.uuid4().hex[:8]}"
 
-    # Load seed materials for context
-    style_guide = _load_seed_file(["style_guide.md", "style_guide_PLACEHOLDER.md"])
-    _load_seed_file(["email_sequences.md", "email_sequences_PLACEHOLDER.md"])
-    pricing_sheet = _load_seed_file(["pricing_sheet.md", "pricing_sheet_PLACEHOLDER.md"])
-    bench_summary = _load_seed_file(["bench_summary.md", "bench_summary_PLACEHOLDER.md"])
+    # Load ALL seed materials from tenacious_sales_data/seed/.
+    style_guide = _load_seed_file(["style_guide.md"])
+    # email_sequences/ is a folder with cold.md, warm.md, reengagement.md
+    email_sequences = _load_seed_file(["email_sequences"])
+    pricing_sheet = _load_seed_file(["pricing_sheet.md"])
+    # bench_summary is a JSON file — pretty-printed into the prompt
+    bench_summary = _load_seed_file(["bench_summary.json"])
+    # Discovery transcripts — folder used for objection handling patterns
+    discovery_transcripts = _load_seed_file(["discovery_transcripts"])
+    # Case studies — grounding for warm replies and proof points
+    case_studies = _load_seed_file(["case_studies.md"])
+    # Sales deck notes — pitch framing per segment
+    sales_deck_notes = _load_seed_file(["sales_deck_notes.md"])
+    # ICP definition — segment qualifying/disqualifying filters
+    icp_definition = _load_seed_file(["icp_definition.md"])
 
     # Build the grounded claims list
     grounded = _extract_grounded_claims(signal_brief)
 
-    # Build the system prompt
+    # Build the system prompt with ALL seed context
     system_prompt = _build_system_prompt(
         email_type=email_type,
         style_guide=style_guide,
         bench_summary=bench_summary,
         pricing_sheet=pricing_sheet,
+        email_sequences=email_sequences,
+        discovery_transcripts=discovery_transcripts,
+        case_studies=case_studies,
+        sales_deck_notes=sales_deck_notes,
+        icp_definition=icp_definition,
     )
 
     # Build the user prompt with signal data
@@ -155,9 +170,40 @@ def _build_system_prompt(
     style_guide: str,
     bench_summary: str,
     pricing_sheet: str,
+    email_sequences: str = "",
+    discovery_transcripts: str = "",
+    case_studies: str = "",
+    sales_deck_notes: str = "",
+    icp_definition: str = "",
 ) -> str:
     """Build the system prompt for the email drafter LLM call."""
-    return f"""You are an email drafter for Tenacious Consulting and Outsourcing.
+    # Compose optional sections — only include if data is available
+    optional_sections = []
+
+    if email_sequences:
+        optional_sections.append(
+            f"## EMAIL SEQUENCE TEMPLATES (follow structure, NOT verbatim)\n{email_sequences[:2000]}"
+        )
+    if discovery_transcripts and email_type in (EmailType.WARM_REPLY, EmailType.RE_ENGAGEMENT):
+        optional_sections.append(
+            f"## DISCOVERY TRANSCRIPTS (objection handling patterns)\n{discovery_transcripts[:2000]}"
+        )
+    if case_studies and email_type == EmailType.WARM_REPLY:
+        optional_sections.append(
+            f"## CASE STUDIES (for proof points in warm replies only)\n{case_studies[:1500]}"
+        )
+    if sales_deck_notes:
+        optional_sections.append(
+            f"## SALES DECK NOTES (pitch framing per segment)\n{sales_deck_notes[:1500]}"
+        )
+    if icp_definition:
+        optional_sections.append(
+            f"## ICP SEGMENT DEFINITIONS (qualifying filters & pitch language)\n{icp_definition[:2000]}"
+        )
+
+    optional_block = "\n\n".join(optional_sections)
+
+    return f"""You are an email drafter for Tenacious Intelligence Corporation.
 You write outbound emails that a prospect (founder, CTO, VP Engineering) would read with interest rather than discomfort.
 
 ## RULES — THESE ARE ABSOLUTE CONSTRAINTS
@@ -166,8 +212,13 @@ You write outbound emails that a prospect (founder, CTO, VP Engineering) would r
 2. BENCH CONSTRAINT: Never commit to specific capacity that the bench summary does not show. Use cautious language for thin bench areas.
 3. PRICING: Only quote public-tier pricing bands. Deeper pricing routes to a human.
 4. NO FABRICATION: Never invent quotes, case studies, client names, or signal data.
-5. TONE: Follow the style guide exactly. Two-sentence paragraphs max for cold outbound. No hype words.
-6. DRAFTS: All outputs are marked as drafts per data handling policy.
+5. TONE: Follow the style guide exactly. Max 120 words for cold outbound body. No hype words, no emojis in cold outreach.
+6. SUBJECT LINE: Under 60 characters. Start with "Request:", "Context:", "Note on", "Congrats on", or "Question on".
+7. SIGNATURE: First name, title (Research Partner), Tenacious Intelligence Corporation, gettenacious.com. Nothing else.
+8. ONE ASK per email. Never stack multiple asks.
+9. DRAFTS: All outputs are marked as drafts per data handling policy.
+10. NO OFFSHORE CLICHÉS: Never use "top talent", "world-class", "A-players", "rockstar", "ninja", or "cost savings of X%".
+11. WORD "BENCH": Never use the word "bench" — prospects read it as offshore-vendor language. Use "engineering team" or "available capacity".
 
 ## CONFIDENCE-AWARE PHRASING
 
@@ -175,22 +226,32 @@ For each signal referenced:
 - confidence: high → ASSERT: "You closed a $14M Series B in February..."
 - confidence: medium → SOFT-ASSERT: "Looking at the public signal, it seems..."
 - confidence: low → ASK: "Is your engineering team expanding faster than..."
+- fewer than 5 open roles → NEVER claim "aggressive hiring" or "scaling aggressively"
+
+## THE FIVE TONE MARKERS (all must be preserved)
+1. Direct — clear, brief, actionable, no filler
+2. Grounded — every claim maps to the signal brief
+3. Honest — refuse claims that cannot be grounded
+4. Professional — respectful, no internal jargon
+5. Non-condescending — gaps are research findings, not failures
 
 ## STYLE GUIDE
-{style_guide[:2000]}
+{style_guide[:2500]}
 
-## BENCH SUMMARY
+## BENCH SUMMARY (available engineering capacity)
 {bench_summary[:1500]}
 
-## PRICING
-{pricing_sheet[:1000]}
+## PRICING BANDS (quotable ranges only)
+{pricing_sheet[:1200]}
+
+{optional_block}
 
 ## OUTPUT FORMAT
 
 Return a JSON object with these exact fields:
 {{
-    "subject": "email subject line",
-    "body": "email body text",
+    "subject": "email subject line (under 60 chars)",
+    "body": "email body text (max 120 words for cold, 100 for follow-up, 70 for close)",
     "proposed_times": [{{"prospect_local": "2026-04-22 10:00 CET", "utc": "2026-04-22 09:00 UTC"}}],
     "calcom_link": "booking URL"
 }}
@@ -367,12 +428,43 @@ def _extract_grounded_claims(brief: HiringSignalBrief) -> list[GroundedClaim]:
 
 
 def _load_seed_file(filenames: str | list[str]) -> str:
-    """Load the first available seed material file from the configured seed path."""
+    """
+    Load the first available seed material from the configured seed path.
+
+    Each candidate is resolved in order. Handles three shapes:
+      - plain file (e.g. `style_guide.md`) — returned as-is
+      - directory (e.g. `email_sequences/`) — all .md files inside are
+        concatenated with section headers so the drafter sees the full
+        cold/warm/reengagement sequence
+      - JSON file (e.g. `bench_summary.json`) — returned as pretty-printed
+        text so the LLM can read it in the prompt
+    """
     candidates = [filenames] if isinstance(filenames, str) else filenames
     for filename in candidates:
         path = settings.seeds_path / filename
+
+        # Directory: concatenate all .md files inside
+        if path.is_dir():
+            parts: list[str] = []
+            for md_path in sorted(path.glob("*.md")):
+                parts.append(f"## {md_path.stem}\n\n{md_path.read_text(encoding='utf-8')}")
+            if parts:
+                return "\n\n---\n\n".join(parts)
+            continue
+
         if path.exists():
+            # JSON files: read + pretty-print so the LLM can consume them as text
+            if path.suffix == ".json":
+                import json as _json
+                try:
+                    data = _json.loads(path.read_text(encoding="utf-8"))
+                    return _json.dumps(data, indent=2)
+                except _json.JSONDecodeError:
+                    pass
             return path.read_text(encoding="utf-8")
 
-    logger.warning("Seed file not found. Checked: %s", ", ".join(str(settings.seeds_path / f) for f in candidates))
+    logger.warning(
+        "Seed file not found. Checked: %s",
+        ", ".join(str(settings.seeds_path / f) for f in candidates),
+    )
     return ""
