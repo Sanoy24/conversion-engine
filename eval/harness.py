@@ -75,26 +75,39 @@ def run_baseline(
     max_concurrency: int = 4,
     timeout_s: int | None = 180,
     auto_resume: bool = True,
+    task_ids: list[str] | None = None,
+    extra_env: dict[str, str] | None = None,
 ) -> dict:
     """Run the τ²-Bench baseline and write score/trace artifacts.
 
     Returns a dict with pass@1 (mean across trials), 95% CI, cost per run, and
     p50/p95 latency per task. Writes one aggregated entry to score_log.json and
     one trace record per task/trial to trace_log.jsonl.
+
+    Args:
+        task_ids: explicit task IDs to run. When provided, the CLI receives
+            `--task-ids` and `n_tasks` is ignored for selection (it is still
+            recorded in the score log for bookkeeping).
+        extra_env: additional environment variables forwarded to the tau2 CLI.
+            Used by the SCAP mechanism to inject the ask-not-assert postscript
+            via a project-specific env var without forking tau2-bench itself.
     """
     ensure_tau2_bench()
 
+    effective_n_tasks = len(task_ids) if task_ids else n_tasks
     run_id = f"eval_{entry_type}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
     logger.info(
-        "Running %s: domain=%s, model=%s, n_tasks=%d, n_trials=%d, run_id=%s",
-        entry_type, domain, model, n_tasks, n_trials, run_id,
+        "Running %s: domain=%s, model=%s, n_tasks=%d, n_trials=%d, task_ids=%s, run_id=%s",
+        entry_type, domain, model, effective_n_tasks, n_trials,
+        task_ids if task_ids else "(sequential)",
+        run_id,
     )
 
     start = time.monotonic()
     results_path, process_returncode = _run_tau2_cli(
         model=model,
         domain=domain,
-        n_tasks=n_tasks,
+        n_tasks=effective_n_tasks,
         n_trials=n_trials,
         temperature=temperature,
         run_id=run_id,
@@ -102,6 +115,8 @@ def run_baseline(
         max_concurrency=max_concurrency,
         timeout_s=timeout_s,
         auto_resume=auto_resume,
+        task_ids=task_ids,
+        extra_env=extra_env,
     )
     wall_clock_s = time.monotonic() - start
 
@@ -119,8 +134,9 @@ def run_baseline(
         timestamp=datetime.utcnow().isoformat(),
         model=model,
         domain=domain,
-        n_tasks=n_tasks,
+        n_tasks=effective_n_tasks,
         n_trials=n_trials,
+        task_ids=task_ids,
         temperature=temperature,
         wall_clock_s=round(wall_clock_s, 2),
         run_id=run_id,
@@ -159,6 +175,8 @@ def _run_tau2_cli(
     max_concurrency: int = 4,
     timeout_s: int | None = 180,
     auto_resume: bool = True,
+    task_ids: list[str] | None = None,
+    extra_env: dict[str, str] | None = None,
 ) -> tuple[Path, int]:
     """Invoke the tau2 CLI and return the path to its results.json plus exit code."""
     env = os.environ.copy()
@@ -171,6 +189,8 @@ def _run_tau2_cli(
     # Force UTF-8 on Windows so rich/colorama doesn't crash on arrow glyphs.
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONUTF8"] = "1"
+    if extra_env:
+        env.update(extra_env)
 
     llm_args = json.dumps({"temperature": temperature})
     cmd = [
@@ -179,13 +199,17 @@ def _run_tau2_cli(
         "--agent-llm", model,
         "--user-llm", model,
         "--num-trials", str(n_trials),
-        "--num-tasks", str(n_tasks),
         "--agent-llm-args", llm_args,
         "--user-llm-args", llm_args,
         "--save-to", run_id,
         "--max-concurrency", str(max_concurrency),
         "--log-level", "WARNING",
     ]
+    if task_ids:
+        cmd.append("--task-ids")
+        cmd.extend(task_ids)
+    else:
+        cmd.extend(["--num-tasks", str(n_tasks)])
     if auto_resume:
         cmd.append("--auto-resume")
     if timeout_s:
