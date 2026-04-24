@@ -1,0 +1,15 @@
+{
+  "_doc": "Sealed held-out slice for Act IV evaluation. Tasks drawn from the tau2-bench retail domain's 'test' split (see eval/tau2-bench/data/tau2/domains/retail/split_tasks.json). Disjoint from the 30-task dev slice used for interim baseline. Committed before Act IV runs; no per-task inspection permitted prior to final evaluation.",
+  "domain": "retail",
+  "split_source": "data/tau2/domains/retail/split_tasks.json :: test",
+  "task_ids": [
+    "5", "9", "12", "17", "18", "26", "27", "32",
+    "33", "36", "38", "39", "40", "42", "45", "49",
+    "51", "53", "55", "56"
+  ],
+  "n_tasks": 20,
+  "n_trials": 5,
+  "n_simulations": 100,
+  "committed_at": "2026-04-25",
+  "overlaps_with_dev_slice": false
+}

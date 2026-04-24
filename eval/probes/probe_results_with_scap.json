@@ -1,0 +1,20 @@
+{
+  "with_scap": {
+    "P007": {
+      "n_triggers": 0,
+      "n_samples": 3
+    },
+    "P011": {
+      "n_triggers": 2,
+      "n_samples": 3
+    },
+    "P027": {
+      "n_triggers": 3,
+      "n_samples": 3
+    },
+    "P032": {
+      "n_triggers": 1,
+      "n_samples": 3
+    }
+  }
+}

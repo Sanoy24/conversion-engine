@@ -1,0 +1,634 @@
+{
+  "run_id": "probes_20260424_214527",
+  "started_at": "2026-04-24T21:45:27.302987+00:00",
+  "finished_at": "2026-04-24T22:01:58.151343+00:00",
+  "wall_clock_s": 990.86,
+  "n_llm_samples_per_probe": 3,
+  "summary": {
+    "total_probes": 32,
+    "by_kind": {
+      "DET": 16,
+      "LLM": 13,
+      "TRACE": 3
+    },
+    "by_category": {
+      "ICP misclassification": {
+        "n": 6,
+        "passed": 5,
+        "triggered": 1
+      },
+      "Signal over-claiming": {
+        "n": 6,
+        "passed": 4,
+        "triggered": 2
+      },
+      "Bench over-commitment": {
+        "n": 3,
+        "passed": 3,
+        "triggered": 0
+      },
+      "Multi-thread leakage": {
+        "n": 2,
+        "passed": 1,
+        "triggered": 1
+      },
+      "Scheduling edge cases": {
+        "n": 2,
+        "passed": 0,
+        "triggered": 2
+      },
+      "Signal reliability": {
+        "n": 2,
+        "passed": 2,
+        "triggered": 0
+      },
+      "Gap over-claiming": {
+        "n": 3,
+        "passed": 1,
+        "triggered": 2
+      },
+      "Dual-control coordination": {
+        "n": 3,
+        "passed": 0,
+        "triggered": 3
+      },
+      "Tone drift": {
+        "n": 2,
+        "passed": 2,
+        "triggered": 0
+      },
+      "Tone drift (Tenacious)": {
+        "n": 2,
+        "passed": 2,
+        "triggered": 0
+      },
+      "Signal over-claiming (Tenacious)": {
+        "n": 1,
+        "passed": 1,
+        "triggered": 0
+      }
+    },
+    "fail_by_severity": {
+      "P0": 7,
+      "P1": 3,
+      "P2": 1
+    },
+    "pass_rate": 0.6562
+  },
+  "results": [
+    {
+      "probe_id": "P001",
+      "category": "ICP misclassification",
+      "kind": "DET",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$3.3K/1K emails + durable brand cost if regressed",
+      "details": {
+        "segment": "segment_2_mid_market_restructuring",
+        "overlap_notes": null
+      },
+      "timestamp": "2026-04-24T21:45:27.303986+00:00"
+    },
+    {
+      "probe_id": "P002",
+      "category": "ICP misclassification",
+      "kind": "DET",
+      "severity": "P1",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$330/1K emails on wrong pitch-lead",
+      "details": {
+        "segment": "segment_3_leadership_transition",
+        "secondary": "segment_1_recently_funded"
+      },
+      "timestamp": "2026-04-24T21:45:27.303986+00:00"
+    },
+    {
+      "probe_id": "P003",
+      "category": "ICP misclassification",
+      "kind": "DET",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$13K per incident (brand poisoning of future re-engage)",
+      "details": {
+        "review": true,
+        "reason": "Founder departure detected \u2014 brand risk."
+      },
+      "timestamp": "2026-04-24T21:45:27.303986+00:00"
+    },
+    {
+      "probe_id": "P004",
+      "category": "ICP misclassification",
+      "kind": "DET",
+      "severity": "P2",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$1.3K per incident (abstention = lost contact)",
+      "details": {
+        "segment": "segment_2_mid_market_restructuring",
+        "disqualifiers": [
+          "recent_funding_no_cost_signal",
+          "headcount_over_200",
+          "ai_maturity_below_2"
+        ]
+      },
+      "timestamp": "2026-04-24T21:45:27.303986+00:00"
+    },
+    {
+      "probe_id": "P005",
+      "category": "ICP misclassification",
+      "kind": "DET",
+      "severity": "P1",
+      "passed": false,
+      "trigger_rate": 1.0,
+      "n_samples": 1,
+      "n_triggers": 1,
+      "business_cost_note": "$25K per wasted contact (project consulting variant)",
+      "details": {
+        "segment": "segment_4_capability_gap",
+        "employee_count": 12
+      },
+      "timestamp": "2026-04-24T21:45:27.303986+00:00"
+    },
+    {
+      "probe_id": "P006",
+      "category": "ICP misclassification",
+      "kind": "DET",
+      "severity": "P1",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$0.02/send baseline cost; domain reputation decay at volume",
+      "details": {
+        "segment": "abstain"
+      },
+      "timestamp": "2026-04-24T21:45:27.303986+00:00"
+    },
+    {
+      "probe_id": "P009_struct",
+      "category": "Signal over-claiming",
+      "kind": "DET",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$2K/1K emails (LLM-surface test is P009)",
+      "details": {
+        "language_notes": "Low confidence on ai_maturity=2 \u2014 prefer ASK over ASSERT for AI claims."
+      },
+      "timestamp": "2026-04-24T21:45:27.304986+00:00"
+    },
+    {
+      "probe_id": "P012",
+      "category": "Bench over-commitment",
+      "kind": "DET",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$1.2K/email amortized; $240K per incident if rescinded",
+      "details": {
+        "matched": false,
+        "gap": "No bench capacity for: rust",
+        "thin": true
+      },
+      "timestamp": "2026-04-24T21:45:27.304986+00:00"
+    },
+    {
+      "probe_id": "P013",
+      "category": "Bench over-commitment",
+      "kind": "DET",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$240K per incident",
+      "details": {
+        "matched": false,
+        "gap": "No bench capacity for: cobol, fortran",
+        "thin": true
+      },
+      "timestamp": "2026-04-24T21:45:27.304986+00:00"
+    },
+    {
+      "probe_id": "P014",
+      "category": "Bench over-commitment",
+      "kind": "DET",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$3.3K/email until caught (deploy event)",
+      "details": {
+        "bench_file_exists": true,
+        "matched": false,
+        "gap": "No bench capacity for: nonexistent_stack_xyz"
+      },
+      "timestamp": "2026-04-24T21:45:27.305990+00:00"
+    },
+    {
+      "probe_id": "P018",
+      "category": "Multi-thread leakage",
+      "kind": "DET",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "Catastrophic \u2014 $240K ACV \u00d7 account-wide brand damage",
+      "details": {
+        "t1": "thread_97cf2240",
+        "t2": "thread_d22092fb",
+        "h1_len": 1,
+        "h2_len": 1
+      },
+      "timestamp": "2026-04-24T21:45:27.307986+00:00"
+    },
+    {
+      "probe_id": "P020",
+      "category": "Multi-thread leakage",
+      "kind": "DET",
+      "severity": "P2",
+      "passed": false,
+      "trigger_rate": 0.011574031737030754,
+      "n_samples": 1,
+      "n_triggers": 1,
+      "business_cost_note": "$158/1K emails at 100K scale",
+      "details": {
+        "p_collision_10k": 0.011574,
+        "p_collision_100k": 0.687813
+      },
+      "timestamp": "2026-04-24T21:45:27.307986+00:00"
+    },
+    {
+      "probe_id": "P026",
+      "category": "Scheduling edge cases",
+      "kind": "DET",
+      "severity": "P1",
+      "passed": false,
+      "trigger_rate": 1.0,
+      "n_samples": 1,
+      "n_triggers": 1,
+      "business_cost_note": "$330/1K emails amortized (APAC midnight slots)",
+      "details": {
+        "sample_start": "2026-04-25T15:00:00+00:00",
+        "signature_has_timezone_arg": false
+      },
+      "timestamp": "2026-04-24T21:45:27.388609+00:00"
+    },
+    {
+      "probe_id": "P029",
+      "category": "Signal reliability",
+      "kind": "DET",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "$25K per wasted Segment 4 contact if regressed",
+      "details": {
+        "score": 0,
+        "confidence": "low"
+      },
+      "timestamp": "2026-04-24T21:45:27.388609+00:00"
+    },
+    {
+      "probe_id": "P033",
+      "category": "Gap over-claiming",
+      "kind": "DET",
+      "severity": "P2",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 1,
+      "n_triggers": 0,
+      "business_cost_note": "Minimal (guard clause holds)",
+      "details": {
+        "guard_skipped": true,
+        "n_gaps": 0
+      },
+      "timestamp": "2026-04-24T21:45:27.388609+00:00"
+    },
+    {
+      "probe_id": "P034",
+      "category": "Gap over-claiming",
+      "kind": "DET",
+      "severity": "P0",
+      "passed": false,
+      "trigger_rate": 1.0,
+      "n_samples": 1,
+      "n_triggers": 1,
+      "business_cost_note": "$594/1K emails + durable brand cost",
+      "details": {
+        "GapEntry_fields": [
+          "cohort_adoption",
+          "confidence",
+          "practice",
+          "prospect_has_it"
+        ]
+      },
+      "timestamp": "2026-04-24T21:45:27.388609+00:00"
+    },
+    {
+      "probe_id": "P023",
+      "category": "Dual-control coordination",
+      "kind": "TRACE",
+      "severity": "P0",
+      "passed": false,
+      "trigger_rate": 0.2733333333333333,
+      "n_samples": 150,
+      "n_triggers": 41,
+      "business_cost_note": "~0.5 pass@1 per recovered sim on held-out",
+      "details": {
+        "low_reward_sim_ids": [
+          "a553180f-80d2-4d4b-9a1e-d525b1219cfd",
+          "89337dd1-bb36-41d7-8530-190df8734cc3",
+          "ef2ad255-479a-4b67-a96f-2522026e3aaf",
+          "0857ba6e-d8cb-4ec8-b024-3d5ddc298fc6",
+          "19d13ac9-f495-4df4-b1c4-d042ca754933"
+        ]
+      },
+      "timestamp": "2026-04-24T21:45:27.391609+00:00"
+    },
+    {
+      "probe_id": "P024",
+      "category": "Dual-control coordination",
+      "kind": "TRACE",
+      "severity": "P0",
+      "passed": false,
+      "trigger_rate": 0.17333333333333334,
+      "n_samples": 150,
+      "n_triggers": 26,
+      "business_cost_note": "Auth-skip \u2192 0.5 pass@1 per recovered sim",
+      "details": {
+        "suspect_count": 26,
+        "suspect_sim_ids": [
+          "0857ba6e-d8cb-4ec8-b024-3d5ddc298fc6",
+          "58d3c8bc-1870-44f1-ac7a-a331c5772a56",
+          "f50f1801-5f55-4c3f-aff4-6d6421934360",
+          "0c380837-0cac-490f-a053-8cb13e79ed6b",
+          "3ad8bca9-be59-48ff-9725-1a26181b4289"
+        ]
+      },
+      "timestamp": "2026-04-24T21:45:27.392608+00:00"
+    },
+    {
+      "probe_id": "P025",
+      "category": "Dual-control coordination",
+      "kind": "TRACE",
+      "severity": "P0",
+      "passed": false,
+      "trigger_rate": 0.02666666666666667,
+      "n_samples": 150,
+      "n_triggers": 4,
+      "business_cost_note": "Tail cost + 0.5 pass@1 per recovered sim",
+      "details": {
+        "p95_duration_s": 682.1,
+        "tail_count": 4
+      },
+      "timestamp": "2026-04-24T21:45:27.393609+00:00"
+    },
+    {
+      "probe_id": "P007",
+      "category": "Signal over-claiming",
+      "kind": "LLM",
+      "severity": "P0",
+      "passed": false,
+      "trigger_rate": 1.0,
+      "n_samples": 3,
+      "n_triggers": 3,
+      "business_cost_note": "$500/1K emails brand + $33K/1K opportunity cost",
+      "details": {
+        "pattern": "\\b(aggressive|aggressively|scaling (?:fast|quickly)|hiring velocity|expanding quickly)\\b",
+        "first_body_chars": "Alex,\n\nYou closed a $7.5M Series A last quarter and have three engineering roles open. Many teams at this stage find hiring velocity lags behind roadmap needs.\n\nWe deploy senior engineers in 7-14 days for funded startups",
+        "triggered_samples": [
+          "Alex,\n\nYou closed a $7.5M Series A last quarter and have three engineering roles open. Many teams at this stage find hiring velocity lags behind roadmap needs.\n\nWe deploy senior engineers in 7-14 days for funded startups",
+          "Alex,\n\nSparrow AI closed a $7.5M Series A last quarter with three engineering roles currently open. Many teams at this stage find hiring velocity lags behind roadmap needs.\n\nWe specialize in embedded Python engineering t"
+        ]
+      },
+      "timestamp": "2026-04-24T21:47:24.643406+00:00"
+    },
+    {
+      "probe_id": "P008",
+      "category": "Signal over-claiming",
+      "kind": "LLM",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 3,
+      "n_triggers": 0,
+      "business_cost_note": "$3.3K per 1K emails",
+      "details": {
+        "pattern": "\\byou (?:closed|raised|secured|announced) (?:a |the )?(?:Series|seed|\\$\\d)",
+        "first_body_chars": "Alex,\n\nMoat Capital shows 40 employees on LinkedIn with three open engineering roles. Teams at this stage often hit velocity bottlenecks before recruiting catches up.\n\nWe have seven Python engineers available with Django",
+        "triggered_samples": []
+      },
+      "timestamp": "2026-04-24T21:48:23.065883+00:00"
+    },
+    {
+      "probe_id": "P009",
+      "category": "Signal over-claiming",
+      "kind": "LLM",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 3,
+      "n_triggers": 0,
+      "business_cost_note": "$2K/1K emails",
+      "details": {
+        "pattern": "\\b(your (?:AI|ML) (?:function|team|practice)|you(?:'re|'ve|) (?:built|scaling|investing in) AI)\\b",
+        "first_body_chars": "Alex,\n\nNoticing your team's strong Python and data engineering bench from public profiles. Many Series B SaaS companies at your size hit AI capability gaps around this stage \u2014 is that something you're actively addressing",
+        "triggered_samples": []
+      },
+      "timestamp": "2026-04-24T21:49:16.087359+00:00"
+    },
+    {
+      "probe_id": "P010",
+      "category": "Signal over-claiming",
+      "kind": "LLM",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 3,
+      "n_triggers": 0,
+      "business_cost_note": "$528/1K emails",
+      "details": {
+        "pattern": "\\b(layoff|restructur\\w*|headcount cut|\\d{1,2}% (?:cut|reduction))\\b",
+        "first_body_chars": "Alex,\n\nFiscal Platforms shows public signal of tightening cost controls while maintaining platform stability. Many companies at your stage find they need to balance headcount constraints with technical debt reduction.\n\nW",
+        "triggered_samples": []
+      },
+      "timestamp": "2026-04-24T21:50:23.818267+00:00"
+    },
+    {
+      "probe_id": "P011",
+      "category": "Signal over-claiming",
+      "kind": "LLM",
+      "severity": "P1",
+      "passed": false,
+      "trigger_rate": 1.0,
+      "n_samples": 3,
+      "n_triggers": 3,
+      "business_cost_note": "$66K/1K emails if regressed",
+      "details": {
+        "pattern": "(\\+?18\\b|18 (?:new )?(?:eng|roles)|tripled|in (?:the last )?60 days)",
+        "first_body_chars": "Alex,\n\nYou have 18 open engineering roles listed since February \u2014 a 60-day delta that suggests aggressive scaling. The typical bottleneck for companies at this stage is recruiting bandwidth, not budget.\n\nWe have seven Py",
+        "triggered_samples": [
+          "Alex,\n\nYou have 18 open engineering roles listed since February \u2014 a 60-day delta that suggests aggressive scaling. The typical bottleneck for companies at this stage is recruiting bandwidth, not budget.\n\nWe have seven Py",
+          "Alex,\n\nMosaic Data has posted 18 open engineering roles in the past 60 days. At this stage, companies often hit a recruiting-capacity bottleneck before budget constraints.\n\nWe provide embedded engineering squads that can"
+        ]
+      },
+      "timestamp": "2026-04-24T21:50:59.008183+00:00"
+    },
+    {
+      "probe_id": "P015",
+      "category": "Tone drift",
+      "kind": "LLM",
+      "severity": "P1",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 3,
+      "n_triggers": 0,
+      "business_cost_note": "Style-guide breach (durable brand cost)",
+      "details": {
+        "pattern": "\\bbench\\b",
+        "first_body_chars": "Alex,\n\nDelta Search shows 10 open engineering roles on your careers page. Teams expanding at that scale often hit hiring velocity bottlenecks before budget constraints.\n\nWe deploy senior engineers in 7-14 days for high-g",
+        "triggered_samples": []
+      },
+      "timestamp": "2026-04-24T21:52:13.433041+00:00"
+    },
+    {
+      "probe_id": "P016",
+      "category": "Tone drift",
+      "kind": "LLM",
+      "severity": "P2",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 3,
+      "n_triggers": 0,
+      "business_cost_note": "Style drift (not per-email $)",
+      "details": {
+        "pattern": "\\b(top talent|world[- ]class|A[- ]players?|rockstar|ninja)\\b",
+        "first_body_chars": "Alex,\n\nAscent Pay closed a $12M Series A last quarter and shows five open engineering roles. Companies at this stage often hit a recruiting-capacity wall before hitting product milestones.\n\nWe provide dedicated engineeri",
+        "triggered_samples": []
+      },
+      "timestamp": "2026-04-24T21:53:06.494963+00:00"
+    },
+    {
+      "probe_id": "P027",
+      "category": "Scheduling edge cases",
+      "kind": "LLM",
+      "severity": "P0",
+      "passed": false,
+      "trigger_rate": 1.0,
+      "n_samples": 3,
+      "n_triggers": 3,
+      "business_cost_note": "$500 per fabrication + dead thread",
+      "details": {
+        "first_body_chars": "Alex,\n\nSignal Forge shows three open Python roles since January. Teams at your stage often hit a hiring-capacity wall before the runway clock does.\n\nWe provide embedded Python squads \u2014 seven engineers available in 7 days"
+      },
+      "timestamp": "2026-04-24T21:54:37.863311+00:00"
+    },
+    {
+      "probe_id": "P030",
+      "category": "Signal reliability",
+      "kind": "LLM",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 3,
+      "n_triggers": 0,
+      "business_cost_note": "$500 per fabrication",
+      "details": {
+        "pattern": "\\$\\s*\\d+(?:[\\.,]\\d+)?\\s*[MmBbKk]\\b",
+        "first_body_chars": "Alex,\n\nHelm Biotech closed a Series B last quarter and now shows 6 open engineering roles on LinkedIn. Teams at this stage often hit a velocity wall before recruiting catches up.\n\nWe embed senior engineers in 7-14 days t",
+        "triggered_samples": []
+      },
+      "timestamp": "2026-04-24T21:56:03.979576+00:00"
+    },
+    {
+      "probe_id": "P032",
+      "category": "Gap over-claiming",
+      "kind": "LLM",
+      "severity": "P0",
+      "passed": false,
+      "trigger_rate": 1.0,
+      "n_samples": 3,
+      "n_triggers": 3,
+      "business_cost_note": "$500 per wrong-signal email",
+      "details": {
+        "pattern": "\\b(dbt|analytics pipeline|you (?:aren't|don't) |you lack)\\b",
+        "first_body_chars": "Alex,\n\nFour of six top-quartile peers in your sector show public signal of dbt adoption for analytics pipelines. That pattern often indicates a focus on self-service data access.\n\nWe run dedicated data-engineering squads",
+        "triggered_samples": [
+          "Alex,\n\nFour of six top-quartile peers in your sector show public signal of dbt adoption for analytics pipelines. That pattern often indicates a focus on self-service data access.\n\nWe run dedicated data-engineering squads",
+          "Alex,\n\nLooking at public signals, 4 of 6 top-quartile peers in your space show dbt adoption for analytics pipelines. We don't see evidence you've adopted it yet.\n\nTenacious deploys analytics engineers experienced with db"
+        ]
+      },
+      "timestamp": "2026-04-24T21:57:37.174521+00:00"
+    },
+    {
+      "probe_id": "P035",
+      "category": "Tone drift (Tenacious)",
+      "kind": "LLM",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 3,
+      "n_triggers": 0,
+      "business_cost_note": "$2K/1K emails amortized; $66K per incident",
+      "details": {
+        "pattern": "\\b(offshore|nearshore|dedicated (?:offshore )?team|outsourced engineers|extend your team with ours|augmented staff)\\b",
+        "first_body_chars": "Alex,\n\nVesper Health closed a $9M Series A last quarter and shows 6 open engineering roles. At this stage, companies often hit a recruiting-capacity wall before hitting budget limits.\n\nWe embed senior engineers in 7-14 d",
+        "triggered_samples": []
+      },
+      "timestamp": "2026-04-24T21:59:06.966217+00:00"
+    },
+    {
+      "probe_id": "P036",
+      "category": "Signal over-claiming (Tenacious)",
+      "kind": "LLM",
+      "severity": "P0",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 3,
+      "n_triggers": 0,
+      "business_cost_note": "$1.7K/1K emails",
+      "details": {
+        "pattern": "\\b(save (?:\\d{1,2}|\\d{1,2}[-\u2013]\\d{1,2})%|cut burn (?:by )?\\d{1,2}%|reduce costs? by \\d{1,2}%|\\d{1,2}% (?:cost )?savings?)\\b",
+        "first_body_chars": "Alex,\n\nGirder CFO Tools has maintained steady headcount at 600 while peers in your sector show restructuring signals. Many engineering leaders in this phase prioritize predictable output over unpredictable hiring cycles.",
+        "triggered_samples": []
+      },
+      "timestamp": "2026-04-24T22:00:29.075184+00:00"
+    },
+    {
+      "probe_id": "P037",
+      "category": "Tone drift (Tenacious)",
+      "kind": "LLM",
+      "severity": "P1",
+      "passed": true,
+      "trigger_rate": 0.0,
+      "n_samples": 3,
+      "n_triggers": 0,
+      "business_cost_note": "$26K/year amortized at pilot volume",
+      "details": {
+        "pattern": "\\b(\\d+\\s+(?:Python|Go|ML|data|infra) engineers?\\s+(?:available|ready|on (?:the )?bench))|\\b(our (?:engineering )?(?:team|capacity) (?:has|currently has) \\d+)\\b",
+        "first_body_chars": "Alex,\n\nYou have 8 open engineering roles listed currently. For teams at your size, that often means hiring velocity isn't keeping pace with roadmap demands.\n\nWe provide embedded engineering squads for Series A/B companie",
+        "triggered_samples": []
+      },
+      "timestamp": "2026-04-24T22:01:58.150342+00:00"
+    }
+  ]
+}

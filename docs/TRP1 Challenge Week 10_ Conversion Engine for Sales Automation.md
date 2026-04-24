@@ -448,36 +448,39 @@ This deadline covers Acts I and II: the τ²-Bench baseline and the full product
 **Page 1: The Decision**
 
 * Executive summary in three sentences: what was built, headline number, recommendation  
-* τ²-Bench pass@1 results: published reference, Day 1 baseline, and your method, all with 95% CIs, sourced from held\_out\_traces.jsonl  
 * Cost per qualified lead derived from rig usage, LLM spend, and trace count, sourced from invoice\_summary.json and trace\_log.jsonl  
 * Speed-to-lead delta: current Tenacious manual process (stalled-thread rate of 30 to 40%) vs. your system's measured stalled-thread rate from traces  
 * Competitive-gap outbound performance: fraction of outbound that led with a research finding (AI maturity score \+ top-quartile competitor gap) vs. a generic Tenacious pitch, and the reply-rate delta between them, sourced from traces tagged by outbound variant  
-* Annualized dollar impact at three adoption scenarios (one segment only, two segments, all four segments), each reproducible from trace files and published Tenacious conversion rates and ACV ranges  
 * Pilot scope recommendation: one segment, one lead volume, one dollar budget, one measurable success criterion Tenacious can track after 30 days
 
 **Page 2: The Skeptic's Appendix**
 
 * Four failure modes τ²-Bench does not capture but would appear in a real Tenacious deployment, each with what it is, why the benchmark misses it, what would need to be added to catch it, and what that would cost. Failures must be Tenacious-specific (e.g., offshore-perception objections, bench mismatch, brand-reputation risk from wrong hiring signals).  
 * Public-signal lossiness: name the known false-positive and false-negative modes of AI maturity scoring. What does a quietly sophisticated but publicly silent company look like in your system? What does a loud but shallow one look like? For each, what does the agent do wrong and what is the business impact?  
-* Gap-analysis risks: under what conditions is a top-quartile practice a bad benchmark (e.g., a deliberate strategic choice by the prospect, or a capability irrelevant to their sub-niche)? One paragraph per real risk, with an example from your data.  
-* Brand-reputation comparison: if the agent sends 1,000 signal-grounded emails and 5% contain factually wrong signal data, is the brand damage worth the 7 to 12% reply rate? Show the unit economics with an explicit assumption about the reputation cost of a wrong-signal email.  
-* One honest unresolved failure from the probe library with business impact assessment  
-* Kill-switch clause: specific trigger metric, threshold, and rollback condition
+* One honest unresolved failure from the probe library with business impact assessment
 
   ### **Demo Video (max 8 minutes, no login required)**
 
 * Live email conversation end-to-end showing a synthetic prospect receiving a signal-grounded outreach email, replying, getting qualified through the hiring signal brief (Crunchbase funding, job-post velocity, layoffs.fyi, leadership changes, AI maturity score), and having a discovery call booked via Cal.com  
 * Show the hiring signal brief and competitor gap brief being generated for the prospect, with per-signal confidence scores visible  
 * Show HubSpot contact record populating in real time with all fields non-null and enrichment timestamp current  
-* Show an SMS scheduling interaction for a warm lead who has already replied by email (demonstrating email-to-SMS channel handoff)  
-* Show the agent correctly refusing to over-claim when a hiring signal is weak (e.g., not asserting "aggressive hiring" when fewer than five open roles exist)  
-* Show the agent correctly handling a prospect whose signals place them in a different ICP segment than a naive classification would suggest (e.g., a post-layoff company that also recently raised funding)  
-* Show τ²-Bench harness producing a score with query trace visible  
-* Brief walkthrough of probe library and how at least one probe led to a concrete fix  
-* Bonus: one real voice call end-to-end through the Shared Voice Rig if completed  
   ---
 
 **Note on channel priority:** Email is the primary outreach channel for Tenacious prospects (founders, CTOs, VPs Engineering). SMS is secondary, reserved for warm leads who have replied by email and prefer fast coordination for scheduling. Voice is the final channel: a discovery call, booked by the agent, delivered by a human Tenacious delivery lead. Deliverables should reflect this channel hierarchy throughout.
+
+# 
+
+# 
+
+# 
+
+# 
+
+# 
+
+# 
+
+# 
 
 # 
 

@@ -1,0 +1,90 @@
+{
+  "run_id": "heldout_20260424_222156",
+  "started_at": "2026-04-24T22:17:34.079508+00:00",
+  "finished_at": "2026-04-24T22:21:56.120268+00:00",
+  "wall_clock_s": 262.05,
+  "heldout_slice": {
+    "task_ids": [
+      "5"
+    ],
+    "n_tasks": 1
+  },
+  "model": "openrouter/deepseek/deepseek-chat-v3-0324",
+  "temperature": 0.0,
+  "n_trials_main": 1,
+  "n_trials_ablation": 1,
+  "smoke_mode": true,
+  "conditions": [
+    {
+      "condition": "baseline",
+      "pass_at_1": 0.0,
+      "ci_95": 0.0,
+      "ci_95_range": [
+        0.0,
+        0.0
+      ],
+      "per_trial_pass_at_1": [
+        0.0
+      ],
+      "n_simulations": 1,
+      "cost_per_run": 0.00231,
+      "total_cost": 0.0023,
+      "task_latency_p50_s": 120.64,
+      "task_latency_p95_s": 120.64,
+      "infrastructure_errors": 0,
+      "entry_type": "heldout_baseline",
+      "timestamp": "2026-04-24T22:19:46.723274",
+      "model": "openrouter/deepseek/deepseek-chat-v3-0324",
+      "domain": "retail",
+      "n_tasks": 1,
+      "n_trials": 1,
+      "task_ids": [
+        "5"
+      ],
+      "temperature": 0.0,
+      "wall_clock_s": 132.61,
+      "run_id": "eval_heldout_baseline_20260424_221734_4d8bc5",
+      "results_path": "tau2-bench\\data\\simulations\\eval_heldout_baseline_20260424_221734_4d8bc5\\results.json",
+      "expected_simulations": 1,
+      "completed_simulations": 1,
+      "process_returncode": 0,
+      "run_status": "complete"
+    },
+    {
+      "condition": "scap_full",
+      "pass_at_1": 0.0,
+      "ci_95": 0.0,
+      "ci_95_range": [
+        0.0,
+        0.0
+      ],
+      "per_trial_pass_at_1": [
+        0.0
+      ],
+      "n_simulations": 1,
+      "cost_per_run": 0.002101,
+      "total_cost": 0.0021,
+      "task_latency_p50_s": 118.84,
+      "task_latency_p95_s": 118.84,
+      "infrastructure_errors": 0,
+      "entry_type": "heldout_scap_full",
+      "timestamp": "2026-04-24T22:21:56.099750",
+      "model": "openrouter/deepseek/deepseek-chat-v3-0324",
+      "domain": "retail",
+      "n_tasks": 1,
+      "n_trials": 1,
+      "task_ids": [
+        "5"
+      ],
+      "temperature": 0.0,
+      "wall_clock_s": 129.33,
+      "run_id": "eval_heldout_scap_full_20260424_221946_b304eb",
+      "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_full_20260424_221946_b304eb\\results.json",
+      "expected_simulations": 1,
+      "completed_simulations": 1,
+      "process_returncode": 0,
+      "run_status": "complete"
+    }
+  ],
+  "total_llm_cost_usd": 0.0044
+}

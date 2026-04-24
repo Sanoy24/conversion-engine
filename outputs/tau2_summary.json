@@ -1,8 +1,17 @@
 {
-  "best_run": "eval_baseline_trial1",
-  "pass_at_1": 0.1,
-  "pass_at_1_pct": "10.0%",
-  "average_reward": 0.1,
-  "total_tasks": 30,
-  "total_runs": 9
+  "source": "baseline.md (canonical)",
+  "domain": "retail",
+  "model": "openrouter/deepseek/deepseek-chat-v3-0324",
+  "n_tasks": 30,
+  "n_trials": 5,
+  "evaluated_simulations": 150,
+  "infrastructure_errors": 0,
+  "pass_at_1": 0.7267,
+  "pass_at_1_pct": "72.67%",
+  "ci_95_range": [0.6504, 0.7917],
+  "avg_agent_cost_usd": 0.0199,
+  "task_latency_p50_s": 105.9521,
+  "task_latency_p95_s": 551.6491,
+  "git_commit": "d11a97072c49d093f7b5a3e4fe9da95b490d43ba",
+  "note": "Canonical dev-tier reproduction. Earlier entries in eval/score_log.json are exploratory and superseded."
 }
