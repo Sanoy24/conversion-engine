@@ -73,6 +73,16 @@ class Settings(BaseSettings):
     # --- Kill Switch ---
     live_outbound_enabled: bool = False
 
+    # --- SCAP (Act IV mechanism) ---
+    # Master toggle. When False, the drafter behavior is identical to the
+    # Day-1 baseline; when True, the SCAP pre-prompt transform is applied
+    # before every draft_email call. Sub-flags pick individual rules for
+    # ablation studies.
+    enable_scap: bool = True
+    scap_strip_low: bool = True
+    scap_filter_gap_low: bool = True
+    scap_soften_medium: bool = True
+
     # --- Seed Data Paths ---
     seeds_dir: str = "./tenacious_sales_data/seed"
     crunchbase_data_path: str = "./data/crunchbase_odm_sample.json"

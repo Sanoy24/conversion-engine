@@ -32,6 +32,7 @@ def score_ai_maturity(
     github_activity: dict | None = None,
     exec_commentary: list[str] | None = None,
     tech_stack_signals: list[str] | None = None,
+    strategic_communications: list[str] | None = None,
 ) -> AIMaturitySignal:
     """
     Score a prospect's AI maturity from 0-3 with per-input justification.
@@ -185,6 +186,46 @@ def score_ai_maturity(
                 )
             )
             low_weight_hits += 1
+
+    # ── LOW weight: Strategic communications ──
+    # Annual reports, fundraising press, investor letters positioning AI as
+    # a company priority. Weighted LOW per the challenge brief rubric (line 90).
+    # Absence is not proof of absence: we append an "unchecked" input when the
+    # caller does not supply any text corpus so silent-company handling below
+    # can flag it.
+    if strategic_communications:
+        ai_comms = [
+            c for c in strategic_communications
+            if any(
+                kw in c.lower()
+                for kw in ("ai", "artificial intelligence", "machine learning", "ml ", "llm")
+            )
+        ]
+        if ai_comms:
+            inputs.append(
+                AIMaturityInput(
+                    type="strategic_communications",
+                    weight=SignalWeight.LOW,
+                    evidence=f"{len(ai_comms)} AI-forward passage(s) in strategic comms",
+                )
+            )
+            low_weight_hits += 1
+        else:
+            inputs.append(
+                AIMaturityInput(
+                    type="strategic_communications",
+                    weight=SignalWeight.LOW,
+                    evidence=None,
+                )
+            )
+    else:
+        inputs.append(
+            AIMaturityInput(
+                type="strategic_communications",
+                weight=SignalWeight.LOW,
+                evidence="Not checked — absence is not proof of absence",
+            )
+        )
 
     # ── Compute score ──
     score = _compute_score(high_weight_hits, medium_weight_hits, low_weight_hits)

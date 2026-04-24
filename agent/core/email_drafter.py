@@ -11,6 +11,7 @@ import uuid
 from datetime import datetime
 
 from agent.config import settings
+from agent.core.scap import SCAPConfig, apply_scap, render_ask_directives
 from agent.llm import get_llm_client
 from agent.models import (
     CompetitorGapBrief,
@@ -44,6 +45,30 @@ async def draft_email(
     """
     traces: list[TraceRecord] = []
     thread_id = thread_id or f"thread_{uuid.uuid4().hex[:8]}"
+
+    # ── SCAP (Act IV mechanism) ────────────────────────────────────────
+    # Pre-prompt transform: strip LOW-confidence signals, soften MEDIUM,
+    # filter LOW-confidence gaps. Controlled by settings.enable_scap plus
+    # sub-flags so ablation variants are selectable. The transform is
+    # audited via draft_metadata["scap_transforms"] for the evidence graph.
+    scap_transforms: list[str] = []
+    scap_ask_block = ""
+    if settings.enable_scap:
+        scap_config = SCAPConfig(
+            strip_low_confidence=settings.scap_strip_low,
+            filter_gap_low=settings.scap_filter_gap_low,
+            soften_medium=settings.scap_soften_medium,
+        )
+        scap_result = apply_scap(signal_brief, gap_brief, scap_config)
+        signal_brief = scap_result.brief
+        gap_brief = scap_result.gap_brief
+        scap_transforms = scap_result.transforms
+        scap_ask_block = render_ask_directives(scap_result.ask_directives)
+        if scap_transforms:
+            logger.info(
+                "SCAP applied for %s: %d transform(s): %s",
+                signal_brief.prospect.company, len(scap_transforms), scap_transforms,
+            )
 
     # Load ALL seed materials from tenacious_sales_data/seed/.
     style_guide = _load_seed_file(["style_guide.md"])
@@ -86,6 +111,8 @@ async def draft_email(
         thread_history=thread_history,
         grounded_claims=grounded,
     )
+    if scap_ask_block:
+        user_prompt = user_prompt + "\n\n" + scap_ask_block
 
     # Generate email via LLM
     llm = get_llm_client()
@@ -159,6 +186,8 @@ async def draft_email(
             "marked_draft": True,
             "segment": classification.segment.value,
             "ai_maturity": signal_brief.ai_maturity.score,
+            "scap_enabled": settings.enable_scap,
+            "scap_transforms": scap_transforms,
         },
     )
 
