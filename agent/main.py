@@ -14,10 +14,9 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from agent.channels.email_handler import process_reply_webhook
-from agent.channels.sms_handler import process_inbound_sms
 from agent.config import settings
 from agent.core.conversation import get_active_conversations, get_stalled_conversations
-from agent.core.orchestrator import handle_prospect_reply, process_new_prospect
+from agent.core.orchestrator import handle_calcom_event, handle_prospect_reply, process_new_prospect
 from agent.models import ChannelType, ConversationStatus
 from agent.observability.trace_logger import compute_metrics, init_trace_logger
 
@@ -299,56 +298,7 @@ async def calcom_webhook(request: Request):
 
     trigger = payload.get("triggerEvent", "UNKNOWN")
     booking = payload.get("payload", {})
-
-    booking_uid = booking.get("uid") or booking.get("id") or "unknown"
-    attendees = booking.get("attendees", [])
-    attendee_email = attendees[0].get("email", "") if attendees else ""
-
-    logger.info(
-        "Cal.com webhook: trigger=%s booking_uid=%s attendee=%s",
-        trigger, booking_uid, attendee_email,
-    )
-
-    # If the booking carries metadata we can correlate back to a thread, do so.
-    metadata = booking.get("metadata") or {}
-    thread_id = metadata.get("thread_id")
-
-    if trigger == "BOOKING_CREATED":
-        start = booking.get("startTime", "")
-        logger.info("Discovery call booked: uid=%s start=%s thread=%s", booking_uid, start, thread_id)
-        return {
-            "status": "ok",
-            "event": "booking_created",
-            "booking_uid": booking_uid,
-            "start": start,
-            "thread_id": thread_id,
-        }
-
-    if trigger == "BOOKING_CANCELLED":
-        reason = booking.get("cancellationReason", "")
-        logger.info("Discovery call cancelled: uid=%s reason=%s thread=%s", booking_uid, reason, thread_id)
-        return {
-            "status": "ok",
-            "event": "booking_cancelled",
-            "booking_uid": booking_uid,
-            "reason": reason,
-            "thread_id": thread_id,
-        }
-
-    if trigger == "BOOKING_RESCHEDULED":
-        new_start = booking.get("startTime", "")
-        logger.info("Discovery call rescheduled: uid=%s new_start=%s thread=%s", booking_uid, new_start, thread_id)
-        return {
-            "status": "ok",
-            "event": "booking_rescheduled",
-            "booking_uid": booking_uid,
-            "new_start": new_start,
-            "thread_id": thread_id,
-        }
-
-    # Unknown trigger — acknowledge to prevent Cal.com retries
-    logger.warning("Cal.com webhook: unhandled trigger=%s", trigger)
-    return {"status": "ok", "event": "unhandled", "trigger": trigger}
+    return await handle_calcom_event(trigger=trigger, booking_payload=booking)
 
 
 # ── Entry point ────────────────────────────────────────────────────────

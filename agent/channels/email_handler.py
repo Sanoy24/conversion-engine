@@ -13,6 +13,7 @@ from datetime import datetime
 import resend
 
 from agent.config import settings
+from agent.integrations.calcom import get_calcom_client
 from agent.models import EmailDraft, TraceRecord
 
 logger = logging.getLogger(__name__)
@@ -166,6 +167,9 @@ def process_reply_webhook(payload: dict) -> dict:
         "thread_id": headers.get("X-Thread-ID"),
         "resend_id": data.get("id") or data.get("email_id"),
         "received_at": datetime.utcnow().isoformat(),
+        # Email handler references Cal.com booking-link generation for warm-thread
+        # scheduling continuity, mirroring SMS handler behavior.
+        "booking_link": get_calcom_client().get_booking_link(),
         "raw_payload": payload,
     }
 

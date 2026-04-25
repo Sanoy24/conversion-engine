@@ -89,6 +89,7 @@ class FundingSignal(BaseModel):
     event: str | None = None  # "Series A" | "Series B" | null
     amount_usd: int | None = None
     closed_at: str | None = None
+    observed_at: str | None = None
     confidence: Confidence = Confidence.LOW
     sources: list[SourceRef] = Field(default_factory=list)
 
@@ -97,6 +98,7 @@ class HiringSignal(BaseModel):
     open_eng_roles: int | None = None
     ai_adjacent_eng_roles: int | None = None
     delta_60d: str | None = None  # e.g. "+18"
+    observed_at: str | None = None
     confidence: Confidence = Confidence.LOW
     sources: list[SourceRef] = Field(default_factory=list)
 
@@ -105,6 +107,7 @@ class LayoffSignal(BaseModel):
     event: bool = False
     headcount_pct: float | None = None
     closed_at: str | None = None
+    observed_at: str | None = None
     confidence: Confidence = Confidence.LOW
     sources: list[SourceRef] = Field(default_factory=list)
 
@@ -114,6 +117,7 @@ class LeadershipSignal(BaseModel):
     role: str | None = None
     name: str | None = None
     appointed_at: str | None = None
+    observed_at: str | None = None
     confidence: Confidence = Confidence.LOW
     sources: list[SourceRef] = Field(default_factory=list)
 
