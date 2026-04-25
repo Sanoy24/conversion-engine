@@ -481,6 +481,8 @@ after I'm gone. Read this section before any other.
 | Where are the failure probes? | [eval/probes/](eval/probes/) — 37 probes, runner emits [probe_results.json](eval/probes/probe_results.json) |
 | What's the held-out evaluation? | [eval/heldout_slice.json](eval/heldout_slice.json) (sealed task IDs); orchestrator [eval/run_heldout.py](eval/run_heldout.py); stats [eval/scap_stats.py](eval/scap_stats.py) |
 | What does the memo say? | [report/memo.md](report/memo.md) → `report/memo.pdf` (2 pages, every number traces to [report/evidence_graph.json](report/evidence_graph.json)) |
+| How do I operate this in prod? | [docs/runbook.md](docs/runbook.md) (Incident response, kill-switch SOPs, daily ops checklist) |
+| What are the parameter risks? | [docs/sensitivity_analysis.md](docs/sensitivity_analysis.md) (Impact of AI-maturity weights & velocity windows) |
 
 ### Kill-switch behavior — verify before going live
 
