@@ -30,6 +30,7 @@ _company_threads: dict[str, list[str]] = {}
 def create_conversation(
     prospect: ProspectInfo,
     channel: ChannelType = ChannelType.EMAIL,
+    initial_message: str | None = None,
 ) -> ConversationState:
     """Create a new conversation thread for a prospect."""
     thread_id = f"thread_{uuid.uuid4().hex[:8]}"
@@ -47,6 +48,16 @@ def create_conversation(
     if company not in _company_threads:
         _company_threads[company] = []
     _company_threads[company].append(thread_id)
+
+    if initial_message:
+        state.messages.append(
+            ConversationMessage(
+                role="prospect",
+                channel=channel,
+                content=initial_message,
+                metadata={"seeded_on_create": True},
+            )
+        )
 
     logger.info("Created conversation %s for %s via %s", thread_id, prospect.company, channel.value)
     return state
@@ -75,6 +86,16 @@ def get_conversation_by_phone(phone: str) -> ConversationState | None:
     if not matches:
         return None
     return max(matches, key=lambda c: c.updated_at)
+
+
+def get_conversation_by_booking_id(booking_id: str) -> ConversationState | None:
+    """Look up a conversation by associated Cal.com booking ID."""
+    if not booking_id:
+        return None
+    for conversation in _conversations.values():
+        if conversation.calcom_booking_id == booking_id:
+            return conversation
+    return None
 
 
 def add_message(

@@ -11,11 +11,13 @@ import logging
 from datetime import UTC, datetime, timedelta
 
 from agent.channels.email_handler import send_email
+from agent.channels.handoff import HandoffAction, decide_handoff_action
 from agent.channels.sms_handler import send_sms
 from agent.core.conversation import (
     add_message,
     create_conversation,
     get_conversation,
+    get_conversation_by_booking_id,
     get_thread_history,
     update_status,
 )
@@ -177,10 +179,14 @@ async def handle_prospect_reply(
             "message": "Prospect opted out. No further messages will be sent.",
         }
 
-    if _prospect_prefers_sms(reply_content) and conversation.prospect.contact_phone:
+    handoff_action = decide_handoff_action(
+        reply_content,
+        channel=channel,
+        has_phone=bool(conversation.prospect.contact_phone),
+    )
+    if handoff_action == HandoffAction.SMS_FALLBACK:
         return await _handoff_to_sms(conversation)
-
-    if _has_scheduling_intent(reply_content):
+    if handoff_action == HandoffAction.BOOK_CALL:
         return await _book_discovery_call(conversation)
 
     if conversation.signal_brief and conversation.classification:
@@ -277,6 +283,14 @@ async def _log_reply_to_hubspot(
 
 async def _handoff_to_sms(conversation: ConversationState) -> dict:
     """Switch warm-lead scheduling to SMS when the prospect asks for it."""
+    warm_lead_confirmed = _is_warm_lead_for_sms(conversation)
+    if not warm_lead_confirmed:
+        return {
+            "thread_id": conversation.thread_id,
+            "action": "sms_blocked",
+            "reason": "sms_requires_prior_email_reply",
+        }
+
     sms_body = (
         "Happy to switch to SMS for scheduling. "
         f"You can also book directly here: {get_calcom_client().get_booking_link()}"
@@ -285,6 +299,7 @@ async def _handoff_to_sms(conversation: ConversationState) -> dict:
         to_phone=conversation.prospect.contact_phone or "",
         message=sms_body,
         thread_id=conversation.thread_id,
+        warm_lead=warm_lead_confirmed,
     )
     add_message(
         thread_id=conversation.thread_id,
@@ -321,6 +336,7 @@ async def _book_discovery_call(conversation: ConversationState) -> dict:
         start_time=start_time,
         end_time=end_time,
         notes=notes,
+        thread_id=conversation.thread_id,
     )
 
     booking_id = booking_result.get("id") or booking_result.get("uid")
@@ -356,6 +372,83 @@ async def _book_discovery_call(conversation: ConversationState) -> dict:
     }
 
 
+async def handle_calcom_event(
+    *,
+    trigger: str,
+    booking_payload: dict,
+) -> dict:
+    """
+    Handle Cal.com webhook events and propagate confirmation state to CRM/thread.
+    """
+    trigger_upper = (trigger or "").upper()
+    booking_uid = booking_payload.get("uid") or booking_payload.get("id") or ""
+    metadata = booking_payload.get("metadata") or {}
+    thread_id = metadata.get("thread_id")
+    conversation = get_conversation(thread_id) if thread_id else get_conversation_by_booking_id(booking_uid)
+    if not conversation:
+        return {
+            "status": "ok",
+            "event": "unmatched_booking",
+            "trigger": trigger_upper,
+            "booking_uid": booking_uid,
+        }
+
+    if trigger_upper == "BOOKING_CREATED":
+        conversation.calcom_booking_id = booking_uid or conversation.calcom_booking_id
+        update_status(conversation.thread_id, ConversationStatus.CALL_BOOKED)
+        if conversation.hubspot_contact_id:
+            await get_hubspot_client().update_contact_status(conversation.hubspot_contact_id, "QUALIFIED")
+            await get_hubspot_client().add_note(
+                contact_id=conversation.hubspot_contact_id,
+                note_body=f"Cal.com confirmed booking {booking_uid}",
+                prospect_company=conversation.prospect.company,
+            )
+        return {
+            "status": "ok",
+            "event": "booking_created",
+            "thread_id": conversation.thread_id,
+            "booking_uid": booking_uid,
+        }
+
+    if trigger_upper == "BOOKING_CANCELLED":
+        update_status(conversation.thread_id, ConversationStatus.QUALIFIED)
+        if conversation.hubspot_contact_id:
+            await get_hubspot_client().add_note(
+                contact_id=conversation.hubspot_contact_id,
+                note_body=f"Cal.com booking cancelled: {booking_uid}",
+                prospect_company=conversation.prospect.company,
+            )
+        return {
+            "status": "ok",
+            "event": "booking_cancelled",
+            "thread_id": conversation.thread_id,
+            "booking_uid": booking_uid,
+        }
+
+    if trigger_upper == "BOOKING_RESCHEDULED":
+        update_status(conversation.thread_id, ConversationStatus.CALL_BOOKED)
+        if conversation.hubspot_contact_id:
+            await get_hubspot_client().add_note(
+                contact_id=conversation.hubspot_contact_id,
+                note_body=f"Cal.com booking rescheduled: {booking_uid}",
+                prospect_company=conversation.prospect.company,
+            )
+        return {
+            "status": "ok",
+            "event": "booking_rescheduled",
+            "thread_id": conversation.thread_id,
+            "booking_uid": booking_uid,
+        }
+
+    return {
+        "status": "ok",
+        "event": "unhandled",
+        "trigger": trigger_upper,
+        "thread_id": conversation.thread_id,
+        "booking_uid": booking_uid,
+    }
+
+
 async def handle_inbound_sms(from_phone: str, message: str) -> dict:
     """
     Downstream handler for inbound SMS with no matching existing conversation.
@@ -383,14 +476,9 @@ async def handle_inbound_sms(from_phone: str, message: str) -> dict:
         channel=ChannelType.SMS,
         initial_message=message,
     )
-
-    add_message(
-        thread_id=conversation.thread_id,
-        role="prospect",
-        content=message,
-        channel=ChannelType.SMS,
-        metadata={"inbound_source": "sms_webhook", "from_phone": from_phone},
-    )
+    # create_conversation already seeds the initial inbound SMS message.
+    if conversation.messages:
+        conversation.messages[0].metadata.update({"inbound_source": "sms_webhook", "from_phone": from_phone})
 
     # Best-effort HubSpot search — if the phone matches an existing contact,
     # attach a note recording the inbound SMS.
@@ -482,27 +570,6 @@ def _build_outbound_note(conversation: ConversationState, email_draft) -> str:
     return json.dumps(note, ensure_ascii=True)
 
 
-def _prospect_prefers_sms(reply_content: str) -> bool:
-    lowered = reply_content.lower()
-    return any(phrase in lowered for phrase in ("text me", "sms", "text is easier"))
-
-
-def _has_scheduling_intent(reply_content: str) -> bool:
-    lowered = reply_content.lower()
-    return any(
-        phrase in lowered
-        for phrase in (
-            "book",
-            "schedule",
-            "call",
-            "meeting",
-            "calendar",
-            "availability",
-            "available",
-        )
-    )
-
-
 def _default_booking_window() -> tuple[str, str]:
     """Choose a simple default 30-minute booking slot one day ahead."""
     start = (datetime.now(UTC) + timedelta(days=1)).replace(
@@ -513,3 +580,9 @@ def _default_booking_window() -> tuple[str, str]:
     )
     end = start + timedelta(minutes=30)
     return start.isoformat(), end.isoformat()
+
+
+def _is_warm_lead_for_sms(conversation: ConversationState) -> bool:
+    if conversation.status in (ConversationStatus.REPLIED, ConversationStatus.QUALIFIED, ConversationStatus.CALL_BOOKED):
+        return True
+    return any(msg.role == "prospect" and msg.channel == ChannelType.EMAIL for msg in conversation.messages)
