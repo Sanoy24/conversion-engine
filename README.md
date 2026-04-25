@@ -164,7 +164,7 @@ SMS is gated at the channel boundary: `send_sms(warm_lead=False)` raises `SMSCha
 git clone https://github.com/Sanoy24/conversion-engine.git
 cd conversion-engine
 
-# 1. Install Python deps
+# 1. Install Python deps (pinned via uv.lock)
 uv sync
 
 # 2. Copy env template and fill in API keys (see Configuration below)
@@ -385,8 +385,12 @@ conversion-engine/
 ├── tests/                          70 tests, pytest + pytest-asyncio
 ├── outputs/                        Trace logs, briefs, latency reports
 ├── report/                         Interim + final PDF sources
+├── conversion_engine.egg-info/     Editable-install metadata (generated)
+├── tenacious-seeds-placeholder/    Placeholder seed path (legacy; not default)
 ├── render.yaml                     Render deployment config
-├── pyproject.toml                  uv-managed dependencies
+├── pyproject.toml                  Dependency declarations
+├── uv.lock                         Pinned transitive dependency lockfile (source of truth)
+├── requirements.txt                Pinned export from uv.lock for non-uv tooling
 ├── .env.example                    Environment variable template
 ├── baseline.md                     τ²-Bench reproduction narrative
 └── README.md

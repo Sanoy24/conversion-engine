@@ -5,13 +5,14 @@ from __future__ import annotations
 import pytest
 
 from agent.core import conversation as conversation_module
-from agent.core.orchestrator import handle_prospect_reply, process_new_prospect
+from agent.core.orchestrator import handle_calcom_event, handle_prospect_reply, process_new_prospect
 from agent.models import (
     ChannelType,
     CompetitorGapBrief,
     EmailDraft,
     EmailType,
     GroundedClaim,
+    ProspectInfo,
     ProposedTime,
     TraceRecord,
 )
@@ -45,17 +46,21 @@ class _FakeHubSpotClient:
         self.status_updates.append((contact_id, status, properties))
         return {"id": contact_id, "status": status}
 
+    async def search_contact(self, email):
+        return None
+
 
 class _FakeCalComClient:
     def get_booking_link(self):
         return "https://cal.fake/book/demo"
 
-    async def create_booking(self, prospect, start_time, end_time=None, notes=None):
+    async def create_booking(self, prospect, start_time, end_time=None, notes=None, thread_id=None):
         return {
             "id": "booking_123",
             "start": start_time,
             "end": end_time,
             "notes": notes,
+            "thread_id": thread_id,
         }, TraceRecord(trace_id="tr_booking", event_type="calcom_booking_created")
 
 
@@ -190,7 +195,7 @@ async def test_handle_prospect_reply_uses_sms_fallback_when_requested(
     async def fake_send_email(to_email, draft, reply_to=None):
         return {"status": "sink"}, TraceRecord(trace_id="tr_email", event_type="email_sent_sink")
 
-    async def fake_send_sms(to_phone, message, thread_id=None):
+    async def fake_send_sms(to_phone, message, thread_id=None, warm_lead=True):
         return {"status": "sink", "to": to_phone}, TraceRecord(
             trace_id="tr_sms",
             event_type="sms_sent_sink",
@@ -219,3 +224,28 @@ async def test_handle_prospect_reply_uses_sms_fallback_when_requested(
     conversation = conversation_module.get_conversation(created["thread_id"])
     assert conversation is not None
     assert conversation.status.value == "qualified"
+
+
+@pytest.mark.asyncio
+async def test_handle_calcom_event_updates_matched_conversation(monkeypatch):
+    fake_hubspot = _FakeHubSpotClient()
+    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+
+    prospect = ProspectInfo(company="CalEvent Co", contact_email="cal@example.com")
+    conversation = conversation_module.create_conversation(prospect=prospect, channel=ChannelType.EMAIL)
+    conversation.hubspot_contact_id = "hs_123"
+
+    result = await handle_calcom_event(
+        trigger="BOOKING_CREATED",
+        booking_payload={
+            "uid": "booking_456",
+            "metadata": {"thread_id": conversation.thread_id},
+        },
+    )
+
+    assert result["event"] == "booking_created"
+    assert result["thread_id"] == conversation.thread_id
+    updated = conversation_module.get_conversation(conversation.thread_id)
+    assert updated is not None
+    assert updated.status.value == "call_booked"
+    assert updated.calcom_booking_id == "booking_456"

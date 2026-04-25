@@ -18,6 +18,7 @@
     "event": null,
     "amount_usd": null,
     "closed_at": null,
+    "observed_at": "2026-04-20T23:09:33.905211+00:00",
     "confidence": "low",
     "sources": [
       {
@@ -30,6 +31,7 @@
     "open_eng_roles": null,
     "ai_adjacent_eng_roles": null,
     "delta_60d": null,
+    "observed_at": "2026-04-20T23:09:34.100522+00:00",
     "confidence": "low",
     "sources": []
   },
@@ -37,6 +39,7 @@
     "event": false,
     "headcount_pct": null,
     "closed_at": null,
+    "observed_at": "2026-04-20T23:09:34.201110",
     "confidence": "high",
     "sources": []
   },
@@ -45,6 +48,7 @@
     "role": null,
     "name": null,
     "appointed_at": null,
+    "observed_at": "2026-04-20T23:09:34.357770+00:00",
     "confidence": "low",
     "sources": []
   },
