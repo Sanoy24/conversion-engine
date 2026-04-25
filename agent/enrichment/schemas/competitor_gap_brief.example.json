@@ -1,0 +1,89 @@
+{
+  "_doc": "Example competitor_gap_brief.json artifact. Defines the wire shape produced by agent.enrichment.competitor_gap.generate_competitor_gap_brief and consumed by agent.core.email_drafter. The Pydantic source of truth is agent.models.CompetitorGapBrief.",
+  "prospect": {
+    "company": "Mosaic Data Systems",
+    "domain": "mosaicdata.example",
+    "industry": "B2B Data Infrastructure",
+    "employee_count": 65,
+    "hq_location": "Austin, TX",
+    "timezone": "America/Chicago"
+  },
+  "sector": "B2B Data Infrastructure",
+  "size_band": "50-200",
+  "cohort": [
+    {
+      "company": "Lattice Streams Inc",
+      "ai_maturity": 3,
+      "source_urls": ["https://crunchbase.com/organization/lattice-streams"]
+    },
+    {
+      "company": "Pylon Analytics",
+      "ai_maturity": 3,
+      "source_urls": ["https://crunchbase.com/organization/pylon-analytics"]
+    },
+    {
+      "company": "Ridgeline Data Co",
+      "ai_maturity": 2,
+      "source_urls": ["https://crunchbase.com/organization/ridgeline-data"]
+    },
+    {
+      "company": "Quanta Pipelines",
+      "ai_maturity": 2,
+      "source_urls": ["https://crunchbase.com/organization/quanta-pipelines"]
+    },
+    {
+      "company": "Beacon Index Co",
+      "ai_maturity": 2,
+      "source_urls": ["https://crunchbase.com/organization/beacon-index"]
+    },
+    {
+      "company": "Aurora Lakehouse",
+      "ai_maturity": 1,
+      "source_urls": ["https://crunchbase.com/organization/aurora-lakehouse"]
+    },
+    {
+      "company": "Halcyon Schema",
+      "ai_maturity": 1,
+      "source_urls": ["https://crunchbase.com/organization/halcyon-schema"]
+    }
+  ],
+  "prospect_position": {
+    "percentile": 35,
+    "rank": "5 of 8",
+    "viable_cohort_size": 7,
+    "min_viable": 5
+  },
+  "gaps": [
+    {
+      "practice": "Named Head of AI or VP Data on public team page",
+      "cohort_adoption": "5 of 7 sector peers",
+      "prospect_has_it": false,
+      "confidence": "medium",
+      "evidence": [
+        "Lattice Streams Inc (AI maturity score 3)",
+        "Pylon Analytics (AI maturity score 3)",
+        "Ridgeline Data Co (AI maturity score 2)"
+      ],
+      "evidence_urls": [
+        "https://crunchbase.com/organization/lattice-streams",
+        "https://crunchbase.com/organization/pylon-analytics",
+        "https://crunchbase.com/organization/ridgeline-data"
+      ]
+    },
+    {
+      "practice": "Active AI function with multiple dedicated roles",
+      "cohort_adoption": "2 of 7 top-quartile peers",
+      "prospect_has_it": false,
+      "confidence": "medium",
+      "evidence": [
+        "Lattice Streams Inc scores 3 (multiple dedicated AI roles)",
+        "Pylon Analytics scores 3 (multiple dedicated AI roles)"
+      ],
+      "evidence_urls": [
+        "https://crunchbase.com/organization/lattice-streams",
+        "https://crunchbase.com/organization/pylon-analytics"
+      ]
+    }
+  ],
+  "generated_at": "2026-04-25T00:00:00Z"
+}

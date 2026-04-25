@@ -1,0 +1,201 @@
+{
+  "_doc": "Evidence graph for the Tenacious Conversion Engine decision memo. Every numeric or factual claim in report/memo.md MUST appear here with a source_type and source_ref. Lines marked {placeholder} are filled by report/build_evidence_graph.py after the held-out sweep completes; the script reads eval/ablation_results.json (post stats run), eval/trace_log.jsonl (interim), eval/probes/probe_results.json, and the published references hardcoded below.",
+  "version": "0.1.0",
+  "memo_path": "report/memo.md",
+  "memo_pages": 2,
+  "generated_at": "2026-04-25T07:17:00Z",
+  "claims": [
+    {
+      "id": "C001",
+      "memo_section": "page1.summary",
+      "claim": "Day-1 baseline pass@1 0.7267 [0.6504, 0.7917]",
+      "source_type": "trace",
+      "source_ref": "eval/score_log.json :: entry_type=dev_tier_baseline",
+      "trace_query": "$[?(@.entry_type=='dev_tier_baseline')].pass_at_1"
+    },
+    {
+      "id": "C002",
+      "memo_section": "page1.tau2_table.row1",
+      "claim": "Published tau2-bench retail reference 0.74",
+      "source_type": "public",
+      "source_ref": "challenge_brief line 119 (TRP1 Challenge Week 10 doc); tau2-bench leaderboard Feb 2026"
+    },
+    {
+      "id": "C003",
+      "memo_section": "page1.tau2_table.row2",
+      "claim": "Day-1 dev-slice baseline cost-per-run $0.0199",
+      "source_type": "trace",
+      "source_ref": "eval/score_log.json :: entry_type=dev_tier_baseline.cost_per_run"
+    },
+    {
+      "id": "C004",
+      "memo_section": "page1.tau2_table.row3",
+      "claim": "Day-1 baseline on held-out (20 tasks x 5 trials)",
+      "source_type": "trace",
+      "source_ref": "eval/ablation_results.json :: condition=baseline.{pass_at_1,ci_95_range,cost_per_run}",
+      "placeholder": true
+    },
+    {
+      "id": "C005",
+      "memo_section": "page1.tau2_table.row4",
+      "claim": "SCAP method on held-out",
+      "source_type": "trace",
+      "source_ref": "eval/ablation_results.json :: condition=scap_full",
+      "placeholder": true
+    },
+    {
+      "id": "C006",
+      "memo_section": "page1.tau2_table.row5",
+      "claim": "GEPA-style few-shot baseline on held-out",
+      "source_type": "trace",
+      "source_ref": "eval/ablation_results.json :: condition=gepa_fewshot",
+      "placeholder": true
+    },
+    {
+      "id": "C007",
+      "memo_section": "page1.statistical_test",
+      "claim": "Delta A paired-bootstrap mean and CI",
+      "source_type": "trace",
+      "source_ref": "eval/ablation_results.json :: stats.deltas.delta_a_scap_vs_baseline.paired_bootstrap",
+      "placeholder": true
+    },
+    {
+      "id": "C008",
+      "memo_section": "page1.cost_per_qualified_lead",
+      "claim": "Cost per qualified lead $0.0067",
+      "source_type": "trace",
+      "source_ref": "eval/trace_log.jsonl + interim production stack invoice ($0 rig free tiers)",
+      "derivation_note": "LLM cost = enrichment $0.0006 + draft $0.0028 + tone $0.0006; rig $0; / qualified-lead conversion ratio 1/1.4"
+    },
+    {
+      "id": "C009",
+      "memo_section": "page1.cost_pareto",
+      "claim": "Penalty band threshold $5-$8 per lead",
+      "source_type": "public",
+      "source_ref": "challenge_brief Cost-quality Pareto observable (line 494)"
+    },
+    {
+      "id": "C010",
+      "memo_section": "page1.speed_to_lead",
+      "claim": "Manual stalled-thread rate 30-40%",
+      "source_type": "public",
+      "source_ref": "challenge_brief line 118 (Tenacious executive interview)"
+    },
+    {
+      "id": "C011",
+      "memo_section": "page1.speed_to_lead",
+      "claim": "Interim warm-reply latency p50 28.7s / p95 38.0s; full pipeline p50 64.1s / p95 91.1s",
+      "source_type": "trace",
+      "source_ref": "outputs/latency_report.json :: per_stage.3_reply_received_and_warm_draft + outputs/e2e_summary.json :: pipeline_latency_ms"
+    },
+    {
+      "id": "C012",
+      "memo_section": "page1.gap_outbound",
+      "claim": "Cold-email reply rate baselines 1-3% / 7-12% top-quartile",
+      "source_type": "public",
+      "source_ref": "challenge_brief lines 112-113 (LeadIQ 2026 / Apollo / Clay / Smartlead)"
+    },
+    {
+      "id": "C013",
+      "memo_section": "page1.gap_outbound",
+      "claim": "Gap-brief coverage 20/20 = 100% on interim; gap-led-vs-generic A/B not measurable on synthetic abstain-heavy sample (deferred to pilot)",
+      "source_type": "trace",
+      "source_ref": "outputs/e2e_summary.json :: gap_brief_coverage; outputs/e2e_traces.jsonl :: per-record gap_brief_present + segment fields"
+    },
+    {
+      "id": "C014",
+      "memo_section": "page1.dollar_impact",
+      "claim": "ACV bands $240-720K talent / $80-300K project",
+      "source_type": "public",
+      "source_ref": "challenge_brief lines 116-117 (Tenacious internal weighted)"
+    },
+    {
+      "id": "C015",
+      "memo_section": "page1.dollar_impact",
+      "claim": "Conversion rates 35-50% disco-to-proposal / 25-40% proposal-to-close",
+      "source_type": "public",
+      "source_ref": "challenge_brief lines 114-115 (Tenacious internal last 4 quarters)"
+    },
+    {
+      "id": "C016",
+      "memo_section": "page2.failure_mode_1",
+      "claim": "Offshore-perception probe (P035) — forbidden-token list lacks offshore/nearshore/dedicated team",
+      "source_type": "trace",
+      "source_ref": "eval/probes/probe_results.json :: results[probe_id=P035] + agent/core/email_drafter.py:219-221"
+    },
+    {
+      "id": "C017",
+      "memo_section": "page2.failure_mode_2",
+      "claim": "Bench mismatch probe (P012) — orchestrator calls _check_bench_match without stack",
+      "source_type": "trace",
+      "source_ref": "eval/probes/probe_results.json :: results[probe_id=P012] + agent/core/orchestrator.py:102 + agent/enrichment/signal_brief.py:172-217"
+    },
+    {
+      "id": "C018",
+      "memo_section": "page2.failure_mode_3",
+      "claim": "Brand-reputation probes P007/P011/P027/P032 baseline trigger rates",
+      "source_type": "trace",
+      "source_ref": "eval/probes/probe_results.json :: results[probe_id in [P007,P011,P027,P032]] (run probes_20260424_214527)"
+    },
+    {
+      "id": "C019",
+      "memo_section": "page2.failure_mode_3",
+      "claim": "SCAP reduces P007 3/3 -> 0/3, P032 3/3 -> 1/3",
+      "source_type": "trace",
+      "source_ref": "eval/probes/probe_results_with_scap.json"
+    },
+    {
+      "id": "C020",
+      "memo_section": "page2.failure_mode_4",
+      "claim": "Founder-departure probe P003 partial pass — HubSpot label still stamped",
+      "source_type": "trace",
+      "source_ref": "eval/probes/probe_results.json :: results[probe_id=P003] + agent/core/orchestrator.py:_log_new_prospect_to_hubspot"
+    },
+    {
+      "id": "C021",
+      "memo_section": "page2.signal_lossiness",
+      "claim": "Score 0 == absence not proof of absence",
+      "source_type": "code",
+      "source_ref": "agent/enrichment/ai_maturity.py :: _generate_language_notes (lines 257-264)"
+    },
+    {
+      "id": "C022",
+      "memo_section": "page2.unresolved_failure",
+      "claim": "P034 GapEntry has no prospect_has_it_confidence",
+      "source_type": "trace",
+      "source_ref": "eval/probes/probe_results.json :: results[probe_id=P034] (DET:FAIL) + agent/models.py GapEntry"
+    },
+    {
+      "id": "C023",
+      "memo_section": "page2.brand_reputation_math",
+      "claim": "Brand-cost per wrong-signal email assumption $50",
+      "source_type": "assumption",
+      "source_ref": "memo.md page 2 stated assumption; rationale: fraction of $66K E[deal] x trust-kill probability"
+    },
+    {
+      "id": "C024",
+      "memo_section": "page2.kill_switch",
+      "claim": "Default live_outbound_enabled=False routes to staff sink",
+      "source_type": "code",
+      "source_ref": "agent/config.py :: Settings.live_outbound_enabled (default False)"
+    },
+    {
+      "id": "C025",
+      "memo_section": "page1.summary",
+      "claim": "20 sealed held-out tasks committed pre-eval",
+      "source_type": "code",
+      "source_ref": "eval/heldout_slice.json (committed 2026-04-25, disjoint from dev slice)"
+    },
+    {
+      "id": "C026",
+      "memo_section": "page1.tau2_table",
+      "claim": "Held-out slice composition: retail test split tasks 5,9,12,17,18,26,27,32,33,36,38,39,40,42,45,49,51,53,55,56",
+      "source_type": "code",
+      "source_ref": "eval/heldout_slice.json :: task_ids; derived from eval/tau2-bench/data/tau2/domains/retail/split_tasks.json::test"
+    }
+  ],
+  "policy": {
+    "trace_completeness": "Every claim with source_type=trace must resolve to a JSON-path inside the artifact named by source_ref. Validation script eval/validate_evidence_graph.py walks the graph and asserts each path resolves.",
+    "fabrication_check": "No claim may carry source_type=public when the cited line is not a verbatim Tenacious-provided number. The challenge brief is treated as the authoritative public source for Tenacious internal numbers under its 'do not fabricate' constraint."
+  }
+}

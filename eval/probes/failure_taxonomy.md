@@ -1,8 +1,12 @@
 # Failure Taxonomy — Tenacious Conversion Engine
 
-Grouped view of the 34 probes in [probe_library.md](probe_library.md). Organized
-by the ten categories from the challenge brief, cross-tabulated against severity
-and trigger evidence.
+Grouped view of the 37 probes in [probe_library.md](probe_library.md). Organized
+by the ten categories from the challenge brief plus a Tenacious-specific
+sub-category for the three originality probes (P035–P037), cross-tabulated
+against severity and trigger evidence. Real observed trigger rates from
+[probe_results.json](probe_results.json) are folded in below the per-category
+triage; the canonical observed-rate table is at the bottom of
+[probe_library.md](probe_library.md).
 
 ## Severity legend
 
@@ -36,7 +40,8 @@ and trigger evidence.
 | 8 | Scheduling edge cases | 1 | 1 | 1 | 3 |
 | 9 | Signal reliability | 2 | 1 | 0 | 3 |
 | 10 | Gap-brief over-claiming | 2 | 0 | 1 | 3 |
-| | **TOTAL** | **19** | **7** | **8** | **34** |
+| 11 | Tenacious-specific add-ons (P035–P037) | 2 | 1 | 0 | 3 |
+| | **TOTAL** | **21** | **8** | **8** | **37** |
 
 ## Per-category triage
 
@@ -165,16 +170,34 @@ P032 is in-scope for the SCAP mechanism (same ASK-not-ASSERT principle). P034
 needs a data-model change (`prospect_has_it_confidence`) — punted to Act V
 Skeptic's appendix as "one honest unresolved failure."
 
-## Aggregate triggering rates (observable now)
+## Aggregate triggering rates (observed in `probe_results.json` run `probes_20260424_214527`)
 
-From the interim trace log and the LLM-sampled subset runs:
+Per-category aggregate trigger rates from the actual probe runner output.
+"Trigger rate" = `n_triggers / n_samples` across all probes in the category;
+DET:FAIL counts as 1.0, DET:PASS as 0.0, LLM/TRACE rates fold in directly.
+
+| # | Category | Probes | Aggregate trigger | Shared failure pattern |
+|---|---|---|---|---|
+| 1 | ICP misclassification | 6 | 1/6 = 0.17 | Classifier order + missing thresholds; fixable with 5-line patches |
+| 2 | Signal over-claiming (drafter) | 6 | 6/18 = 0.33 (6 LLM probes × 3 samples) | Drafter asserts on LOW/MEDIUM evidence; SCAP target |
+| 3 | Bench over-commitment | 3 | 0/3 = 0.00 (DET passes; structural risk live) | Stack-specific guard implemented but never invoked |
+| 4 | Tone drift (style guide) | 2 | 0/6 LLM | Forbidden-token list holds for hype + "bench" word |
+| 5 | Multi-thread leakage | 2 | 1/2 = 0.50 (UUID collision risk @ scale) | In-memory store + short UUID prefix |
+| 6 | Cost pathology | 0 (all structural, not runnable) | n/a | Truncation limits hold |
+| 7 | Dual-control coordination (τ²-Bench) | 3 | 71/450 ≈ 0.16 weighted across P023–P025 | Agent acts before user authentication / confirmation; SCAP target |
+| 8 | Scheduling edge cases | 2 | 4/4 = 1.00 (P026 DET 1/1 + P027 LLM 3/3) | TZ-naive booking window + drafter fabricates local time |
+| 9 | Signal reliability | 2 | 0/4 LLM | Drafter respects HIGH-conf with missing amount; AI scorer caps score |
+| 10 | Gap-brief over-claiming | 3 | 4/7 = 0.57 (DET P034 + LLM P032 3/3) | Drafter leads with LOW-confidence gaps; schema lacks confidence field on `prospect_has_it` |
+| 11 | Tenacious-specific add-ons | 3 | 0/9 LLM at N=3 | Forbidden-token list catches the obvious cases; long-tail unverified at small N |
+
+**Family-level rollup** (the four families the Act IV mechanism cuts across):
 
 | Failure mode family | Observed rate | Cost envelope |
 |---|---|---|
-| Signal over-claiming (any form) | ~12% of drafts exhibit at least one over-claim | **~$3–5K per 1K emails in brand cost** |
+| Signal over-claiming (drafter, any form) | 6/18 = 33% of drafts exhibit at least one over-claim across P007–P011 | **~$3–5K per 1K emails in brand cost** |
 | Bench over-commitment | Unchecked on every draft by default | up to $240K per incident × low incident rate |
-| Fabricated local time | 5/5 on prospects w/o timezone | ~$500/incident × 10% APAC share |
-| τ²-Bench dual-control failure | ~5/150 sims | 0.03 pass@1 ceiling on dev slice |
+| Fabricated local time (P027) | 3/3 = 100% on prospects w/o timezone | ~$500/incident × 10% APAC share |
+| τ²-Bench dual-control failure (P023–P025) | 71/450 weighted, ~16% | recoverable via Act IV SCAP postscript |
 
 ## Act IV target selection (preview)
 

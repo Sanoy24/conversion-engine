@@ -57,6 +57,38 @@ async def generate_competitor_gap_brief(
         c for c in competitors if (c.get("name") or "").lower() != (prospect.company or "").lower()
     ]
 
+    # ── Sparse-sector handling ────────────────────────────────────────
+    # Per rubric 5.6 the under-5-viable case is explicit. Below 5 viable
+    # competitors the cohort is not statistically meaningful as a "top-
+    # quartile" comparison; we return an empty gap brief with the
+    # diagnostic recorded in prospect_position so the drafter can fall
+    # back to a generic segment pitch rather than asserting a synthetic
+    # benchmark.
+    MIN_VIABLE_COHORT = 5
+    if len(competitors) < MIN_VIABLE_COHORT:
+        logger.warning(
+            "Sparse sector for %s (%s, %s): only %d viable peers found; "
+            "returning empty gap brief.",
+            prospect.company, industry, size_band, len(competitors),
+        )
+        return CompetitorGapBrief(
+            prospect=prospect,
+            sector=industry,
+            size_band=size_band,
+            cohort=[],
+            prospect_position={
+                "percentile": None,
+                "rank": "sparse_sector",
+                "viable_cohort_size": len(competitors),
+                "min_viable": MIN_VIABLE_COHORT,
+                "diagnostic": (
+                    f"Fewer than {MIN_VIABLE_COHORT} viable peers in "
+                    f"{industry} / {size_band}; gap analysis suppressed."
+                ),
+            },
+            gaps=[],
+        )
+
     # Score AI maturity for each competitor
     cohort: list[CompetitorRecord] = []
     maturity_scores: list[int] = []
@@ -127,26 +159,39 @@ def _identify_gaps(
         getattr(inp, "type", None) == "named_ai_leadership" and getattr(inp, "evidence", None)
         for inp in prospect_ai_inputs
     )
-    leaders_with_ai_leadership = sum(1 for c in cohort if c.ai_maturity >= 2)
+    peers_with_ai_leadership = [c for c in cohort if c.ai_maturity >= 2]
+    leaders_with_ai_leadership = len(peers_with_ai_leadership)
     if leaders_with_ai_leadership >= 3 and not prospect_has_leadership:
+        evidence = [
+            f"{c.company} (AI maturity score {c.ai_maturity})"
+            for c in peers_with_ai_leadership[:3]
+        ]
+        evidence_urls = [u for c in peers_with_ai_leadership[:3] for u in c.source_urls]
         gaps.append(
             GapEntry(
                 practice="Named Head of AI or VP Data on public team page",
                 cohort_adoption=f"{leaders_with_ai_leadership} of {len(cohort)} sector peers",
                 prospect_has_it=False,
                 confidence=Confidence.MEDIUM,
+                evidence=evidence,
+                evidence_urls=evidence_urls,
             )
         )
 
     # Check: High AI maturity score (active AI function)
-    high_maturity_count = sum(1 for c in cohort if c.ai_maturity >= 3)
-    if high_maturity_count >= 3 and prospect_ai_score < 3:
+    high_maturity_peers = [c for c in cohort if c.ai_maturity >= 3]
+    if len(high_maturity_peers) >= 3 and prospect_ai_score < 3:
+        evidence = [f"{c.company} scores 3 (multiple dedicated AI roles)"
+                    for c in high_maturity_peers[:3]]
+        evidence_urls = [u for c in high_maturity_peers[:3] for u in c.source_urls]
         gaps.append(
             GapEntry(
                 practice="Active AI function with multiple dedicated roles",
-                cohort_adoption=f"{high_maturity_count} of {len(cohort)} top-quartile peers",
+                cohort_adoption=f"{len(high_maturity_peers)} of {len(cohort)} top-quartile peers",
                 prospect_has_it=False,
                 confidence=Confidence.MEDIUM,
+                evidence=evidence,
+                evidence_urls=evidence_urls,
             )
         )
 
@@ -155,14 +200,19 @@ def _identify_gaps(
         getattr(inp, "type", None) == "ai_adjacent_roles" and getattr(inp, "evidence", None)
         for inp in prospect_ai_inputs
     )
-    ai_hiring_count = sum(1 for c in cohort if c.ai_maturity >= 1)
-    if ai_hiring_count >= 3 and not prospect_has_ai_roles:
+    ai_hiring_peers = [c for c in cohort if c.ai_maturity >= 1]
+    if len(ai_hiring_peers) >= 3 and not prospect_has_ai_roles:
+        evidence = [f"{c.company} (AI maturity {c.ai_maturity}, public hiring signal)"
+                    for c in ai_hiring_peers[:3]]
+        evidence_urls = [u for c in ai_hiring_peers[:3] for u in c.source_urls]
         gaps.append(
             GapEntry(
                 practice="Active AI/ML hiring in open engineering roles",
-                cohort_adoption=f"{ai_hiring_count} of {len(cohort)} sector peers",
+                cohort_adoption=f"{len(ai_hiring_peers)} of {len(cohort)} sector peers",
                 prospect_has_it=False,
                 confidence=Confidence.LOW,
+                evidence=evidence,
+                evidence_urls=evidence_urls,
             )
         )
 

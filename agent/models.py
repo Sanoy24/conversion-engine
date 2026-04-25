@@ -174,6 +174,13 @@ class GapEntry(BaseModel):
     cohort_adoption: str  # e.g. "3 of 5 top-quartile peers"
     prospect_has_it: bool = False
     confidence: Confidence = Confidence.MEDIUM
+    # Public-signal evidence backing the gap claim. Required by the
+    # competitor-gap rubric: each gap must point to a named role, named
+    # tool in stack, or named public statement. List of free-text evidence
+    # snippets plus optional URLs. Empty list is permitted but suppresses
+    # the gap from prompt injection in SCAP-enabled mode.
+    evidence: list[str] = Field(default_factory=list)
+    evidence_urls: list[str] = Field(default_factory=list)
 
 
 class CompetitorGapBrief(BaseModel):
