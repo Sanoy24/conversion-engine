@@ -180,5 +180,60 @@
     "completed_simulations": 100,
     "process_returncode": 0,
     "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.05,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.05,
+      0.05
+    ],
+    "per_trial_pass_at_1": [
+      0.05,
+      0.05,
+      0.05
+    ],
+    "n_simulations": 60,
+    "cost_per_run": 0.002642,
+    "total_cost": 0.1585,
+    "task_latency_p50_s": 57.82,
+    "task_latency_p95_s": 384.59,
+    "infrastructure_errors": 0,
+    "entry_type": "heldout_scap_ablation_a",
+    "timestamp": "2026-04-25T06:15:35.529504",
+    "model": "openrouter/deepseek/deepseek-chat-v3-0324",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 3,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 1564.19,
+    "run_id": "eval_heldout_scap_ablation_a_20260425_054931_3f59b0",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_a_20260425_054931_3f59b0\\results.json",
+    "expected_simulations": 60,
+    "completed_simulations": 60,
+    "process_returncode": 0,
+    "run_status": "complete"
   }
 ]
