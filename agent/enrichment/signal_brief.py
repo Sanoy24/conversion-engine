@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from agent.config import settings
-from agent.enrichment.ai_maturity import score_ai_maturity
+from agent.enrichment.ai_maturity import collect_ai_maturity_supporting_signals, score_ai_maturity
 from agent.enrichment.competitor_gap import generate_competitor_gap_brief
 from agent.enrichment.crunchbase import (
     extract_funding_signal,
@@ -90,9 +90,14 @@ async def generate_signal_brief(
     all_traces.extend(leadership_traces)
 
     # ── Step 6: Score AI maturity ──
+    ai_supporting = collect_ai_maturity_supporting_signals(cb_record)
     ai_maturity = score_ai_maturity(
         hiring=hiring,
         crunchbase_record=cb_record,
+        github_activity=ai_supporting.get("github_activity"),
+        exec_commentary=ai_supporting.get("exec_commentary"),
+        tech_stack_signals=ai_supporting.get("tech_stack_signals"),
+        strategic_communications=ai_supporting.get("strategic_communications"),
     )
 
     # ── Step 7: Generate pitch guidance ──

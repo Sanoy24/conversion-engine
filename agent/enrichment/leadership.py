@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from datetime import UTC, datetime, timedelta
 
 from agent.llm import get_llm_client
@@ -33,6 +34,9 @@ async def check_leadership_change(
         signal = _check_crunchbase_people(crunchbase_record)
         if signal.change:
             return signal, traces
+        press_signal = _check_press_records(crunchbase_record)
+        if press_signal.change:
+            return press_signal, traces
 
     # Use LLM to analyze available information
     llm = get_llm_client()
@@ -58,6 +62,7 @@ async def check_leadership_change(
             role=result.get("role"),
             name=result.get("name"),
             appointed_at=result.get("appointed_at"),
+            observed_at=datetime.now(UTC).isoformat(),
             confidence=Confidence(result.get("confidence", "low")),
             sources=[
                 SourceRef(
@@ -71,7 +76,10 @@ async def check_leadership_change(
 
     except Exception as e:
         logger.warning("Leadership check failed for %s: %s", company_name, e)
-        return LeadershipSignal(confidence=Confidence.LOW), traces
+        return LeadershipSignal(
+            observed_at=datetime.now(UTC).isoformat(),
+            confidence=Confidence.LOW,
+        ), traces
 
 
 def _check_crunchbase_people(record: dict) -> LeadershipSignal:
@@ -98,11 +106,51 @@ def _check_crunchbase_people(record: dict) -> LeadershipSignal:
                 role=person.get("title") or person.get("role"),
                 name=person.get("name") or person.get("first_name"),
                 appointed_at=started_at,
+                observed_at=datetime.now(UTC).isoformat(),
                 confidence=Confidence.MEDIUM,
                 sources=[SourceRef(description="Crunchbase people section")],
             )
 
-    return LeadershipSignal(confidence=Confidence.LOW)
+    return LeadershipSignal(
+        observed_at=datetime.now(UTC).isoformat(),
+        confidence=Confidence.LOW,
+    )
+
+
+def _check_press_records(record: dict) -> LeadershipSignal:
+    """
+    Deterministic press/announcement extraction from Crunchbase-linked records.
+    """
+    text_blobs = []
+    for key in ("press_references", "announcements", "news", "about", "description"):
+        value = record.get(key)
+        if value:
+            text_blobs.append(str(value))
+    if not text_blobs:
+        return LeadershipSignal(observed_at=datetime.now(UTC).isoformat(), confidence=Confidence.LOW)
+
+    joined = " ".join(text_blobs)
+    role_match = re.search(
+        r"(cto|chief technology officer|vp engineering|vice president of engineering|head of engineering)",
+        joined,
+        flags=re.IGNORECASE,
+    )
+    if not role_match:
+        return LeadershipSignal(observed_at=datetime.now(UTC).isoformat(), confidence=Confidence.LOW)
+
+    date_match = re.search(r"(20\d{2}-\d{2}-\d{2})", joined)
+    appointed_at = date_match.group(1) if date_match else None
+    if appointed_at and not _is_recent_transition(appointed_at):
+        return LeadershipSignal(observed_at=datetime.now(UTC).isoformat(), confidence=Confidence.LOW)
+
+    return LeadershipSignal(
+        change=True,
+        role=role_match.group(1),
+        appointed_at=appointed_at,
+        observed_at=datetime.now(UTC).isoformat(),
+        confidence=Confidence.MEDIUM if appointed_at else Confidence.LOW,
+        sources=[SourceRef(description="Crunchbase-linked press/announcement records")],
+    )
 
 
 def _is_recent_transition(started_at: str | None, window_days: int = 90) -> bool:

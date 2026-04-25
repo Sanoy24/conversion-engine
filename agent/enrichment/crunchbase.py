@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
+from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -153,6 +154,7 @@ def extract_funding_signal(record: dict) -> FundingSignal:
         event=event,
         amount_usd=amount,
         closed_at=closed_at,
+        observed_at=datetime.now(UTC).isoformat(),
         confidence=confidence,
         sources=[SourceRef(url=f"https://www.crunchbase.com/organization/{permalink}")],
     )

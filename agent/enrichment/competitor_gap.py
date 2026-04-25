@@ -3,6 +3,12 @@ Competitor gap brief generator.
 Identifies 5-10 top-quartile competitors in the prospect's sector,
 scores their AI maturity, and extracts specific gaps the prospect shows.
 Converts outbound from vendor pitch into a research finding.
+
+Selection criteria for top-quartile competitors:
+  1) same industry (Crunchbase industry match),
+  2) same size band (employee-range bucket),
+  3) peer viability (exclude prospect itself),
+  4) top quartile by AI maturity score among peers.
 """
 
 from __future__ import annotations
@@ -20,6 +26,9 @@ from agent.models import (
 )
 
 logger = logging.getLogger(__name__)
+
+MIN_VIABLE_COHORT = 5
+MAX_TOP_QUARTILE = 10
 
 
 async def generate_competitor_gap_brief(
@@ -45,16 +54,16 @@ async def generate_competitor_gap_brief(
     min_emp, max_emp = _get_size_range(size_band)
 
     # Find competitor companies in the same sector
-    competitors = get_companies_by_sector(
+    sector_peers = get_companies_by_sector(
         industry=industry,
         min_employees=min_emp,
         max_employees=max_emp,
-        limit=10,
+        limit=40,
     )
 
     # Filter out the prospect itself
-    competitors = [
-        c for c in competitors if (c.get("name") or "").lower() != (prospect.company or "").lower()
+    sector_peers = [
+        c for c in sector_peers if (c.get("name") or "").lower() != (prospect.company or "").lower()
     ]
 
     # ── Sparse-sector handling ────────────────────────────────────────
@@ -64,12 +73,11 @@ async def generate_competitor_gap_brief(
     # diagnostic recorded in prospect_position so the drafter can fall
     # back to a generic segment pitch rather than asserting a synthetic
     # benchmark.
-    MIN_VIABLE_COHORT = 5
-    if len(competitors) < MIN_VIABLE_COHORT:
+    if len(sector_peers) < MIN_VIABLE_COHORT:
         logger.warning(
             "Sparse sector for %s (%s, %s): only %d viable peers found; "
             "returning empty gap brief.",
-            prospect.company, industry, size_band, len(competitors),
+            prospect.company, industry, size_band, len(sector_peers),
         )
         return CompetitorGapBrief(
             prospect=prospect,
@@ -79,7 +87,7 @@ async def generate_competitor_gap_brief(
             prospect_position={
                 "percentile": None,
                 "rank": "sparse_sector",
-                "viable_cohort_size": len(competitors),
+                "viable_cohort_size": len(sector_peers),
                 "min_viable": MIN_VIABLE_COHORT,
                 "diagnostic": (
                     f"Fewer than {MIN_VIABLE_COHORT} viable peers in "
@@ -89,29 +97,50 @@ async def generate_competitor_gap_brief(
             gaps=[],
         )
 
-    # Score AI maturity for each competitor
-    cohort: list[CompetitorRecord] = []
-    maturity_scores: list[int] = []
-
-    for comp in competitors[:10]:
+    # Score AI maturity for sector peers.
+    scored_peers: list[tuple[dict, int]] = []
+    for comp in sector_peers:
         # Basic AI maturity scoring for competitors (simplified — no live scraping)
         comp_maturity = score_ai_maturity(
             crunchbase_record=comp,
         )
+        scored_peers.append((comp, comp_maturity.score))
+
+    all_scores = [score for _, score in scored_peers]
+    top_quartile_scored = _select_top_quartile_competitors(scored_peers)
+    if len(top_quartile_scored) < MIN_VIABLE_COHORT:
+        logger.warning(
+            "Top-quartile subset too small for %s (%s/%s): %d peers",
+            prospect.company, industry, size_band, len(top_quartile_scored),
+        )
+        return CompetitorGapBrief(
+            prospect=prospect,
+            sector=industry,
+            size_band=size_band,
+            cohort=[],
+            prospect_position={
+                "percentile": None,
+                "rank": "sparse_top_quartile",
+                "viable_cohort_size": len(top_quartile_scored),
+                "min_viable": MIN_VIABLE_COHORT,
+            },
+            gaps=[],
+        )
+
+    cohort: list[CompetitorRecord] = []
+    for comp, score in top_quartile_scored:
         cohort.append(
             CompetitorRecord(
                 company=comp.get("name") or comp.get("company_name", "Unknown"),
-                ai_maturity=comp_maturity.score,
+                ai_maturity=score,
                 source_urls=[f"https://crunchbase.com/organization/{comp.get('permalink', '')}"],
             )
         )
-        maturity_scores.append(comp_maturity.score)
-
-    # Compute prospect's position
-    if maturity_scores:
-        scores_below = sum(1 for s in maturity_scores if s <= prospect_ai_maturity_score)
-        percentile = int((scores_below / len(maturity_scores)) * 100)
-        rank = f"{scores_below + 1} of {len(maturity_scores) + 1}"
+    # Compute prospect's position against full sector distribution.
+    if all_scores:
+        scores_below = sum(1 for s in all_scores if s <= prospect_ai_maturity_score)
+        percentile = int((scores_below / len(all_scores)) * 100)
+        rank = f"{scores_below + 1} of {len(all_scores) + 1}"
     else:
         percentile = 50
         rank = "unknown"
@@ -121,7 +150,6 @@ async def generate_competitor_gap_brief(
         prospect_ai_score=prospect_ai_maturity_score,
         prospect_ai_inputs=prospect_ai_inputs,
         cohort=cohort,
-        competitors=competitors,
     )
 
     return CompetitorGapBrief(
@@ -134,11 +162,22 @@ async def generate_competitor_gap_brief(
     )
 
 
+def _select_top_quartile_competitors(scored_peers: list[tuple[dict, int]]) -> list[tuple[dict, int]]:
+    """
+    Select 5-10 top-quartile peers by AI maturity score.
+    """
+    if not scored_peers:
+        return []
+    sorted_peers = sorted(scored_peers, key=lambda item: item[1], reverse=True)
+    quartile_count = max(1, (len(sorted_peers) + 3) // 4)  # ceil(n/4)
+    quartile_count = min(MAX_TOP_QUARTILE, quartile_count, len(sorted_peers))
+    return sorted_peers[:quartile_count]
+
+
 def _identify_gaps(
     prospect_ai_score: int,
     prospect_ai_inputs: list,
     cohort: list[CompetitorRecord],
-    competitors: list[dict],
 ) -> list[GapEntry]:
     """
     Identify specific gaps between the prospect and top-quartile peers.
@@ -148,11 +187,6 @@ def _identify_gaps(
 
     if not cohort:
         return gaps
-
-    # Sort cohort by AI maturity to identify top quartile
-    sorted_cohort = sorted(cohort, key=lambda c: c.ai_maturity, reverse=True)
-    top_quartile_size = max(1, len(sorted_cohort) // 4)
-    sorted_cohort[: top_quartile_size + 1]
 
     # Check: Named AI/ML leadership
     prospect_has_leadership = any(

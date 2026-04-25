@@ -31,6 +31,7 @@ class CalComClient:
         start_time: str,
         end_time: str | None = None,
         notes: str | None = None,
+        thread_id: str | None = None,
     ) -> tuple[dict, TraceRecord]:
         """
         Book a discovery call slot via Cal.com API.
@@ -58,6 +59,7 @@ class CalComClient:
             "metadata": {
                 "company": prospect.company,
                 "thread_source": "conversion_engine",
+                "thread_id": thread_id,
             },
         }
 

@@ -85,6 +85,7 @@ def check_layoffs(
     if not matching_events:
         return LayoffSignal(
             event=False,
+            observed_at=datetime.utcnow().isoformat(),
             confidence=Confidence.HIGH,  # Confident that NO layoff was found in dataset
         )
 
@@ -96,6 +97,7 @@ def check_layoffs(
         event=True,
         headcount_pct=headcount_pct,
         closed_at=latest.get("date"),
+        observed_at=datetime.utcnow().isoformat(),
         confidence=Confidence.HIGH,
         sources=[
             SourceRef(
@@ -117,7 +119,11 @@ def check_layoffs_from_crunchbase(record: dict) -> LayoffSignal:
 
     layoff_raw = record.get("layoff")
     if not layoff_raw:
-        return LayoffSignal(event=False, confidence=Confidence.LOW)
+        return LayoffSignal(
+            event=False,
+            observed_at=datetime.utcnow().isoformat(),
+            confidence=Confidence.LOW,
+        )
 
     # Parse the JSON field
     try:
@@ -126,7 +132,11 @@ def check_layoffs_from_crunchbase(record: dict) -> LayoffSignal:
         else:
             layoff_data = layoff_raw
     except (json.JSONDecodeError, TypeError):
-        return LayoffSignal(event=False, confidence=Confidence.LOW)
+        return LayoffSignal(
+            event=False,
+            observed_at=datetime.utcnow().isoformat(),
+            confidence=Confidence.LOW,
+        )
 
     if isinstance(layoff_data, list) and layoff_data:
         latest = layoff_data[0]
@@ -134,6 +144,7 @@ def check_layoffs_from_crunchbase(record: dict) -> LayoffSignal:
             event=True,
             headcount_pct=_parse_percentage(latest.get("percentage")),
             closed_at=latest.get("date"),
+            observed_at=datetime.utcnow().isoformat(),
             confidence=Confidence.MEDIUM,
             sources=[
                 SourceRef(
@@ -143,7 +154,11 @@ def check_layoffs_from_crunchbase(record: dict) -> LayoffSignal:
             ],
         )
 
-    return LayoffSignal(event=False, confidence=Confidence.LOW)
+    return LayoffSignal(
+        event=False,
+        observed_at=datetime.utcnow().isoformat(),
+        confidence=Confidence.LOW,
+    )
 
 
 def _parse_date(date_str: str | None) -> datetime | None:
