@@ -402,5 +402,1697 @@
     "completed_simulations": 100,
     "process_returncode": 0,
     "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 100,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 100,
+    "entry_type": "heldout_baseline",
+    "timestamp": "2026-04-25T10:42:05.203964",
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 5,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 201.81,
+    "run_id": "eval_heldout_baseline_20260425_103843_2141ff",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_baseline_20260425_103843_2141ff\\results.json",
+    "expected_simulations": 100,
+    "completed_simulations": 100,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 100,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 100,
+    "entry_type": "heldout_scap_full",
+    "timestamp": "2026-04-25T10:45:29.761199",
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 5,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 204.5,
+    "run_id": "eval_heldout_scap_full_20260425_104205_87f87b",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_full_20260425_104205_87f87b\\results.json",
+    "expected_simulations": 100,
+    "completed_simulations": 100,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 60,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 60,
+    "entry_type": "heldout_scap_ablation_a",
+    "timestamp": "2026-04-25T10:47:34.366971",
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 3,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 124.53,
+    "run_id": "eval_heldout_scap_ablation_a_20260425_104529_cbcc6c",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_a_20260425_104529_cbcc6c\\results.json",
+    "expected_simulations": 60,
+    "completed_simulations": 60,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 60,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 60,
+    "entry_type": "heldout_scap_ablation_b",
+    "timestamp": "2026-04-25T10:49:26.281810",
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 3,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 111.84,
+    "run_id": "eval_heldout_scap_ablation_b_20260425_104734_c3a543",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_b_20260425_104734_c3a543\\results.json",
+    "expected_simulations": 60,
+    "completed_simulations": 60,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 60,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 60,
+    "entry_type": "heldout_scap_ablation_c",
+    "timestamp": "2026-04-25T10:51:27.361948",
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 3,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 121.03,
+    "run_id": "eval_heldout_scap_ablation_c_20260425_104926_f6dd5b",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_c_20260425_104926_f6dd5b\\results.json",
+    "expected_simulations": 60,
+    "completed_simulations": 60,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 100,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 100,
+    "entry_type": "heldout_gepa_fewshot",
+    "timestamp": "2026-04-25T10:54:52.170483",
+    "model": "anthropic/claude-sonnet-4-20250514",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 5,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 204.74,
+    "run_id": "eval_heldout_gepa_fewshot_20260425_105127_3145ee",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_gepa_fewshot_20260425_105127_3145ee\\results.json",
+    "expected_simulations": 100,
+    "completed_simulations": 100,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_baseline",
+    "timestamp": "2026-04-25T11:02:52.578218",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 12.3,
+    "run_id": "eval_heldout_baseline_20260425_110240_f8e990",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_baseline_20260425_110240_f8e990\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_full",
+    "timestamp": "2026-04-25T11:03:05.102559",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 12.47,
+    "run_id": "eval_heldout_scap_full_20260425_110252_96b243",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_full_20260425_110252_96b243\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_a",
+    "timestamp": "2026-04-25T11:03:17.882805",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 12.73,
+    "run_id": "eval_heldout_scap_ablation_a_20260425_110305_eb7f9f",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_a_20260425_110305_eb7f9f\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_b",
+    "timestamp": "2026-04-25T11:03:29.764702",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 11.84,
+    "run_id": "eval_heldout_scap_ablation_b_20260425_110317_faa3a3",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_b_20260425_110317_faa3a3\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_c",
+    "timestamp": "2026-04-25T11:03:42.238459",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 12.42,
+    "run_id": "eval_heldout_scap_ablation_c_20260425_110329_d98c73",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_c_20260425_110329_d98c73\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_gepa_fewshot",
+    "timestamp": "2026-04-25T11:03:55.046327",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 12.75,
+    "run_id": "eval_heldout_gepa_fewshot_20260425_110342_811151",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_gepa_fewshot_20260425_110342_811151\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_baseline",
+    "timestamp": "2026-04-25T11:06:28.328172",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 11.98,
+    "run_id": "eval_heldout_baseline_20260425_110616_aa7838",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_baseline_20260425_110616_aa7838\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_full",
+    "timestamp": "2026-04-25T11:06:40.540661",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 12.16,
+    "run_id": "eval_heldout_scap_full_20260425_110628_36238a",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_full_20260425_110628_36238a\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_a",
+    "timestamp": "2026-04-25T11:06:52.946355",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 12.36,
+    "run_id": "eval_heldout_scap_ablation_a_20260425_110640_bc43ea",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_a_20260425_110640_bc43ea\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_b",
+    "timestamp": "2026-04-25T11:07:07.318373",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 14.33,
+    "run_id": "eval_heldout_scap_ablation_b_20260425_110652_bd8794",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_b_20260425_110652_bd8794\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_c",
+    "timestamp": "2026-04-25T11:07:23.037437",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 15.67,
+    "run_id": "eval_heldout_scap_ablation_c_20260425_110707_751967",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_c_20260425_110707_751967\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_gepa_fewshot",
+    "timestamp": "2026-04-25T11:07:38.458174",
+    "model": "anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 15.34,
+    "run_id": "eval_heldout_gepa_fewshot_20260425_110723_d5084b",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_gepa_fewshot_20260425_110723_d5084b\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_baseline",
+    "timestamp": "2026-04-25T11:09:41.973221",
+    "model": "openrouter/anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 24.72,
+    "run_id": "eval_heldout_baseline_20260425_110917_092ba4",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_baseline_20260425_110917_092ba4\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_full",
+    "timestamp": "2026-04-25T11:10:05.060199",
+    "model": "openrouter/anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 23.03,
+    "run_id": "eval_heldout_scap_full_20260425_110942_a12085",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_full_20260425_110942_a12085\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_a",
+    "timestamp": "2026-04-25T11:10:29.294961",
+    "model": "openrouter/anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 24.17,
+    "run_id": "eval_heldout_scap_ablation_a_20260425_111005_e59119",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_a_20260425_111005_e59119\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_b",
+    "timestamp": "2026-04-25T11:10:52.940105",
+    "model": "openrouter/anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 23.58,
+    "run_id": "eval_heldout_scap_ablation_b_20260425_111029_8b4aa9",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_b_20260425_111029_8b4aa9\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_c",
+    "timestamp": "2026-04-25T11:11:15.687004",
+    "model": "openrouter/anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 22.69,
+    "run_id": "eval_heldout_scap_ablation_c_20260425_111052_f89b9e",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_c_20260425_111052_f89b9e\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_gepa_fewshot",
+    "timestamp": "2026-04-25T11:11:39.805374",
+    "model": "openrouter/anthropic/claude-3.5-sonnet",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 24.06,
+    "run_id": "eval_heldout_gepa_fewshot_20260425_111115_7007e3",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_gepa_fewshot_20260425_111115_7007e3\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_baseline",
+    "timestamp": "2026-04-25T11:16:35.912314",
+    "model": "openrouter/anthropic/claude-3.5-sonnet-20241022",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 21.14,
+    "run_id": "eval_heldout_baseline_20260425_111614_7ca3a4",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_baseline_20260425_111614_7ca3a4\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_full",
+    "timestamp": "2026-04-25T11:17:01.692727",
+    "model": "openrouter/anthropic/claude-3.5-sonnet-20241022",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 25.75,
+    "run_id": "eval_heldout_scap_full_20260425_111635_c47562",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_full_20260425_111635_c47562\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_a",
+    "timestamp": "2026-04-25T11:17:25.893452",
+    "model": "openrouter/anthropic/claude-3.5-sonnet-20241022",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 24.17,
+    "run_id": "eval_heldout_scap_ablation_a_20260425_111701_86dee1",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_a_20260425_111701_86dee1\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_b",
+    "timestamp": "2026-04-25T11:17:48.939641",
+    "model": "openrouter/anthropic/claude-3.5-sonnet-20241022",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 23.0,
+    "run_id": "eval_heldout_scap_ablation_b_20260425_111725_d42486",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_b_20260425_111725_d42486\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_scap_ablation_c",
+    "timestamp": "2026-04-25T11:18:12.349165",
+    "model": "openrouter/anthropic/claude-3.5-sonnet-20241022",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 23.38,
+    "run_id": "eval_heldout_scap_ablation_c_20260425_111748_de21c9",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_c_20260425_111748_de21c9\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 1,
+    "entry_type": "heldout_gepa_fewshot",
+    "timestamp": "2026-04-25T11:18:32.607108",
+    "model": "openrouter/anthropic/claude-3.5-sonnet-20241022",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 20.22,
+    "run_id": "eval_heldout_gepa_fewshot_20260425_111812_960322",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_gepa_fewshot_20260425_111812_960322\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.066755,
+    "total_cost": 0.0668,
+    "task_latency_p50_s": 47.58,
+    "task_latency_p95_s": 47.58,
+    "infrastructure_errors": 0,
+    "entry_type": "heldout_baseline",
+    "timestamp": "2026-04-25T11:21:11.755475",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 57.53,
+    "run_id": "eval_heldout_baseline_20260425_112014_c95239",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_baseline_20260425_112014_c95239\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.066898,
+    "total_cost": 0.0669,
+    "task_latency_p50_s": 33.41,
+    "task_latency_p95_s": 33.41,
+    "infrastructure_errors": 0,
+    "entry_type": "heldout_scap_full",
+    "timestamp": "2026-04-25T11:21:56.108827",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 44.31,
+    "run_id": "eval_heldout_scap_full_20260425_112111_7b6099",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_full_20260425_112111_7b6099\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.042183,
+    "total_cost": 0.0422,
+    "task_latency_p50_s": 27.82,
+    "task_latency_p95_s": 27.82,
+    "infrastructure_errors": 0,
+    "entry_type": "heldout_scap_ablation_a",
+    "timestamp": "2026-04-25T11:22:33.506117",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 37.34,
+    "run_id": "eval_heldout_scap_ablation_a_20260425_112156_d1eadd",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_a_20260425_112156_d1eadd\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 1.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      1.0,
+      1.0
+    ],
+    "per_trial_pass_at_1": [
+      1.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.059323,
+    "total_cost": 0.0593,
+    "task_latency_p50_s": 39.7,
+    "task_latency_p95_s": 39.7,
+    "infrastructure_errors": 0,
+    "entry_type": "heldout_scap_ablation_b",
+    "timestamp": "2026-04-25T11:23:24.154439",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 50.58,
+    "run_id": "eval_heldout_scap_ablation_b_20260425_112233_a4991c",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_b_20260425_112233_a4991c\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.031023,
+    "total_cost": 0.031,
+    "task_latency_p50_s": 17.75,
+    "task_latency_p95_s": 17.75,
+    "infrastructure_errors": 0,
+    "entry_type": "heldout_scap_ablation_c",
+    "timestamp": "2026-04-25T11:23:53.099148",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 28.89,
+    "run_id": "eval_heldout_scap_ablation_c_20260425_112324_7f50bb",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_c_20260425_112324_7f50bb\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0
+    ],
+    "n_simulations": 1,
+    "cost_per_run": 0.038468,
+    "total_cost": 0.0385,
+    "task_latency_p50_s": 21.67,
+    "task_latency_p95_s": 21.67,
+    "infrastructure_errors": 0,
+    "entry_type": "heldout_gepa_fewshot",
+    "timestamp": "2026-04-25T11:24:26.206164",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 1,
+    "n_trials": 1,
+    "task_ids": [
+      "5"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 33.05,
+    "run_id": "eval_heldout_gepa_fewshot_20260425_112353_d6f4dc",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_gepa_fewshot_20260425_112353_d6f4dc\\results.json",
+    "expected_simulations": 1,
+    "completed_simulations": 1,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.61,
+    "ci_95": 0.0754,
+    "ci_95_range": [
+      0.5346,
+      0.6854
+    ],
+    "per_trial_pass_at_1": [
+      0.65,
+      0.7,
+      0.65,
+      0.45,
+      0.6
+    ],
+    "n_simulations": 100,
+    "cost_per_run": 0.043779,
+    "total_cost": 4.3779,
+    "task_latency_p50_s": 25.85,
+    "task_latency_p95_s": 43.14,
+    "infrastructure_errors": 0,
+    "entry_type": "heldout_baseline",
+    "timestamp": "2026-04-25T11:43:39.547018",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 5,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 751.06,
+    "run_id": "eval_heldout_baseline_20260425_113108_085a06",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_baseline_20260425_113108_085a06\\results.json",
+    "expected_simulations": 100,
+    "completed_simulations": 100,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.6,
+    "ci_95": 0.0277,
+    "ci_95_range": [
+      0.5723,
+      0.6277
+    ],
+    "per_trial_pass_at_1": [
+      0.6,
+      0.65,
+      0.6,
+      0.55,
+      0.6
+    ],
+    "n_simulations": 100,
+    "cost_per_run": 0.043489,
+    "total_cost": 4.3489,
+    "task_latency_p50_s": 24.69,
+    "task_latency_p95_s": 54.3,
+    "infrastructure_errors": 0,
+    "entry_type": "heldout_scap_full",
+    "timestamp": "2026-04-25T11:56:41.793226",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 5,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 782.14,
+    "run_id": "eval_heldout_scap_full_20260425_114339_f99769",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_full_20260425_114339_f99769\\results.json",
+    "expected_simulations": 100,
+    "completed_simulations": 100,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.1333,
+    "ci_95": 0.2134,
+    "ci_95_range": [
+      -0.08,
+      0.3467
+    ],
+    "per_trial_pass_at_1": [
+      0.4,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 60,
+    "cost_per_run": 0.010476,
+    "total_cost": 0.6285,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 21.84,
+    "infrastructure_errors": 47,
+    "entry_type": "heldout_scap_ablation_a",
+    "timestamp": "2026-04-25T11:59:53.723987",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 3,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 191.86,
+    "run_id": "eval_heldout_scap_ablation_a_20260425_115641_128a7a",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_a_20260425_115641_128a7a\\results.json",
+    "expected_simulations": 60,
+    "completed_simulations": 60,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 60,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 60,
+    "entry_type": "heldout_scap_ablation_b",
+    "timestamp": "2026-04-25T12:01:48.210915",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 3,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 114.41,
+    "run_id": "eval_heldout_scap_ablation_b_20260425_115953_a2637e",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_b_20260425_115953_a2637e\\results.json",
+    "expected_simulations": 60,
+    "completed_simulations": 60,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 60,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 60,
+    "entry_type": "heldout_scap_ablation_c",
+    "timestamp": "2026-04-25T12:03:29.652961",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 3,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 101.39,
+    "run_id": "eval_heldout_scap_ablation_c_20260425_120148_4be9cb",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_scap_ablation_c_20260425_120148_4be9cb\\results.json",
+    "expected_simulations": 60,
+    "completed_simulations": 60,
+    "process_returncode": 0,
+    "run_status": "complete"
+  },
+  {
+    "pass_at_1": 0.0,
+    "ci_95": 0.0,
+    "ci_95_range": [
+      0.0,
+      0.0
+    ],
+    "per_trial_pass_at_1": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "n_simulations": 100,
+    "cost_per_run": 0.0,
+    "total_cost": 0.0,
+    "task_latency_p50_s": 0.0,
+    "task_latency_p95_s": 0.0,
+    "infrastructure_errors": 100,
+    "entry_type": "heldout_gepa_fewshot",
+    "timestamp": "2026-04-25T12:06:03.486828",
+    "model": "openrouter/openai/gpt-4o",
+    "domain": "retail",
+    "n_tasks": 20,
+    "n_trials": 5,
+    "task_ids": [
+      "5",
+      "9",
+      "12",
+      "17",
+      "18",
+      "26",
+      "27",
+      "32",
+      "33",
+      "36",
+      "38",
+      "39",
+      "40",
+      "42",
+      "45",
+      "49",
+      "51",
+      "53",
+      "55",
+      "56"
+    ],
+    "temperature": 0.0,
+    "wall_clock_s": 153.75,
+    "run_id": "eval_heldout_gepa_fewshot_20260425_120329_47c080",
+    "results_path": "tau2-bench\\data\\simulations\\eval_heldout_gepa_fewshot_20260425_120329_47c080\\results.json",
+    "expected_simulations": 100,
+    "completed_simulations": 100,
+    "process_returncode": 0,
+    "run_status": "complete"
   }
 ]
