@@ -193,6 +193,10 @@ def _identify_gaps(
         getattr(inp, "type", None) == "named_ai_leadership" and getattr(inp, "evidence", None)
         for inp in prospect_ai_inputs
     )
+    # P034 fix: we can only assert absence when the prospect's inputs were positively
+    # scraped (non-empty) yet found nothing. Empty inputs mean the scraper didn't run
+    # or returned nothing — that's LOW confidence, not MEDIUM.
+    prospect_scraped = bool(prospect_ai_inputs)
     peers_with_ai_leadership = [c for c in cohort if c.ai_maturity >= 2]
     leaders_with_ai_leadership = len(peers_with_ai_leadership)
     if leaders_with_ai_leadership >= 3 and not prospect_has_leadership:
@@ -201,12 +205,15 @@ def _identify_gaps(
             for c in peers_with_ai_leadership[:3]
         ]
         evidence_urls = [u for c in peers_with_ai_leadership[:3] for u in c.source_urls]
+        # MEDIUM only when we actively scraped the prospect and found nothing;
+        # LOW when absence is inferred from empty/missing inputs.
+        leadership_confidence = Confidence.MEDIUM if prospect_scraped else Confidence.LOW
         gaps.append(
             GapEntry(
                 practice="Named Head of AI or VP Data on public team page",
                 cohort_adoption=f"{leaders_with_ai_leadership} of {len(cohort)} sector peers",
                 prospect_has_it=False,
-                confidence=Confidence.MEDIUM,
+                confidence=leadership_confidence,
                 evidence=evidence,
                 evidence_urls=evidence_urls,
             )
@@ -218,12 +225,15 @@ def _identify_gaps(
         evidence = [f"{c.company} scores 3 (multiple dedicated AI roles)"
                     for c in high_maturity_peers[:3]]
         evidence_urls = [u for c in high_maturity_peers[:3] for u in c.source_urls]
+        # Active AI function absence: score < 3 is a direct measurement, MEDIUM is justified
+        # only when the score is backed by at least one explicit input signal.
+        active_ai_confidence = Confidence.MEDIUM if prospect_scraped else Confidence.LOW
         gaps.append(
             GapEntry(
                 practice="Active AI function with multiple dedicated roles",
                 cohort_adoption=f"{len(high_maturity_peers)} of {len(cohort)} top-quartile peers",
                 prospect_has_it=False,
-                confidence=Confidence.MEDIUM,
+                confidence=active_ai_confidence,
                 evidence=evidence,
                 evidence_urls=evidence_urls,
             )

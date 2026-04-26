@@ -555,17 +555,33 @@ async def handle_sms_help(from_phone: str) -> dict:
 
 def _build_outbound_note(conversation: ConversationState, email_draft) -> str:
     """Summarize the outbound action for CRM notes."""
+    needs_review = bool(
+        conversation.signal_brief and conversation.signal_brief.requires_human_review
+    )
+    # P003 fix: when human review is required (e.g. founder departure, ambiguous
+    # leadership transition), stamp the segment as PENDING_HUMAN_REVIEW so that
+    # future nurture sequences do not act on a label that hasn't been confirmed.
+    if needs_review:
+        segment_value = "PENDING_HUMAN_REVIEW"
+        confidence_value = None
+    else:
+        segment_value = conversation.classification.segment.value if conversation.classification else None
+        confidence_value = (
+            conversation.classification.confidence.value if conversation.classification else None
+        )
+
     note = {
         "company": conversation.prospect.company,
-        "segment": conversation.classification.segment.value if conversation.classification else None,
-        "confidence": (
-            conversation.classification.confidence.value if conversation.classification else None
-        ),
+        "segment": segment_value,
+        "confidence": confidence_value,
         "subject": email_draft.subject,
         "grounded_claims": [claim.claim for claim in email_draft.grounded_claims],
-        "requires_human_review": conversation.signal_brief.requires_human_review
-        if conversation.signal_brief
-        else False,
+        "requires_human_review": needs_review,
+        "human_review_reason": (
+            conversation.signal_brief.human_review_reason
+            if conversation.signal_brief
+            else None
+        ),
     }
     return json.dumps(note, ensure_ascii=True)
 

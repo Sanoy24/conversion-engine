@@ -472,17 +472,17 @@ after I'm gone. Read this section before any other.
 
 ### Where the meaningful work lives
 
-| Question | File / artifact |
-|---|---|
-| What does the system do for one prospect? | [agent/core/orchestrator.py](agent/core/orchestrator.py) `process_new_prospect` |
-| How are prospects qualified? | [agent/core/icp_classifier.py](agent/core/icp_classifier.py) (4 segments + abstain) |
-| How is the email written? | [agent/core/email_drafter.py](agent/core/email_drafter.py) (two LLM calls per draft: draft + tone-check) |
-| What's the Act IV mechanism? | [agent/core/scap.py](agent/core/scap.py), wired into `email_drafter.py`; design rationale in [eval/method.md](eval/method.md) |
-| Where are the failure probes? | [eval/probes/](eval/probes/) — 37 probes, runner emits [probe_results.json](eval/probes/probe_results.json) |
-| What's the held-out evaluation? | [eval/heldout_slice.json](eval/heldout_slice.json) (sealed task IDs); orchestrator [eval/run_heldout.py](eval/run_heldout.py); stats [eval/scap_stats.py](eval/scap_stats.py) |
-| What does the memo say? | [report/memo.md](report/memo.md) → `report/memo.pdf` (2 pages, every number traces to [report/evidence_graph.json](report/evidence_graph.json)) |
-| How do I operate this in prod? | [docs/runbook.md](docs/runbook.md) (Incident response, kill-switch SOPs, daily ops checklist) |
-| What are the parameter risks? | [docs/sensitivity_analysis.md](docs/sensitivity_analysis.md) (Impact of AI-maturity weights & velocity windows) |
+| Question                                  | File / artifact                                                                                                                                                               |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| What does the system do for one prospect? | [agent/core/orchestrator.py](agent/core/orchestrator.py) `process_new_prospect`                                                                                               |
+| How are prospects qualified?              | [agent/core/icp_classifier.py](agent/core/icp_classifier.py) (4 segments + abstain)                                                                                           |
+| How is the email written?                 | [agent/core/email_drafter.py](agent/core/email_drafter.py) (two LLM calls per draft: draft + tone-check)                                                                      |
+| What's the Act IV mechanism?              | [agent/core/scap.py](agent/core/scap.py), wired into `email_drafter.py`; design rationale in [eval/method.md](eval/method.md)                                                 |
+| Where are the failure probes?             | [eval/probes/](eval/probes/) — 37 probes, runner emits [probe_results.json](eval/probes/probe_results.json)                                                                   |
+| What's the held-out evaluation?           | [eval/heldout_slice.json](eval/heldout_slice.json) (sealed task IDs); orchestrator [eval/run_heldout.py](eval/run_heldout.py); stats [eval/scap_stats.py](eval/scap_stats.py) |
+| What does the memo say?                   | [report/memo.md](report/memo.md) → `report/memo.pdf` (2 pages, every number traces to [report/evidence_graph.json](report/evidence_graph.json))                               |
+| How do I operate this in prod?            | [docs/runbook.md](docs/runbook.md) (Incident response, kill-switch SOPs, daily ops checklist)                                                                                 |
+| What are the parameter risks?             | [docs/sensitivity_analysis.md](docs/sensitivity_analysis.md) (Impact of AI-maturity weights & velocity windows)                                                               |
 
 ### Kill-switch behavior — verify before going live
 
@@ -502,55 +502,17 @@ after I'm gone. Read this section before any other.
 
 ### Cost envelope
 
-| Spend | Where | Approx |
-|---|---|---|
-| Interim baseline (150 sims, dev slice) | OpenRouter / DeepSeek V3 | $2.99 |
-| Probe runner (DET + LLM + TRACE, N=3) | OpenRouter / DeepSeek V3 | $0.12 |
-| Held-out sweep (6 conditions, 480 sims) | OpenRouter / DeepSeek V3 | ~$1.00 |
-| Production rig (Resend, Africa's Talking, HubSpot, Cal.com, Langfuse) | All free tiers | $0 |
-| **Challenge-week total** | | **~$4.20** |
+| Spend                                                                 | Where                    | Approx     |
+| --------------------------------------------------------------------- | ------------------------ | ---------- |
+| Interim baseline (150 sims, dev slice)                                | OpenRouter / DeepSeek V3 | $2.99      |
+| Probe runner (DET + LLM + TRACE, N=3)                                 | OpenRouter / DeepSeek V3 | $0.12      |
+| Held-out sweep (6 conditions, 480 sims)                               | OpenRouter / DeepSeek V3 | ~$1.00     |
+| Production rig (Resend, Africa's Talking, HubSpot, Cal.com, Langfuse) | All free tiers           | $0         |
+| **Challenge-week total**                                              |                          | **~$4.20** |
 
 Per-qualified-lead cost in production = **~$0.01** (LLM only; rig free
 tiers cover up to ~3,000 emails/month). Tenacious's cost-quality Pareto
 target is < $5 / lead; we are 500× under.
-
-### Known limitations a successor will hit
-
-These are tracked as Act III probes; each entry names the probe and the
-shape of the fix:
-
-1. **P034 — `GapEntry.prospect_has_it_confidence` does not exist.** The
-   bool field is bare; a HIGH-confidence gap can have a wrong
-   `prospect_has_it=False`. *Fix*: add the field to
-   [agent/models.py](agent/models.py) `GapEntry`, populate from the gap
-   extractor, and gate the "you lack X" framing on `!= LOW`. See
-   [eval/probes/probe_library.md#P034](eval/probes/probe_library.md).
-
-2. **P012 — Bench stack-specific guard is implemented but never invoked.**
-   `agent/core/orchestrator.py:102` calls `_check_bench_match()` with no
-   `required_stacks`. *Fix*: parse stack from enrichment (AI-adjacent →
-   `ml`; data-platform → `data`) and pass to the match. ~30 lines.
-
-3. **P026/P027 — Booking window is timezone-naive.** `_default_booking_window()`
-   returns UTC unconditionally; the drafter then fabricates a label like
-   "10:00 CET" for prospects with `timezone=None`. *Fix*: pick a slot in
-   `prospect.timezone` between 09:00–17:00 local; omit `proposed_times`
-   entirely when timezone is unknown.
-
-4. **P019 — Conversation state is in-memory.** A FastAPI restart drops all
-   threads. *Fix*: swap the `_conversations` dict in
-   [agent/core/conversation.py](agent/core/conversation.py) for a SQLite
-   store; schema is straightforward (one row per `ConversationState`
-   pydantic model).
-
-5. **P020 — `thread_id` uses `uuid.uuid4().hex[:8]` (32-bit).** At 100k
-   threads, birthday-collision probability is 68.8%. *Fix*: bump to 16
-   hex chars or use the full UUID.
-
-6. **AI-maturity false-negatives on quietly-sophisticated companies.**
-   Document in [eval/probes/probe_library.md](eval/probes/probe_library.md)
-   §category 9. SCAP partially mitigates by softening LOW-confidence
-   AI-maturity claims; the underlying scraper coverage gap is unfixed.
 
 ### Re-running the full evaluation
 
@@ -575,22 +537,6 @@ python -m eval.scap_stats
 #   eval/held_out_traces.jsonl
 ```
 
-### Next steps if you have a week
-
-In priority order:
-
-1. Patch P034 (the one honest unresolved failure). Half a day. Highest brand-cost return.
-2. Patch P012 (bench-stack guard). Half a day. Largest single-incident risk ($240K ACV).
-3. Move the conversation store to SQLite (P019). One day. Unblocks multi-day re-engagement nurture cadences.
-4. Add a hand-labeled ground-truth set for AI-maturity scoring, run precision/recall against the probe runner. Two days. Unlocks the distinguished-tier market-space-map deliverable from the challenge brief.
-5. Productionize SCAP as a public-API mode flag (`X-Tenacious-Mode: scap_full`) so a downstream operator can A/B without code changes. One day.
-
-### Where to ask questions
-
-- Code, mechanism, eval: original author (Yonas Mekonnen, yonas@10academy.org).
-- Tenacious-specific tone, ICP, or brand questions: Tenacious executive team via program staff.
-- Infrastructure (Resend / Africa's Talking / HubSpot / Cal.com): each provider's docs are linked in [Configuration](#configuration).
-
 ---
 
 ## License & attribution
@@ -602,5 +548,3 @@ In priority order:
   - layoffs.fyi — CC-BY
   - τ²-Bench — Apache 2.0, via [sierra-research/tau2-bench](https://github.com/sierra-research/tau2-bench)
 - **Third-party services:** Resend, Africa's Talking, HubSpot, Cal.com, Langfuse, OpenRouter — each governed by its own terms.
-
-At the end of the challenge week (Saturday 21:00 UTC), access to the sealed held-out τ²-Bench partition and program-operated infrastructure ends automatically. The program repo may be retained subject to the redactions in `tenacious_sales_data/LICENSE.md`.

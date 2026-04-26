@@ -246,7 +246,7 @@ You write outbound emails that a prospect (founder, CTO, VP Engineering) would r
 7. SIGNATURE: First name, title (Research Partner), Tenacious Intelligence Corporation, gettenacious.com. Nothing else.
 8. ONE ASK per email. Never stack multiple asks.
 9. DRAFTS: All outputs are marked as drafts per data handling policy.
-10. NO OFFSHORE CLICHÉS: Never use "top talent", "world-class", "A-players", "rockstar", "ninja", or "cost savings of X%".
+10. NO OFFSHORE / VENDOR LANGUAGE: Never use "offshore", "nearshore", "top talent", "world-class", "A-players", "rockstar", "ninja", or "cost savings of X%". Any of these signals to the prospect that Tenacious is a commodity vendor, which destroys trust instantly.
 11. WORD "BENCH": Never use the word "bench" — prospects read it as offshore-vendor language. Use "engineering team" or "available capacity".
 
 ## CONFIDENCE-AWARE PHRASING
@@ -305,6 +305,12 @@ def _build_user_prompt(
         f"Location: {prospect.hq_location or 'unknown'}",
         f"Employees: {prospect.employee_count or 'unknown'}",
         f"Contact: {prospect.contact_name or 'unknown'} ({prospect.contact_title or 'unknown'})",
+        # P027 fix: never fabricate a timezone — only include proposed_times when tz is known
+        (
+            f"Prospect timezone: {prospect.timezone} — use this for any proposed_times slots."
+            if prospect.timezone
+            else "Prospect timezone: UNKNOWN — set proposed_times to [] and do NOT invent a timezone or a local time."
+        ),
         "\n## ICP Classification",
         f"Segment: {classification.segment.value}",
         f"Confidence: {classification.confidence.value}",
@@ -371,6 +377,15 @@ def _build_user_prompt(
             )
         prompt_parts.append(
             "INSTRUCTION: Lead with the gap finding, NOT the vendor pitch. The gap is the hook; capability is the close."
+        )
+        # P034 fix: confidence-aware phrasing for prospect_has_it=False claims.
+        # Public scrapers cannot verify internal tooling — never assert absence confidently.
+        prompt_parts.append(
+            "INSTRUCTION (gap confidence rules — MANDATORY):\n"
+            "  - prospect_has_it=False, confidence=high → assert: 'Your public profile shows no [practice] yet'\n"
+            "  - prospect_has_it=False, confidence=medium → frame as a research question: "
+            "'Based on our public scan, it looks like [company] may not have [practice] yet — is that accurate?'\n"
+            "  - prospect_has_it=False, confidence=low → OMIT the gap entirely; the evidence is too thin to raise."
         )
 
     # Thread history
