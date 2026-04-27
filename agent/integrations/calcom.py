@@ -32,6 +32,7 @@ class CalComClient:
         end_time: str | None = None,
         notes: str | None = None,
         thread_id: str | None = None,
+        sdr_email: str | None = None,
     ) -> tuple[dict, TraceRecord]:
         """
         Book a discovery call slot via Cal.com API.
@@ -41,6 +42,8 @@ class CalComClient:
             start_time: ISO-8601 start time
             end_time: ISO-8601 end time (defaults to start + 30 min)
             notes: Additional context for the delivery lead
+            sdr_email: SDR / host email added as a guest so both attendees
+                       receive a calendar invite (challenge doc requirement).
         """
         trace_id = f"tr_{uuid.uuid4().hex[:8]}"
 
@@ -62,6 +65,11 @@ class CalComClient:
                 "thread_id": thread_id,
             },
         }
+
+        # Add SDR as guest so both the prospect and the SDR receive an invite.
+        # Cal.com v2 accepts "guests" as a list of email strings.
+        if sdr_email:
+            booking_data["guests"] = [sdr_email]
 
         try:
             async with httpx.AsyncClient() as client:
@@ -105,6 +113,7 @@ class CalComClient:
                 output_data={
                     "booking_id": booking_id,
                     "status": "confirmed",
+                    "sdr_guest": sdr_email or None,
                 },
                 cost_usd=0.0,
                 success=True,

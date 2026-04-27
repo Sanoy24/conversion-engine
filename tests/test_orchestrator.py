@@ -9,9 +9,12 @@ from agent.core.orchestrator import handle_calcom_event, handle_prospect_reply, 
 from agent.models import (
     ChannelType,
     CompetitorGapBrief,
+    Confidence,
     EmailDraft,
     EmailType,
     GroundedClaim,
+    ICPClassification,
+    ICPSegment,
     ProspectInfo,
     ProposedTime,
     TraceRecord,
@@ -54,13 +57,16 @@ class _FakeCalComClient:
     def get_booking_link(self):
         return "https://cal.fake/book/demo"
 
-    async def create_booking(self, prospect, start_time, end_time=None, notes=None, thread_id=None):
+    async def create_booking(
+        self, prospect, start_time, end_time=None, notes=None, thread_id=None, sdr_email=None
+    ):
         return {
             "id": "booking_123",
             "start": start_time,
             "end": end_time,
             "notes": notes,
             "thread_id": thread_id,
+            "sdr_guest": sdr_email,
         }, TraceRecord(trace_id="tr_booking", event_type="calcom_booking_created")
 
 
@@ -249,3 +255,82 @@ async def test_handle_calcom_event_updates_matched_conversation(monkeypatch):
     assert updated is not None
     assert updated.status.value == "call_booked"
     assert updated.calcom_booking_id == "booking_456"
+
+
+@pytest.mark.asyncio
+async def test_qualification_gate_blocks_booking_on_first_reply_medium_confidence(
+    monkeypatch,
+    fake_signal_brief,
+    fake_email_draft,
+):
+    """
+    Regression test for the qualification gate (challenge doc: "qualifies in 3-5
+    turns, then books").
+
+    A MEDIUM-confidence ICP prospect who sends a scheduling-intent reply on their
+    very first response (status=OUTBOUND_SENT, no prior warm exchanges) MUST NOT
+    trigger a direct Cal.com booking.  The gate should fall through to a warm reply
+    so the prospect gets at least one qualifying exchange first.
+
+    Gate logic being tested:
+      Rule 1: status == QUALIFIED | CALL_BOOKED  → False (status is OUTBOUND_SENT)
+      Rule 2: confidence == HIGH and segment != ABSTAIN  → False (MEDIUM)
+      Rule 3: ≥ 1 warm_reply agent message in thread  → False (none yet)
+    Expected: action == "warm_reply", NOT "booked_call".
+    """
+    fake_hubspot = _FakeHubSpotClient()
+
+    async def fake_generate_signal_brief(**_kwargs):
+        return fake_signal_brief, CompetitorGapBrief(prospect=fake_signal_brief.prospect), []
+
+    async def fake_draft_email(**_kwargs):
+        return fake_email_draft, []
+
+    async def fake_send_email(to_email, draft, reply_to=None):
+        return {"status": "sink"}, TraceRecord(trace_id="tr_email", event_type="email_sent_sink")
+
+    monkeypatch.setattr("agent.core.orchestrator.generate_signal_brief", fake_generate_signal_brief)
+    monkeypatch.setattr("agent.core.orchestrator.draft_email", fake_draft_email)
+    monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
+    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+    # Cal.com client should never be reached; bind it anyway so an accidental
+    # call surfaces a clear AttributeError rather than a config read.
+    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", lambda: _FakeCalComClient())
+
+    created = await process_new_prospect(
+        company_name=fake_signal_brief.prospect.company,
+        contact_email=fake_signal_brief.prospect.contact_email,
+    )
+
+    # Override the classification on the live conversation object to MEDIUM
+    # confidence so Rule 2 of the gate cannot fire.
+    conv = conversation_module.get_conversation(created["thread_id"])
+    assert conv is not None
+    conv.classification = ICPClassification(
+        prospect=fake_signal_brief.prospect,
+        segment=ICPSegment.MID_MARKET_RESTRUCTURING,
+        confidence=Confidence.MEDIUM,
+    )
+
+    # First reply from prospect — clear scheduling intent, no prior warm exchange
+    reply = await handle_prospect_reply(
+        thread_id=created["thread_id"],
+        reply_content="This sounds great, let's set up a call for next week!",
+        channel=ChannelType.EMAIL,
+    )
+
+    # Gate must route to warm reply, NOT direct booking
+    assert reply["action"] == "warm_reply", (
+        f"Expected warm_reply but got {reply['action']!r}. "
+        "The qualification gate should block direct booking for MEDIUM-confidence "
+        "prospects on their first reply."
+    )
+
+    # Conversation status advances to QUALIFIED (warm reply sent), not CALL_BOOKED
+    updated = conversation_module.get_conversation(created["thread_id"])
+    assert updated is not None
+    assert updated.status.value == "qualified", (
+        f"Expected status 'qualified' after warm reply, got {updated.status.value!r}"
+    )
+    # No booking was created
+    assert updated.calcom_booking_id is None

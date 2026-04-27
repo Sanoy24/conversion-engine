@@ -52,6 +52,11 @@ class Settings(BaseSettings):
     calcom_api_key: str = ""
     calcom_base_url: str = "http://localhost:3000"
     calcom_event_type_id: int = 1
+    # SDR who co-hosts every discovery call — added as a guest on the Cal.com
+    # booking so both the prospect and the SDR receive a calendar invite.
+    # Set via SDR_EMAIL in .env. If empty, the booking is created with only
+    # the prospect as attendee (functional but fails the "both attendees" check).
+    sdr_email: str = ""
 
     # --- Observability (Langfuse) ---
     langfuse_public_key: str = ""

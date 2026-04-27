@@ -26,11 +26,14 @@ from agent.core.icp_classifier import classify_prospect
 from agent.enrichment.signal_brief import generate_signal_brief
 from agent.integrations.calcom import get_calcom_client
 from agent.integrations.hubspot import get_hubspot_client
+from agent.config import settings
 from agent.models import (
     ChannelType,
+    Confidence,
     ConversationState,
     ConversationStatus,
     EmailType,
+    ICPSegment,
     TraceRecord,
 )
 
@@ -186,8 +189,21 @@ async def handle_prospect_reply(
     )
     if handoff_action == HandoffAction.SMS_FALLBACK:
         return await _handoff_to_sms(conversation)
+
     if handoff_action == HandoffAction.BOOK_CALL:
-        return await _book_discovery_call(conversation)
+        # Qualification gate (challenge doc: "qualifies in 3-5 turns, then books").
+        # Only proceed to Cal.com if the prospect has been through at least one
+        # warm qualifying exchange. If not, fall through to a warm reply — the
+        # LLM will acknowledge the scheduling interest and propose times, giving
+        # us the qualifying turn before the next booking attempt.
+        if _is_qualified_for_booking(conversation):
+            return await _book_discovery_call(conversation, reply_content=reply_content)
+        logger.info(
+            "Booking intent detected for %s but qualification gate not met — "
+            "routing to warm reply first.",
+            conversation.prospect.company,
+        )
+        # Fall through to warm-reply path below
 
     if conversation.signal_brief and conversation.classification:
         thread_history = get_thread_history(thread_id)
@@ -323,36 +339,71 @@ async def _handoff_to_sms(conversation: ConversationState) -> dict:
     }
 
 
-async def _book_discovery_call(conversation: ConversationState) -> dict:
-    """Book a simple default discovery slot and persist the outcome."""
+async def _book_discovery_call(
+    conversation: ConversationState,
+    reply_content: str = "",
+) -> dict:
+    """
+    Book a discovery slot, add the SDR as a co-attendee, and send the
+    prospect a human-readable confirmation with the actual booked time.
+
+    The challenge doc requires both the prospect AND a designated SDR to
+    receive a calendar invite. This is satisfied by passing sdr_email as
+    a Cal.com guest when the setting is configured.
+
+    Future improvement: parse reply_content for an explicit time preference
+    (e.g. "Thursday at 2pm") and use get_available_slots() to find the
+    nearest matching real slot instead of the default window.
+    """
     calcom_client = get_calcom_client()
     start_time, end_time = _default_booking_window()
-    notes = (
-        f"Thread {conversation.thread_id} | "
-        f"Segment: {conversation.classification.segment.value if conversation.classification else 'unknown'}"
+
+    segment_label = (
+        conversation.classification.segment.value
+        if conversation.classification
+        else "unknown"
     )
+    notes = (
+        f"Thread {conversation.thread_id} | Segment: {segment_label}"
+        + (f" | Prospect note: {reply_content[:200]}" if reply_content else "")
+    )
+
+    sdr_email = settings.sdr_email or None
     booking_result, booking_trace = await calcom_client.create_booking(
         prospect=conversation.prospect,
         start_time=start_time,
         end_time=end_time,
         notes=notes,
         thread_id=conversation.thread_id,
+        sdr_email=sdr_email,
     )
 
-    booking_id = booking_result.get("id") or booking_result.get("uid")
+    # Unwrap v2 envelope {"status": "success", "data": {...}}
+    booking_data = booking_result.get("data", booking_result)
+    booking_id = booking_data.get("id") or booking_data.get("uid")
     conversation.calcom_booking_id = booking_id
     update_status(conversation.thread_id, ConversationStatus.CALL_BOOKED)
 
+    # Human-readable confirmation so the prospect knows the exact time —
+    # not just a raw ISO string. The SDR invite goes via Cal.com directly.
+    human_time = _format_booking_time(start_time)
     confirmation = (
-        "Booked a discovery call. "
-        f"Start: {start_time}. Booking ID: {booking_id or 'pending_confirmation'}."
+        f"I've booked a 30-minute discovery call for {human_time}. "
+        "You'll receive a calendar invite at the email on this thread. "
+        + (f"Our team lead ({sdr_email}) will also be on the invite. " if sdr_email else "")
+        + f"Booking reference: {booking_id or 'pending'}."
     )
     add_message(
         thread_id=conversation.thread_id,
         role="agent",
         content=confirmation,
         channel=ChannelType.EMAIL,
-        metadata={"booking": booking_result, "trace_id": booking_trace.trace_id},
+        metadata={
+            "email_type": "booking_confirmation",
+            "booking": booking_data,
+            "trace_id": booking_trace.trace_id,
+            "sdr_guest": sdr_email,
+        },
     )
 
     if conversation.hubspot_contact_id:
@@ -364,11 +415,20 @@ async def _book_discovery_call(conversation: ConversationState) -> dict:
             prospect_company=conversation.prospect.company,
         )
 
+    logger.info(
+        "Discovery call booked for %s: id=%s time=%s sdr=%s",
+        conversation.prospect.company, booking_id, start_time, sdr_email or "none",
+    )
+
     return {
         "thread_id": conversation.thread_id,
         "action": "booked_call",
-        "booking": booking_result,
+        "booking": booking_data,
         "calcom_booking_id": booking_id,
+        "booked_time": start_time,
+        "human_time": human_time,
+        "sdr_guest": sdr_email,
+        "confirmation_sent": confirmation,
     }
 
 
@@ -584,6 +644,58 @@ def _build_outbound_note(conversation: ConversationState, email_draft) -> str:
         ),
     }
     return json.dumps(note, ensure_ascii=True)
+
+
+def _is_qualified_for_booking(conversation: ConversationState) -> bool:
+    """
+    Qualification gate — returns True only when the prospect has been
+    warmed up enough to justify booking a cal slot directly.
+
+    Rules (any single rule = pass):
+
+    1. Status is QUALIFIED or CALL_BOOKED: a prior warm-reply exchange
+       already happened; the prospect has shown sustained intent.
+
+    2. Classification confidence is HIGH and segment is not ABSTAIN: the
+       ICP signal is strong enough to fast-track (skips one warm turn).
+
+    3. At least one agent warm_reply message exists in the thread: the
+       drafter already sent a qualifying follow-up, prospect replied again.
+
+    If none of the rules pass the caller falls back to a warm reply, which
+    acts as the qualifying turn. On the next scheduling-intent reply the
+    gate will pass via Rule 1 (status=QUALIFIED) or Rule 3 (warm_reply exists).
+    """
+    # Rule 1 — prior warm exchange confirmed by status
+    if conversation.status in (ConversationStatus.QUALIFIED, ConversationStatus.CALL_BOOKED):
+        return True
+
+    # Rule 2 — high-confidence ICP: skip one warm turn
+    if (
+        conversation.classification is not None
+        and conversation.classification.confidence == Confidence.HIGH
+        and conversation.classification.segment != ICPSegment.ABSTAIN
+    ):
+        return True
+
+    # Rule 3 — at least one warm reply already in the thread
+    warm_replies = [
+        m for m in conversation.messages
+        if m.role == "agent" and m.metadata.get("email_type") == "warm_reply"
+    ]
+    return bool(warm_replies)
+
+
+def _format_booking_time(iso_time: str) -> str:
+    """
+    Convert an ISO-8601 UTC string to a human-readable booking confirmation.
+    Example: '2026-04-28T15:00:00+00:00' → 'Tuesday 28 Apr at 15:00 UTC'
+    """
+    try:
+        dt = datetime.fromisoformat(iso_time.replace("Z", "+00:00"))
+        return dt.strftime("%A %d %b at %H:%M UTC")
+    except Exception:
+        return iso_time
 
 
 def _default_booking_window() -> tuple[str, str]:
