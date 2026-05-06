@@ -47,6 +47,15 @@ logger = logging.getLogger("run_heldout")
 #
 # The full postscript and its ablation slices. Each is the full content of
 # the SCAP_POSTSCRIPT env var for the corresponding condition.
+#
+# NOTE (Day 2 grounding commit — premature execution bias):
+# SCAP is a prompt-based approach: it fights the model's RLHF-trained prior
+# to emit <tool_call> tokens by adding textual instructions ("ASK, don't
+# ACT"). This works at the margin but cannot override a strong learned
+# prior. The clarification_tool condition below tests the structural
+# alternative: adding ask_clarifying_question as a declared tool so the
+# model can satisfy its tool-call bias AND ask for missing information.
+# See: Mamaru Yirga's explainer on premature execution bias mechanics.
 
 SCAP_FULL = """\
 <signal_confidence_aware_phrasing>
@@ -137,13 +146,47 @@ missing parameter. Do not modify account state without confirmation.
 """.strip()
 
 
+# ── Structural fix: clarification as a tool ──────────────────────────────
+#
+# Instead of fighting the model's tool-call bias with prompt instructions,
+# this condition absorbs it: ask_clarifying_question is a declared tool so
+# the model can satisfy P(<tool_call> | schema) AND produce a clarification.
+# The RLHF prior and the desired behavior now point at the same action.
+#
+# Ref: Zhang et al. (2025), "AskToAct", arXiv:2503.01940 — adding
+# clarification as a structured tool action outperforms prompt-based
+# approaches by 10.46% on clarification efficiency.
+
+CLARIFICATION_TOOL_POSTSCRIPT = """\
+<clarification_tool>
+You have an additional tool available:
+
+  ask_clarifying_question(question_text: str)
+    — Use this tool when the user's request requires a parameter you do not
+      have (order_id, item_id, email, amount, address, etc.). Call this tool
+      with a clear, specific question asking the user for the missing
+      information. Do NOT guess, fabricate, or default any parameter value.
+
+Decision rule for modify-type tools (cancel_order, exchange_order,
+modify_user_address, modify_pending_order, refund, update_order, return_items):
+  1. If user identity is not authenticated → ask_clarifying_question
+  2. If any required parameter is missing  → ask_clarifying_question
+  3. If both conditions are met            → call the modify tool
+
+Read-only tools (get_order_details, get_user_details, find_user_id_by_email)
+may be called freely without clarification.
+</clarification_tool>
+""".strip()
+
+
 CONDITIONS: dict[str, dict] = {
-    "baseline":        {"postscript": None,            "entry_type": "heldout_baseline"},
-    "scap_full":       {"postscript": SCAP_FULL,       "entry_type": "heldout_scap_full"},
-    "scap_ablation_a": {"postscript": SCAP_ABLATION_A, "entry_type": "heldout_scap_ablation_a"},
-    "scap_ablation_b": {"postscript": SCAP_ABLATION_B, "entry_type": "heldout_scap_ablation_b"},
-    "scap_ablation_c": {"postscript": SCAP_ABLATION_C, "entry_type": "heldout_scap_ablation_c"},
-    "gepa_fewshot":    {"postscript": GEPA_FEWSHOT,    "entry_type": "heldout_gepa_fewshot"},
+    "baseline":           {"postscript": None,                        "entry_type": "heldout_baseline"},
+    "scap_full":          {"postscript": SCAP_FULL,                   "entry_type": "heldout_scap_full"},
+    "scap_ablation_a":    {"postscript": SCAP_ABLATION_A,             "entry_type": "heldout_scap_ablation_a"},
+    "scap_ablation_b":    {"postscript": SCAP_ABLATION_B,             "entry_type": "heldout_scap_ablation_b"},
+    "scap_ablation_c":    {"postscript": SCAP_ABLATION_C,             "entry_type": "heldout_scap_ablation_c"},
+    "gepa_fewshot":       {"postscript": GEPA_FEWSHOT,                "entry_type": "heldout_gepa_fewshot"},
+    "clarification_tool": {"postscript": CLARIFICATION_TOOL_POSTSCRIPT, "entry_type": "heldout_clarification_tool"},
 }
 
 
