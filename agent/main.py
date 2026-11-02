@@ -16,6 +16,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel
 
+from agent import __version__
 from agent.channels.email_handler import process_reply_webhook
 from agent.config import settings
 from agent.core.conversation import get_active_conversations, get_stalled_conversations
@@ -103,7 +104,7 @@ async def _follow_up_loop() -> None:
 app = FastAPI(
     title="Conversion Engine",
     description="Signal-grounded B2B prospect research, outreach, and meeting booking",
-    version="0.1.0",
+    version=__version__,
     lifespan=lifespan,
 )
 

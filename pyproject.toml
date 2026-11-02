@@ -1,6 +1,6 @@
 [project]
 name = "conversion-engine"
-version = "0.1.0"
+version = "0.2.0"
 description = "Signal-grounded B2B prospect research, outreach, and meeting booking, configurable per company via playbooks."
 requires-python = ">=3.12"
 license = {text = "MIT"}
