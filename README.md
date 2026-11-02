@@ -16,7 +16,7 @@ Everything company-specific (who you are, how you sound, who you sell to) lives 
 - **Integrations:** Email: Resend, SendGrid or any SMTP server (SES, Gmail, Postmark, ...) · SMS: Africa's Talking or Twilio · CRM: HubSpot (REST or MCP), Pipedrive, Salesforce or Attio · Calendar: Cal.com or Calendly · Langfuse
 - **Status:** early / pre-1.0. Interfaces may change.
 
-> ⚠️ **Safe by default.** `LIVE_OUTBOUND_ENABLED=false` is the default: no email or SMS is delivered, everything is logged to a sink. Only enable live sending once you have reviewed drafts and are sure you're allowed to contact the recipients under the laws that apply to you (CAN-SPAM, GDPR/PECR, TCPA, ...).
+> ⚠️ **Safe by default.** `LIVE_OUTBOUND_ENABLED=false` is the default: no email or SMS is delivered, everything is logged to a sink. And with `REQUIRE_APPROVAL=true` (also the default) every drafted email waits in the [review queue](#review-queue) until a person approves it. Only enable live sending once you have reviewed drafts and are sure you're allowed to contact the recipients under the laws that apply to you (CAN-SPAM, GDPR/PECR, TCPA, ...).
 
 ---
 
@@ -47,7 +47,8 @@ flowchart LR
 1. **Enrich:** builds a `HiringSignalBrief` from public data, with a confidence level and sources for every signal.
 2. **Classify:** scores the brief against your playbook's segments. Low confidence → `abstain` → a generic exploratory email instead of a targeted pitch.
 3. **Draft:** an LLM writes the email in your voice. SCAP rewrites the brief first, so the model never sees weak evidence presented as fact; a second LLM call scores tone and triggers one regeneration if it drifts.
-4. **Deliver and follow up:** email first. SMS only once a prospect has replied (cold SMS is blocked in code). Bookings go to Cal.com or Calendly and every event goes to the CRM.
+4. **Review:** each drafted email waits in the review queue until someone approves, edits or rejects it.
+5. **Deliver and follow up:** email first. SMS only once a prospect has replied (cold SMS is blocked in code). Bookings go to Cal.com or Calendly and every event goes to the CRM.
 
 ---
 
@@ -159,6 +160,7 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 | `DEV_MODEL` / `EVAL_MODEL` | Model used when `APP_ENV` is `development` / `production` |
 | `PLAYBOOK_DIR` | Active playbook. Default `./playbooks/example` |
 | **`LIVE_OUTBOUND_ENABLED`** | **Kill switch.** Default `false`: nothing is delivered |
+| `REQUIRE_APPROVAL` | Default `true`: drafted emails wait in the [review queue](#review-queue) |
 | `API_KEY` | Required on `/api/*`. Unset = open in development, closed in production |
 | `PUBLIC_BASE_URL`, `UNSUBSCRIBE_SECRET` | Unsubscribe links. **Required for live email**: without them every send is refused |
 | `CONVERSATION_DB_PATH` | SQLite file for threads and the suppression list. Default `./data/conversations.db`; empty = in memory |
@@ -228,6 +230,16 @@ Salesforce's default status map uses a standard org's picklist: `NEW` → `Open 
 `/api/*` requires `API_KEY`, sent as `X-API-Key: <key>` or `Authorization: Bearer <key>`. `/health`, `/unsubscribe` and the webhooks are public, and each webhook checks its own signature or token.
 
 Every secret works the same way: when it is set it is always enforced; when it is unset, requests are accepted in development (with a warning) and **rejected in production** (`APP_ENV=production`). The app logs any missing secrets at startup.
+
+### Review queue
+
+With `REQUIRE_APPROVAL=true` (the default), every LLM-drafted email (cold outreach and warm replies) is queued instead of sent. Open **`/review`** in a browser to approve, edit or reject drafts; the page asks for your `API_KEY`. Drafts the engine flagged for human review (for example an unconfirmed leadership change) are marked "Needs attention".
+
+- Approving sends through the normal path, so suppressed addresses are skipped and the kill switch still applies. Edits are stored next to the original draft.
+- Rejecting sends nothing; the thread goes back to `new`.
+- API: `GET /api/review?status=pending|sent|failed|rejected|all`, `POST /api/review/{id}/approve {"subject"?, "body"?}`, `POST /api/review/{id}/reject {"reason"?}`.
+
+Set `REQUIRE_APPROVAL=false` to send drafts immediately (the full-thread demo script does this).
 
 ### Unsubscribe and suppression
 

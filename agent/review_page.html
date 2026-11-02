@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review queue</title>
+<link rel="icon" href="data:,">
+<style>
+  :root { --bg: #fafaf9; --card: #fff; --text: #1c1917; --muted: #78716c; --line: #e7e5e4;
+          --accent: #2563eb; --warn-bg: #fef3c7; --warn: #92400e; --danger: #b91c1c; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1c1917; --card: #292524; --text: #f5f5f4; --muted: #a8a29e; --line: #44403c;
+            --accent: #60a5fa; --warn-bg: #451a03; --warn: #fcd34d; --danger: #f87171; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .bar { display: flex; gap: 8px; margin: 16px 0 24px; flex-wrap: wrap; }
+  input, textarea, button { font: inherit; color: inherit; }
+  input, textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line);
+                    border-radius: 6px; background: var(--bg); }
+  textarea { min-height: 220px; resize: vertical; }
+  .bar input { flex: 1; min-width: 200px; }
+  button { padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line);
+           background: var(--card); cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.danger { color: var(--danger); }
+  button:disabled { opacity: .5; cursor: default; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+          padding: 16px; margin-bottom: 16px; }
+  .card h2 { font-size: 16px; margin: 0; }
+  .card label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 4px; }
+  .attention { background: var(--warn-bg); color: var(--warn); border-radius: 6px;
+               padding: 8px 10px; margin-top: 12px; font-size: 14px; }
+  .actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .status { margin-top: 8px; font-size: 13px; }
+  .empty { text-align: center; padding: 48px 0; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Review queue</h1>
+  <div class="muted">Drafted emails wait here until you approve them. Approving sends through the
+    normal path: suppressed addresses are skipped and nothing leaves while LIVE_OUTBOUND_ENABLED is off.</div>
+  <div class="bar">
+    <input id="key" type="password" placeholder="API key (leave empty if API_KEY is unset)" autocomplete="off">
+    <button id="load">Load pending</button>
+  </div>
+  <div id="list"></div>
+</main>
+<script>
+const keyInput = document.getElementById("key");
+const list = document.getElementById("list");
+try { keyInput.value = sessionStorage.getItem("review_api_key") || ""; } catch (e) {}
+
+function headers() {
+  const h = { "Content-Type": "application/json" };
+  if (keyInput.value) h["X-API-Key"] = keyInput.value;
+  return h;
+}
+
+function el(tag, attrs = {}, text = "") {
+  const node = document.createElement(tag);
+  Object.assign(node, attrs);
+  if (text) node.textContent = text;
+  return node;
+}
+
+async function load() {
+  try { sessionStorage.setItem("review_api_key", keyInput.value); } catch (e) {}
+  list.replaceChildren(el("div", { className: "empty" }, "Loading…"));
+  const response = await fetch("/api/review?status=pending", { headers: headers() });
+  if (!response.ok) {
+    list.replaceChildren(el("div", { className: "empty" },
+      response.status === 401 ? "API key missing or wrong." : `Error ${response.status}`));
+    return;
+  }
+  const { items } = await response.json();
+  if (!items.length) {
+    list.replaceChildren(el("div", { className: "empty" }, "Nothing waiting for review."));
+    return;
+  }
+  list.replaceChildren(...items.map(card));
+}
+
+function card(item) {
+  const box = el("div", { className: "card" });
+  box.append(
+    el("h2", {}, `${item.prospect_company || "Unknown company"} · ${item.email_type.replace("_", " ")}`),
+    el("div", { className: "muted" }, `To ${item.to} · queued ${item.created_at}`),
+  );
+  if (item.needs_attention) {
+    box.append(el("div", { className: "attention" }, `Needs attention: ${item.needs_attention}`));
+  }
+  const subject = el("input", { value: item.subject });
+  const body = el("textarea", { value: item.body });
+  const reason = el("input", { placeholder: "Reason for rejecting (optional)" });
+  const status = el("div", { className: "status" });
+  const approve = el("button", { className: "primary" }, "Approve and send");
+  const reject = el("button", { className: "danger" }, "Reject");
+
+  async function decide(action, payload) {
+    approve.disabled = reject.disabled = true;
+    status.textContent = "Working…";
+    const response = await fetch(`/api/review/${item.id}/${action}`, {
+      method: "POST", headers: headers(), body: JSON.stringify(payload),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      status.textContent = result.detail || `Error ${response.status}`;
+      approve.disabled = reject.disabled = false;
+      return;
+    }
+    const delivery = result.delivery ? ` (${result.delivery.status})` : "";
+    status.textContent = `${result.status}${delivery}${result.edited ? ", with your edits" : ""}`;
+  }
+  approve.onclick = () => decide("approve", { subject: subject.value, body: body.value });
+  reject.onclick = () => decide("reject", { reason: reason.value || null });
+
+  const actions = el("div", { className: "actions" });
+  actions.append(approve, reject);
+  box.append(el("label", {}, "Subject"), subject, el("label", {}, "Body"), body,
+             el("label", {}, "Reject reason"), reason, actions, status);
+  return box;
+}
+
+document.getElementById("load").onclick = load;
+load();
+</script>
+</body>
+</html>

@@ -54,6 +54,9 @@ def _stage_record(name: str, start: float, ok: bool, **extras) -> dict:
 async def run(
     company_name: str, contact_name: str, contact_email: str, contact_phone: str, contact_title: str
 ) -> dict:
+    # The demo walks a whole thread end to end, so drafts go out without the
+    # review queue. Real runs keep REQUIRE_APPROVAL on.
+    settings.require_approval = False
     OUTPUTS.mkdir(exist_ok=True)
     traces_path = OUTPUTS / "full_thread_traces.jsonl"
     # Per-run summary is overwritten; aggregate traces are appended across runs

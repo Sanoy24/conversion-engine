@@ -9,6 +9,7 @@ from __future__ import annotations
 import html
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, Response
@@ -18,11 +19,15 @@ from agent.channels.email_handler import process_reply_webhook
 from agent.config import settings
 from agent.core.conversation import get_active_conversations, get_stalled_conversations
 from agent.core.orchestrator import (
+    ReviewError,
+    approve_review,
     handle_calcom_event,
     handle_prospect_reply,
     handle_unsubscribe,
     process_new_prospect,
+    reject_review,
 )
+from agent.core.review import get_review_queue
 from agent.core.suppression import MANUAL, get_suppression_list, verify_unsubscribe_token
 from agent.models import ChannelType, ConversationStatus
 from agent.observability.trace_logger import compute_metrics, init_trace_logger
@@ -117,6 +122,15 @@ class SuppressionRequest(BaseModel):
     address: str
     channel: str = "email"
     reason: str = MANUAL
+
+
+class ApproveRequest(BaseModel):
+    subject: str | None = None
+    body: str | None = None
+
+
+class RejectRequest(BaseModel):
+    reason: str | None = None
 
 
 # ── API Routes ─────────────────────────────────────────────────────────
@@ -463,6 +477,51 @@ async def add_suppression(request: SuppressionRequest):
         request.address, channel=request.channel, reason=request.reason
     )
     return {"status": "suppressed", "newly_added": added}
+
+
+# ── Review queue ───────────────────────────────────────────────────────
+
+_REVIEW_PAGE = (Path(__file__).parent / "review_page.html").read_text(encoding="utf-8")
+
+
+@app.get("/review")
+async def review_page():
+    """Browser page for the review queue. Its data calls go through /api/review (API key)."""
+    return HTMLResponse(_REVIEW_PAGE)
+
+
+@app.get("/api/review")
+async def list_review_items(status: str | None = "pending"):
+    """Drafts in the review queue, oldest first. `status=all` lists every item."""
+    items = get_review_queue().list(None if status == "all" else status)
+    return {"count": len(items), "items": [item.model_dump(exclude={"draft"}) for item in items]}
+
+
+@app.get("/api/review/{review_id}")
+async def get_review_item(review_id: str):
+    item = get_review_queue().get(review_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail="Review item not found")
+    return item.model_dump()
+
+
+@app.post("/api/review/{review_id}/approve")
+async def approve_review_item(review_id: str, request: ApproveRequest):
+    """Approve a draft, optionally with an edited subject/body, and send it."""
+    try:
+        item = await approve_review(review_id, subject=request.subject, body=request.body)
+    except ReviewError as e:
+        raise HTTPException(status_code=409, detail=str(e)) from e
+    return item.model_dump(exclude={"draft"})
+
+
+@app.post("/api/review/{review_id}/reject")
+async def reject_review_item(review_id: str, request: RejectRequest):
+    try:
+        item = reject_review(review_id, reason=request.reason)
+    except ReviewError as e:
+        raise HTTPException(status_code=409, detail=str(e)) from e
+    return item.model_dump(exclude={"draft"})
 
 
 # ── Entry point ────────────────────────────────────────────────────────

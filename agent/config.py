@@ -163,6 +163,11 @@ class Settings(BaseSettings):
     # invalidates every link already sent.
     unsubscribe_secret: str = ""
 
+    # --- Review ---
+    # When true, every LLM-drafted email waits in the review queue
+    # (/review, /api/review) until a person approves it.
+    require_approval: bool = True
+
     # --- Kill Switch ---
     live_outbound_enabled: bool = False
 

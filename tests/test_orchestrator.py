@@ -104,6 +104,7 @@ async def test_process_new_prospect_wires_hubspot_and_email(
     fake_signal_brief,
     fake_email_draft,
 ):
+    monkeypatch.setattr("agent.core.orchestrator.settings.require_approval", False)
     fake_hubspot = _FakeHubSpotClient()
 
     async def fake_generate_signal_brief(**_kwargs):
