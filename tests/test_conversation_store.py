@@ -58,18 +58,18 @@ def test_in_place_edit_persists_only_after_save(db_path, sample_prospect):
     conversation_module.set_store(store)
 
     state = conversation_module.create_conversation(sample_prospect)
-    state.hubspot_contact_id = "unsaved"
+    state.crm_contact_id = "unsaved"
     store = _restart(store, db_path)
-    assert conversation_module.get_conversation(state.thread_id).hubspot_contact_id is None
+    assert conversation_module.get_conversation(state.thread_id).crm_contact_id is None
 
     state = conversation_module.get_conversation(state.thread_id)
-    state.hubspot_contact_id = "123"
+    state.crm_contact_id = "123"
     state.signal_brief = make_brief(sample_prospect)
     conversation_module.save_conversation(state)
     store = _restart(store, db_path)
 
     restored = conversation_module.get_conversation(state.thread_id)
-    assert restored.hubspot_contact_id == "123"
+    assert restored.crm_contact_id == "123"
     assert restored.signal_brief.prospect.company == sample_prospect.company
     store.close()
 

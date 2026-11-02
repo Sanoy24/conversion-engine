@@ -38,7 +38,30 @@ class Settings(BaseSettings):
     at_shortcode: str = ""
     at_environment: str = "sandbox"
 
-    # --- CRM (HubSpot) ---
+    # --- CRM ---
+    # Which CRM to write contacts, notes and lead status to.
+    crm_provider: Literal["hubspot", "pipedrive", "salesforce", "attio"] = "hubspot"
+
+    # Pipedrive: API token + the subdomain of <domain>.pipedrive.com.
+    pipedrive_api_token: str = ""
+    pipedrive_company_domain: str = ""
+    # Optional: key of a text custom field on persons that holds the lead status.
+    pipedrive_status_field: str = ""
+
+    # Salesforce: client-credentials OAuth against your My Domain URL.
+    salesforce_domain: str = ""  # e.g. https://acme.my.salesforce.com
+    salesforce_client_id: str = ""
+    salesforce_client_secret: str = ""
+    salesforce_api_version: str = "v62.0"
+    # Optional JSON overriding the Lead Status mapping, e.g. {"QUALIFIED": "Working"}.
+    salesforce_status_map: str = ""
+
+    # Attio: workspace access token.
+    attio_api_key: str = ""
+    # Optional: slug of a text attribute on People that holds the lead status.
+    attio_status_attribute: str = ""
+
+    # --- CRM: HubSpot ---
     hubspot_access_token: str = ""
     hubspot_portal_id: str = ""
     # When True, route CRM calls through the official HubSpot MCP server

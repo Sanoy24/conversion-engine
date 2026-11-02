@@ -13,7 +13,7 @@ Most outbound tools personalise with mail-merge fields. The Conversion Engine pe
 Everything company-specific (who you are, how you sound, who you sell to) lives in a **playbook**, so the same engine can sell for any company.
 
 - **Stack:** Python 3.12 · FastAPI · [uv](https://docs.astral.sh/uv/) · OpenRouter (any chat model)
-- **Integrations:** Resend (email) · Africa's Talking (SMS) · HubSpot (REST or MCP) · Cal.com · Langfuse
+- **Integrations:** Resend (email) · Africa's Talking (SMS) · CRM: HubSpot (REST or MCP), Pipedrive, Salesforce or Attio · Cal.com · Langfuse
 - **Status:** early / pre-1.0. Interfaces may change.
 
 > ⚠️ **Safe by default.** `LIVE_OUTBOUND_ENABLED=false` is the default: no email or SMS is delivered, everything is logged to a sink. Only enable live sending once you have reviewed drafts and are sure you're allowed to contact the recipients under the laws that apply to you (CAN-SPAM, GDPR/PECR, TCPA, ...).
@@ -41,7 +41,7 @@ flowchart LR
     EMAIL -. reply .-> ORCH[Orchestrator]
     ORCH --> SMS[SMS<br/>warm leads only]
     ORCH --> CAL[Cal.com booking]
-    ORCH --> CRM[HubSpot]
+    ORCH --> CRM[CRM<br/>HubSpot · Pipedrive<br/>Salesforce · Attio]
 ```
 
 1. **Enrich:** builds a `HiringSignalBrief` from public data, with a confidence level and sources for every signal.
@@ -164,12 +164,25 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 | `CONVERSATION_DB_PATH` | SQLite file for threads and the suppression list. Default `./data/conversations.db`; empty = in memory |
 | `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_WEBHOOK_SECRET` | Email |
 | `AT_USERNAME`, `AT_API_KEY`, `AT_SHORTCODE`, `AT_WEBHOOK_TOKEN` | SMS (Africa's Talking) |
-| `HUBSPOT_ACCESS_TOKEN`, `USE_HUBSPOT_MCP` | CRM; MCP mode needs Node 18+ for `npx @hubspot/mcp-server` |
+| `CRM_PROVIDER` | `hubspot` (default), `pipedrive`, `salesforce` or `attio`. See [CRM providers](#crm-providers) |
 | `CALCOM_API_KEY`, `CALCOM_BASE_URL`, `CALCOM_EVENT_TYPE_ID`, `CALCOM_WEBHOOK_SECRET`, `SDR_EMAIL` | Booking |
 | `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | Tracing (optional; falls back to local JSONL) |
 | `ENABLE_SCAP` (+ `SCAP_*` sub-flags) | Confidence-aware phrasing. Default on |
 
 Integrations without credentials degrade gracefully: the stage records an error in its trace and the pipeline continues.
+
+### CRM providers
+
+Set `CRM_PROVIDER` and that provider's credentials. Every provider gets the same contact, notes and lead-status updates (`NEW`, `QUALIFIED`, `UNQUALIFIED`, `CALL_BOOKED`); re-running a prospect reuses the existing contact instead of creating a duplicate.
+
+| Provider | Settings | Contact becomes | Notes become | Lead status |
+| --- | --- | --- | --- | --- |
+| `hubspot` | `HUBSPOT_ACCESS_TOKEN`; `USE_HUBSPOT_MCP=true` routes through `@hubspot/mcp-server` (Node 18+) | Contact + enrichment properties | Notes | `hs_lead_status` |
+| `pipedrive` | `PIPEDRIVE_API_TOKEN`, `PIPEDRIVE_COMPANY_DOMAIN` (the `acme` in `acme.pipedrive.com`) | Person | Notes | Custom field `PIPEDRIVE_STATUS_FIELD` if set, otherwise a note |
+| `salesforce` | `SALESFORCE_DOMAIN` (My Domain URL), `SALESFORCE_CLIENT_ID`, `SALESFORCE_CLIENT_SECRET` (client-credentials flow) | Lead | Completed Tasks | Lead `Status`; remap with `SALESFORCE_STATUS_MAP` |
+| `attio` | `ATTIO_API_KEY` | People record (matched by email) | Notes | Attribute `ATTIO_STATUS_ATTRIBUTE` if set, otherwise a note |
+
+Salesforce's default status map uses a standard org's picklist: `NEW` → `Open - Not Contacted`, `QUALIFIED`/`CALL_BOOKED` → `Working - Contacted`, `UNQUALIFIED` → `Closed - Not Converted`.
 
 ### Webhooks
 
@@ -206,7 +219,7 @@ agent/
   core/              orchestrator, ICP classifier, email drafter, SCAP, conversation store
   enrichment/        Crunchbase, job posts, layoffs, leadership, AI maturity, competitor gap
   channels/          email (Resend), SMS (Africa's Talking), handoff policy
-  integrations/      HubSpot (REST + MCP), Cal.com
+  integrations/      CRMs (HubSpot REST + MCP, Pipedrive, Salesforce, Attio), Cal.com
   observability/     Langfuse + JSONL traces
 playbooks/example/   fictional company playbook: copy this to start
 scripts/             fetch_data, run_full_thread_demo, list_hubspot_mcp_tools
@@ -219,7 +232,7 @@ tests/
 
 - Conversations are kept in a local SQLite file (`CONVERSATION_DB_PATH`, default `./data/conversations.db`), so they survive restarts. It assumes a **single process**: run one uvicorn worker, and on hosts with an ephemeral filesystem (e.g. Render free plan) mount a persistent disk or threads are lost on redeploy. A shared Postgres store is planned.
 - The API has a single shared key, with no per-user accounts or scopes.
-- Providers are hardwired (Resend, Africa's Talking, HubSpot, Cal.com). Pluggable provider interfaces are planned.
+- Email (Resend), SMS (Africa's Talking) and calendar (Cal.com) providers are still fixed; making them pluggable like the CRM is planned.
 - Enrichment is tuned for selling to software companies (it counts engineering roles).
 
 ---

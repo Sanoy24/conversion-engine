@@ -7,11 +7,11 @@ Flow (all stages emit traces to outputs/full_thread_traces.jsonl):
   3. Simulate inbound reply (no real webhook needed for the demo)
   4. Draft warm reply
   5. Send SMS scheduling ping (Africa's Talking; kill-switch applies)
-  6. Create HubSpot contact with enrichment fields + timestamp
+  6. Create CRM contact with enrichment fields + timestamp
   7. Book Cal.com discovery-call slot (30 min, +24h)
   8. Write outputs/full_thread_trace.json with per-stage timing + status
 
-Integration calls (HubSpot, Cal.com) that lack real credentials degrade
+Integration calls (CRM, Cal.com) that lack real credentials degrade
 gracefully: the stage is marked `ok=False` with the error captured in the
 trace, and the demo continues so later stages can be observed.
 """
@@ -32,7 +32,7 @@ from agent.channels.sms_handler import send_sms
 from agent.config import settings
 from agent.core.orchestrator import handle_prospect_reply, process_new_prospect
 from agent.integrations.calcom import get_calcom_client
-from agent.integrations.hubspot import get_hubspot_client
+from agent.integrations.crm import get_crm_client, reset_crm_client
 from agent.models import EmailDraft, ProspectInfo
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -162,28 +162,28 @@ async def run(
         )
     )
 
-    # ── 5. Create HubSpot contact ───────────────────────────────────────
+    # ── 5. Create CRM contact ───────────────────────────────────────
     t0 = time.monotonic()
-    hubspot = get_hubspot_client()
-    hs_resp, hs_trace = await hubspot.create_contact(
+    crm = get_crm_client()
+    crm_resp, crm_trace = await crm.create_contact(
         prospect=prospect,
         signal_brief=None,  # full object is stored in the conversation; HS gets
         classification=None,  # the summary note separately below.
     )
-    hs_contact_id = hs_resp.get("id") if isinstance(hs_resp, dict) else None
+    crm_contact_id = crm_resp.get("id") if isinstance(crm_resp, dict) else None
     _emit(
         _stage_record(
-            "5_hubspot_contact_created",
+            "5_crm_contact_created",
             t0,
-            hs_trace.success,
-            hubspot_contact_id=hs_contact_id,
-            error=hs_resp.get("error") if isinstance(hs_resp, dict) else None,
-            trace_id=hs_trace.trace_id,
+            crm_trace.success,
+            crm_contact_id=crm_contact_id,
+            error=crm_resp.get("error") if isinstance(crm_resp, dict) else None,
+            trace_id=crm_trace.trace_id,
         )
     )
 
     # Add a note with the thread summary (best-effort)
-    if hs_contact_id:
+    if crm_contact_id:
         t0 = time.monotonic()
         note_body = (
             f"Conversion Engine thread {thread_id}\n"
@@ -193,14 +193,14 @@ async def run(
             f"Cold subject: {draft.subject}\n"
             f"Reply received at: {datetime.utcnow().isoformat()}"
         )
-        note_resp, note_trace = await hubspot.add_note(
-            contact_id=hs_contact_id,
+        note_resp, note_trace = await crm.add_note(
+            contact_id=crm_contact_id,
             note_body=note_body,
             prospect_company=prospect.company,
         )
         _emit(
             _stage_record(
-                "5b_hubspot_note",
+                "5b_crm_note",
                 t0,
                 note_trace.success,
                 note_id=note_resp.get("id") if isinstance(note_resp, dict) else None,
@@ -260,16 +260,16 @@ async def run(
         )
     )
 
-    # ── 7. Link Cal.com booking → HubSpot update (rubric 3.3) ──────────
-    # A completed Cal.com booking triggers a corresponding HubSpot record
+    # ── 7. Link Cal.com booking → CRM update ──────────
+    # A completed Cal.com booking triggers a corresponding CRM record
     # update: lead status → CALL_BOOKED plus an engagement note with the
     # booking metadata. Skipped if the booking failed or we don't have a
-    # HubSpot contact id to attach to.
-    if cal_trace.success and hs_contact_id:
+    # CRM contact id to attach to.
+    if cal_trace.success and crm_contact_id:
         t0 = time.monotonic()
         try:
-            await hubspot.update_contact_status(
-                contact_id=hs_contact_id,
+            await crm.update_contact_status(
+                contact_id=crm_contact_id,
                 status="CALL_BOOKED",
                 properties={"hs_lead_status": "CALL_BOOKED"},
             )
@@ -280,30 +280,30 @@ async def run(
                 f"Segment: {pipeline['classification']['segment']}\n"
                 f"Thread: {thread_id}"
             )
-            _, _link_note_trace = await hubspot.add_note(
-                contact_id=hs_contact_id,
+            _, _link_note_trace = await crm.add_note(
+                contact_id=crm_contact_id,
                 note_body=booking_note,
                 prospect_company=prospect.company,
             )
             _emit(
                 _stage_record(
-                    "7_calcom_to_hubspot_link",
+                    "7_calcom_to_crm_link",
                     t0,
                     _link_note_trace.success,
-                    hubspot_contact_id=hs_contact_id,
+                    crm_contact_id=crm_contact_id,
                     booking_id=_booking_id,
                     trace_id=_link_note_trace.trace_id,
                 )
             )
         except Exception as e:
-            logger.error("Cal.com → HubSpot link failed: %s", e)
+            logger.error("Cal.com → CRM link failed: %s", e)
             _emit(
                 _stage_record(
-                    "7_calcom_to_hubspot_link",
+                    "7_calcom_to_crm_link",
                     t0,
                     False,
                     error=str(e),
-                    hubspot_contact_id=hs_contact_id,
+                    crm_contact_id=crm_contact_id,
                 )
             )
 
@@ -337,26 +337,14 @@ async def run(
         )
     )
 
-    # Tear down the HubSpot client from the same task that created it.
-    # This avoids anyio's "cancel scope exited in a different task" warning
-    # when a long-lived MCP stdio session gets garbage-collected at interpreter
-    # shutdown. No-op for the direct-API client.
+    # Tear down the CRM client from the same task that created it. This
+    # avoids anyio's "cancel scope exited in a different task" warning when a
+    # CRM MCP stdio session gets garbage-collected at interpreter shutdown,
+    # and gives the next run in a multi-run batch a fresh client.
     try:
-        await get_hubspot_client().close()
+        await reset_crm_client()
     except Exception as e:
-        logger.warning("HubSpot client close failed: %s", e)
-    # Reset module singletons so a fresh session is created on the next run
-    # (when this script is invoked as part of a multi-run batch).
-    import agent.integrations.hubspot as _hs_mod
-
-    _hs_mod._hubspot = None
-    _hs_mod._hubspot_client_impl = None
-    try:
-        import agent.integrations.hubspot_mcp as _hs_mcp_mod
-
-        _hs_mcp_mod._hubspot_mcp = None
-    except ImportError:
-        pass
+        logger.warning("CRM client close failed: %s", e)
 
     return summary
 

@@ -102,6 +102,8 @@ def compute_metrics() -> dict:
         "llm_calls": sum(1 for t in traces if "llm" in t.event_type),
         "emails_sent": sum(1 for t in traces if "email" in t.event_type),
         "sms_sent": sum(1 for t in traces if "sms" in t.event_type),
-        "hubspot_writes": sum(1 for t in traces if "hubspot" in t.event_type),
+        "crm_writes": sum(
+            1 for t in traces if t.event_type.startswith("crm_") or "hubspot" in t.event_type
+        ),
         "bookings": sum(1 for t in traces if "calcom" in t.event_type),
     }
