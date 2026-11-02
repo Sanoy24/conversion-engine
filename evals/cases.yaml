@@ -1,0 +1,223 @@
+# Evaluation cases for the example playbook (playbooks/example).
+#
+# Each case is a signal brief for a fictional company plus the segment the
+# classifier should pick ("abstain" when no segment is justified). The draft
+# checks in evals/checks.py derive everything else from the brief itself:
+# which facts may be stated, which must be hedged, which must not appear.
+#
+# Signal fields mirror agent.models (FundingSignal, HiringSignal, ...).
+# Confidence is one of: high, medium, low.
+
+- id: funded_clean
+  note: Series A and hiring, both high confidence, in the funded headcount band.
+  prospect: {company: Northwind Analytics, contact_name: Priya Shah, contact_title: CTO, employee_count: 40, industry: B2B SaaS, timezone: America/New_York}
+  funding: {event: Series A, amount_usd: 8000000, closed_at: "2026-08-12", confidence: high}
+  hiring: {open_eng_roles: 12, delta_60d: "+5", confidence: high}
+  expect: {segment: recently_funded}
+
+- id: funded_medium_hiring
+  note: Hiring is only medium confidence, so role counts must be hedged.
+  prospect: {company: Lumen Ledger, contact_name: Daniel Okafor, contact_title: VP Engineering, employee_count: 60, industry: Fintech}
+  funding: {event: Series B, amount_usd: 22000000, closed_at: "2026-07-01", confidence: high}
+  hiring: {open_eng_roles: 7, confidence: medium}
+  expect: {segment: recently_funded}
+
+- id: funded_low_confidence_funding
+  note: Funding is a weak inference. Headcount alone must not make this a "recently funded" pitch.
+  prospect: {company: Cobalt Pathways, contact_name: Mei Lin, contact_title: CTO, employee_count: 30, industry: Logistics software}
+  funding: {event: Series A, amount_usd: 5000000, confidence: low}
+  hiring: {open_eng_roles: 9, confidence: high}
+  expect: {segment: abstain}
+
+- id: no_signals
+  note: Nothing known beyond headcount.
+  prospect: {company: Quietfield Labs, contact_name: Sam Rivera, contact_title: Head of Engineering, employee_count: 25, industry: Developer tools}
+  expect: {segment: abstain}
+
+- id: layoff_midsize
+  note: Mid-size company with a confirmed layoff. The email must never mention it.
+  prospect: {company: Harborline Systems, contact_name: Grace Mwangi, contact_title: CTO, employee_count: 600, industry: Enterprise software}
+  layoffs: {event: true, headcount_pct: 12, closed_at: "2026-09-02", confidence: high}
+  hiring: {open_eng_roles: 3, confidence: medium}
+  expect: {segment: restructuring}
+
+- id: layoff_low_confidence_funded
+  note: A possible layoff (weak evidence) is enough to rule out the "fresh budget" pitch, but not enough to pitch restructuring.
+  prospect: {company: Tidewater Health Tech, contact_name: Omar Haddad, contact_title: VP Engineering, employee_count: 50, industry: Health tech}
+  layoffs: {event: true, confidence: low}
+  funding: {event: Series A, amount_usd: 6000000, confidence: high}
+  hiring: {open_eng_roles: 8, confidence: high}
+  expect: {segment: abstain}
+
+- id: new_cto
+  note: Newly appointed CTO, high confidence.
+  prospect: {company: Brightwave Commerce, contact_name: Lena Fischer, contact_title: CTO, employee_count: 120, industry: E-commerce platform}
+  leadership: {change: true, role: CTO, name: Lena Fischer, appointed_at: "2026-09-15", confidence: high}
+  expect: {segment: leadership_transition}
+
+- id: leadership_low_confidence_with_funding
+  note: Leadership change is a weak guess; funding is solid. Pitch funding, not the leadership change.
+  prospect: {company: Ironbark Data, contact_name: Arjun Mehta, contact_title: Director of Engineering, employee_count: 70, industry: Data infrastructure}
+  leadership: {change: true, role: VP Engineering, confidence: low}
+  funding: {event: Series B, amount_usd: 15000000, closed_at: "2026-06-20", confidence: high}
+  hiring: {open_eng_roles: 10, confidence: high}
+  expect: {segment: recently_funded}
+
+- id: ai_capability_high
+  note: Strong, well-evidenced AI ambition.
+  prospect: {company: Meridian Insights, contact_name: Sofia Rossi, contact_title: Chief Data Officer, employee_count: 300, industry: Market intelligence}
+  ai_maturity: {score: 3, confidence: high, language_notes: Public ML platform team and model-serving job posts.}
+  hiring: {open_eng_roles: 6, ai_adjacent_eng_roles: 3, confidence: high}
+  expect: {segment: capability_gap}
+
+- id: ai_low_confidence
+  note: AI ambition inferred from thin evidence. Must not qualify the capability-gap pitch.
+  prospect: {company: Pinecrest Mobility, contact_name: Jonas Berg, contact_title: CTO, employee_count: 90, industry: Mobility}
+  ai_maturity: {score: 2, confidence: low}
+  hiring: {open_eng_roles: 4, ai_adjacent_eng_roles: 2, confidence: high}
+  expect: {segment: abstain}
+
+- id: ai_medium_only
+  note: Medium-confidence signals only; the classifier should abstain rather than pitch.
+  prospect: {company: Saltmarsh Robotics, contact_name: Hana Sato, contact_title: VP Engineering, employee_count: 150, industry: Robotics}
+  ai_maturity: {score: 2, confidence: medium}
+  hiring: {open_eng_roles: 5, ai_adjacent_eng_roles: 1, confidence: medium}
+  expect: {segment: abstain}
+
+- id: funded_too_big
+  note: Series B, but far outside the funded headcount band.
+  prospect: {company: Granite Peak Software, contact_name: Ethan Cole, contact_title: SVP Engineering, employee_count: 350, industry: Construction software}
+  funding: {event: Series B, amount_usd: 40000000, confidence: high}
+  hiring: {open_eng_roles: 20, confidence: high}
+  expect: {segment: abstain}
+
+- id: funded_and_new_leader
+  note: Two strong signals; leadership wins the tie by playbook order.
+  prospect: {company: Fernhill AI, contact_name: Nadia Petrova, contact_title: VP Engineering, employee_count: 40, industry: Applied AI}
+  funding: {event: Series A, amount_usd: 9000000, confidence: high}
+  leadership: {change: true, role: VP Engineering, name: Nadia Petrova, confidence: high}
+  expect: {segment: leadership_transition}
+
+- id: series_c
+  note: Series C is not a target round for this playbook.
+  prospect: {company: Copperleaf Payments, contact_name: Lucas Moreau, contact_title: CTO, employee_count: 70, industry: Payments}
+  funding: {event: Series C, amount_usd: 60000000, confidence: high}
+  hiring: {open_eng_roles: 15, confidence: high}
+  expect: {segment: abstain}
+
+- id: medium_funding_only
+  note: One medium-confidence signal is not enough to pitch.
+  prospect: {company: Willowbrook Learning, contact_name: Amara Nwosu, contact_title: Head of Engineering, employee_count: 20, industry: EdTech}
+  funding: {event: Series A, amount_usd: 4000000, confidence: medium}
+  expect: {segment: abstain}
+
+- id: funded_few_roles
+  note: Only two open roles, so no "aggressive hiring" language.
+  prospect: {company: Kestrel Security, contact_name: Ben Adler, contact_title: CTO, employee_count: 18, industry: Cybersecurity}
+  funding: {event: Series A, amount_usd: 3000000, confidence: high}
+  hiring: {open_eng_roles: 2, confidence: high}
+  expect: {segment: recently_funded}
+
+- id: layoff_small_funded
+  note: A confirmed layoff rules out the funded pitch even with funding on record.
+  prospect: {company: Bluefin Media, contact_name: Chloe Martin, contact_title: VP Engineering, employee_count: 90, industry: Media tech}
+  layoffs: {event: true, headcount_pct: 20, confidence: high}
+  funding: {event: Series A, amount_usd: 7000000, confidence: high}
+  expect: {segment: restructuring}
+
+- id: new_cto_and_layoff
+  note: New CTO after a layoff; leadership wins the tie, layoff must stay unmentioned.
+  prospect: {company: Ashgrove Insurance Tech, contact_name: Victor Santos, contact_title: CTO, employee_count: 800, industry: Insurance software}
+  leadership: {change: true, role: CTO, name: Victor Santos, confidence: high}
+  layoffs: {event: true, headcount_pct: 8, confidence: high}
+  expect: {segment: leadership_transition}
+
+- id: hiring_surge_only
+  note: Lots of hiring but no funding, leadership or AI signal. No segment fits.
+  prospect: {company: Redwood Freight, contact_name: Ivy Chen, contact_title: VP Engineering, employee_count: 60, industry: Freight tech}
+  hiring: {open_eng_roles: 25, delta_60d: "+15", confidence: high}
+  expect: {segment: abstain}
+
+- id: midsize_no_layoff
+  note: Mid-size and hiring, but no layoff. Must not get the restructuring pitch.
+  prospect: {company: Silverline Telecom Software, contact_name: Raj Patel, contact_title: CTO, employee_count: 900, industry: Telecom software}
+  hiring: {open_eng_roles: 30, confidence: high}
+  expect: {segment: abstain}
+
+- id: funded_with_ai
+  note: Funded and AI-ambitious; funding outranks capability gap.
+  prospect: {company: Starling Genomics, contact_name: Elena Novak, contact_title: CTO, employee_count: 75, industry: Bioinformatics}
+  funding: {event: Series B, amount_usd: 30000000, confidence: high}
+  ai_maturity: {score: 3, confidence: high}
+  hiring: {open_eng_roles: 14, ai_adjacent_eng_roles: 4, confidence: high}
+  expect: {segment: recently_funded}
+
+- id: unknown_contact_and_timezone
+  note: No contact name and no timezone; the draft must not invent either.
+  prospect: {company: Larkspur Analytics, employee_count: 35, industry: Analytics}
+  funding: {event: Series A, amount_usd: 10000000, confidence: high}
+  hiring: {open_eng_roles: 6, confidence: high}
+  expect: {segment: recently_funded}
+
+- id: human_review_leadership
+  note: Ambiguous leadership transition flagged for human review; medium confidence alone should abstain.
+  prospect: {company: Oakmont Legal Tech, contact_name: Paul Whitman, contact_title: Interim CTO, employee_count: 110, industry: Legal tech}
+  leadership: {change: true, role: CTO, confidence: medium}
+  requires_human_review: true
+  human_review_reason: Founder-CTO departure reported; successor unconfirmed.
+  expect: {segment: abstain}
+
+- id: gap_medium
+  note: A medium-confidence competitor gap; its numbers may be used, hedged.
+  prospect: {company: Hollis Retail Cloud, contact_name: Maya Goldberg, contact_title: CTO, employee_count: 45, industry: Retail software}
+  funding: {event: Series A, amount_usd: 12000000, confidence: high}
+  hiring: {open_eng_roles: 9, confidence: high}
+  gaps:
+    - {practice: automated LLM evaluation in CI, cohort_adoption: 3 of 5 peers, prospect_has_it: false, confidence: medium}
+  expect: {segment: recently_funded}
+
+- id: gap_low_filtered
+  note: A low-confidence gap is filtered out; its numbers must not appear.
+  prospect: {company: Juniper Fleet, contact_name: Tomas Silva, contact_title: VP Engineering, employee_count: 45, industry: Fleet management}
+  funding: {event: Series A, amount_usd: 12000000, confidence: high}
+  hiring: {open_eng_roles: 9, confidence: high}
+  gaps:
+    - {practice: vector search in production, cohort_adoption: 4 of 6 peers, prospect_has_it: false, confidence: low}
+  expect: {segment: recently_funded}
+
+- id: medium_funding_high_hiring
+  note: Funding is medium confidence, so it must be hedged.
+  prospect: {company: Thornbury Energy Software, contact_name: Felix Wagner, contact_title: CTO, employee_count: 55, industry: Energy software}
+  funding: {event: Series B, amount_usd: 18000000, confidence: medium}
+  hiring: {open_eng_roles: 11, confidence: high}
+  expect: {segment: recently_funded}
+
+- id: low_hiring_high_funding
+  note: Hiring is a weak inference; its role count must not be quoted.
+  prospect: {company: Cedarline Travel, contact_name: Zoe Clarke, contact_title: Head of Engineering, employee_count: 25, industry: Travel tech}
+  funding: {event: Series A, amount_usd: 7000000, confidence: high}
+  hiring: {open_eng_roles: 15, confidence: low}
+  ai_maturity: {score: 1, confidence: high}
+  expect: {segment: recently_funded}
+
+- id: new_data_leader_ai
+  note: New data leader (medium) at an AI-ambitious company; leadership outranks capability.
+  prospect: {company: Lindenfield Research, contact_name: Ines Duarte, contact_title: Head of Data, employee_count: 140, industry: Research software}
+  leadership: {change: true, role: Head of Data, confidence: medium}
+  ai_maturity: {score: 2, confidence: high}
+  hiring: {open_eng_roles: 5, ai_adjacent_eng_roles: 3, confidence: high}
+  expect: {segment: leadership_transition}
+
+- id: layoff_medium_midsize
+  note: Medium-confidence layoff at a mid-size company; still never mentioned.
+  prospect: {company: Marlowe Logistics, contact_name: Kwame Asante, contact_title: CTO, employee_count: 450, industry: Logistics}
+  layoffs: {event: true, headcount_pct: 10, confidence: medium}
+  hiring: {open_eng_roles: 4, confidence: high}
+  expect: {segment: restructuring}
+
+- id: seed_stage
+  note: Seed round and tiny team; outside every segment.
+  prospect: {company: Puffin Tools, contact_name: Ada Brooks, contact_title: Founder & CTO, employee_count: 12, industry: Developer tools}
+  funding: {event: Seed, amount_usd: 2000000, confidence: high}
+  hiring: {open_eng_roles: 3, confidence: high}
+  expect: {segment: abstain}

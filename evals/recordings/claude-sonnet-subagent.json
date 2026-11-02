@@ -1,0 +1,314 @@
+{
+  "model": "claude-sonnet-subagent",
+  "drafts": {
+    "funded_clean": {
+      "fingerprint": "fcb9f055d974",
+      "prompt_hash": "c8200fe9544b",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series A",
+      "body": "Hi Priya,\n\nCongrats on the $8M Series A. I also noticed Northwind has 12 open engineering roles.\n\nFresh budget plus a long hiring queue usually means the roadmap moves faster than in-house recruiting can staff it. Would a short call to talk through shipping faster than hiring alone allows be useful? I have proposed two times below.\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [
+        {
+          "prospect_local": "2026-11-05 10:00 EST",
+          "utc": "2026-11-05 15:00 UTC"
+        },
+        {
+          "prospect_local": "2026-11-06 14:00 EST",
+          "utc": "2026-11-06 19:00 UTC"
+        }
+      ],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "funded_medium_hiring": {
+      "fingerprint": "4cb35258557f",
+      "prompt_hash": "ce4b05f749e2",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series B",
+      "body": "Hi Daniel,\n\nCongrats on the $22M Series B. Looking at the public signal, it seems Lumen Ledger has around 7 open engineering roles.\n\nFresh budget and a hiring queue often mean the roadmap runs ahead of what in-house recruiting can staff. Would you be open to a short call to talk through shipping faster alongside your own hiring?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "funded_low_confidence_funding": {
+      "fingerprint": "9bb1c98c0e4d",
+      "prompt_hash": "a28399fe8dde",
+      "segment": "abstain",
+      "subject": "Note on your engineering hiring",
+      "body": "Hi Mei,\n\nI noticed Cobalt Pathways has 9 open engineering roles. A hiring queue that size often outpaces what in-house recruiting can fill.\n\nDid your team close a round recently to fund that hiring?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "no_signals": {
+      "fingerprint": "c6d6341b4b70",
+      "prompt_hash": "8209dee9168f",
+      "segment": "abstain",
+      "subject": "Question on engineering priorities",
+      "body": "Hi Sam,\n\nI work with engineering leaders at B2B software companies on dedicated team extensions and fixed-scope data and AI projects. Teams like Quietfield Labs often find that the biggest constraint is not ideas but delivery capacity.\n\nWhat is your engineering team prioritising over the next two quarters?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "layoff_midsize": {
+      "fingerprint": "a4122d03934b",
+      "prompt_hash": "e3814f1f07e0",
+      "segment": "restructuring",
+      "subject": "Question on keeping delivery steady",
+      "body": "Hi Grace,\n\nLooking at the public signal, it seems Harborline has around three open engineering roles. Keeping delivery steady while priorities shift is usually harder than a hiring plan suggests.\n\nHow are you thinking about delivery capacity for the next two quarters?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "layoff_low_confidence_funded": {
+      "fingerprint": "39cfec6f5770",
+      "prompt_hash": "18ec36717d40",
+      "segment": "abstain",
+      "subject": "Congrats on the Series A",
+      "body": "Hi Omar,\n\nCongrats on the $6M Series A. I also noticed Tidewater Health Tech has 8 open engineering roles.\n\nTeams in that position often find that priorities multiply faster than hiring can keep up.\n\nWhat are you prioritising for engineering over the next few months?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "new_cto": {
+      "fingerprint": "a3f5eeea1996",
+      "prompt_hash": "8425ab07606b",
+      "segment": "leadership_transition",
+      "subject": "Congrats on the CTO role",
+      "body": "Hi Lena,\n\nCongrats on the new CTO role at Brightwave Commerce.\n\nNew technical leaders often revisit how their team is staffed in the first months, and I would be glad to share a perspective rather than a pitch.\n\nWhat are you prioritising first?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "leadership_low_confidence_with_funding": {
+      "fingerprint": "220a4d122b4b",
+      "prompt_hash": "0cffca591d90",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series B",
+      "body": "Hi Arjun,\n\nCongrats on the $15M Series B. I also noticed Ironbark Data has 10 open engineering roles.\n\nFresh budget and a hiring queue like that often mean the roadmap outruns in-house recruiting.\n\nHave there been recent changes on the engineering team that are shaping those hiring plans?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "ai_capability_high": {
+      "fingerprint": "a9780fb779f8",
+      "prompt_hash": "4e8421a991c3",
+      "segment": "capability_gap",
+      "subject": "Question on your ML platform team",
+      "body": "Hi Sofia,\n\nI saw that Meridian Insights has a public ML platform team and model-serving job posts.\n\nWork like that often has pieces, such as serving or data pipelines, that suit a fixed-scope project better than another permanent hire.\n\nIs there a specific piece you would consider scoping as a project?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "ai_low_confidence": {
+      "fingerprint": "4482af6ba593",
+      "prompt_hash": "fc2e9524284a",
+      "segment": "abstain",
+      "subject": "Question on engineering priorities",
+      "body": "Hi Jonas,\n\nI noticed Pinecrest Mobility has 4 open engineering roles. Teams at that stage often have more priorities than people to staff them.\n\nWhere does AI sit among your engineering priorities this year?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "ai_medium_only": {
+      "fingerprint": "0e4bda1735f6",
+      "prompt_hash": "9122acc83503",
+      "segment": "abstain",
+      "subject": "Question on engineering priorities",
+      "body": "Hi Hana,\n\nLooking at the public signal, it seems Saltmarsh Robotics has around five open engineering roles and some AI work underway.\n\nTeams in that position often hit a gap between hiring and specialised skills.\n\nWhich is the tighter constraint for you right now: hiring volume or specialised skills?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "funded_too_big": {
+      "fingerprint": "385f705fd180",
+      "prompt_hash": "30a05e13e9a3",
+      "segment": "abstain",
+      "subject": "Congrats on the Series B",
+      "body": "Hi Ethan,\n\nCongrats on the $40M Series B. I also noticed Granite Peak Software has 20 open engineering roles.\n\nWith that much to staff, delivery often depends on more than hiring alone.\n\nWhat is the biggest engineering priority you are trying to protect over the next two quarters?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "funded_and_new_leader": {
+      "fingerprint": "80e3d5311177",
+      "prompt_hash": "4c861c890f94",
+      "segment": "leadership_transition",
+      "subject": "Congrats on the VP Engineering role",
+      "body": "Hi Nadia,\n\nCongrats on the new VP Engineering role at Fernhill AI, and on the $9M Series A.\n\nNew technical leaders often revisit how their team is staffed in the first months, and I would be glad to offer a perspective rather than a pitch.\n\nWhat are you prioritising first?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "series_c": {
+      "fingerprint": "b2a766cc22cc",
+      "prompt_hash": "1d20da59aad5",
+      "segment": "abstain",
+      "subject": "Congrats on the Series C",
+      "body": "Hi Lucas,\n\nCongrats on the $60M Series C. I also noticed Copperleaf Payments has 15 open engineering roles.\n\nGrowth at that scale often means priorities arrive faster than hiring can staff them.\n\nWhat engineering priorities are you focused on for the next two quarters?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "medium_funding_only": {
+      "fingerprint": "bcee601bc540",
+      "prompt_hash": "5291d6694f38",
+      "segment": "abstain",
+      "subject": "Question on engineering priorities",
+      "body": "Hi Amara,\n\nLooking at the public signal, it seems Willowbrook Learning has raised a Series A.\n\nNew funding usually puts pressure on engineering to ship faster than hiring alone allows.\n\nWhat is your engineering team prioritising right now?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "funded_few_roles": {
+      "fingerprint": "f143132d790f",
+      "prompt_hash": "579a461a62b6",
+      "segment": "recently_funded",
+      "subject": "Congrats on your Series A",
+      "body": "Hi Ben,\n\nCongratulations on the $3M Series A. With two open engineering roles, hiring alone can take a while to turn new funding into shipped product.\n\nAcme Engineering provides dedicated engineering teams that work inside your product, so delivery does not have to wait on recruiting.\n\nHow are you planning to balance hiring and shipping over the next few months?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "layoff_small_funded": {
+      "fingerprint": "dc9990366979",
+      "prompt_hash": "54f79024119c",
+      "segment": "restructuring",
+      "subject": "Note on keeping delivery steady at Bluefin",
+      "body": "Hi Chloe,\n\nBluefin Media closed a $7M Series A, and at around 90 people, keeping engineering delivery steady while spend stays disciplined is usually a balancing act.\n\nAcme Engineering provides dedicated engineering and data teams that slot into an existing roadmap.\n\nHow are you thinking about engineering capacity for the coming quarters?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "new_cto_and_layoff": {
+      "fingerprint": "db04ca48beee",
+      "prompt_hash": "71aa9637f770",
+      "segment": "leadership_transition",
+      "subject": "Congrats on joining Ashgrove as CTO",
+      "body": "Hi Victor,\n\nCongratulations on the new CTO role at Ashgrove Insurance Tech. New technical leaders often revisit how their team is staffed in their first months, and an outside perspective can help.\n\nAcme Engineering provides dedicated engineering and data teams, and I would be glad to share what we see elsewhere.\n\nWhat are you prioritising first?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "hiring_surge_only": {
+      "fingerprint": "2b8665c9c729",
+      "prompt_hash": "48f984cbfc2c",
+      "segment": "abstain",
+      "subject": "Question on engineering hiring at Redwood",
+      "body": "Hi Ivy,\n\nRedwood Freight has 25 open engineering roles, which is a lot of hiring to run at once.\n\nAcme Engineering provides dedicated engineering and data teams, plus fixed-scope projects, for B2B software companies. Some teams use us to keep delivery moving while hiring catches up.\n\nIs hiring speed the main constraint on what engineering ships right now?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "midsize_no_layoff": {
+      "fingerprint": "95835cc529a0",
+      "prompt_hash": "9c5a556994bb",
+      "segment": "abstain",
+      "subject": "Question on engineering hiring at Silverline",
+      "body": "Hi Raj,\n\nSilverline Telecom Software has 30 open engineering roles, a sizeable hiring load for any team.\n\nAcme Engineering provides dedicated engineering and data teams, plus fixed-scope projects, for B2B software companies. Some teams use us to keep delivery moving while hiring catches up.\n\nIs hiring speed the main constraint on what engineering ships right now?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "funded_with_ai": {
+      "fingerprint": "ba539f5ec231",
+      "prompt_hash": "f77e492af122",
+      "segment": "recently_funded",
+      "subject": "Congrats on your Series B",
+      "body": "Hi Elena,\n\nCongratulations on the $30M Series B at Starling Genomics. With 14 open engineering roles, recruiting alone can limit how quickly new funding turns into shipped product.\n\nAcme Engineering provides dedicated engineering and data teams, plus fixed-scope projects, that can work alongside your in-house hires.\n\nIs the roadmap currently moving faster than hiring can support?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "unknown_contact_and_timezone": {
+      "fingerprint": "43fe5c1bb821",
+      "prompt_hash": "68d681decf9a",
+      "segment": "recently_funded",
+      "subject": "Congrats on your Series A",
+      "body": "Hello,\n\nCongratulations to the team at Larkspur Analytics on the $10M Series A. With six open engineering roles, hiring alone can slow down how fast new funding turns into shipped product.\n\nAcme Engineering provides dedicated engineering and data teams that work inside your product.\n\nWho on your side is best placed to talk through how you plan to ship faster than hiring alone allows?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "human_review_leadership": {
+      "fingerprint": "c087af66a555",
+      "prompt_hash": "894a34f6693a",
+      "segment": "abstain",
+      "subject": "Question on engineering priorities at Oakmont",
+      "body": "Hi Paul,\n\nLooking at the public signal, it seems there may have been a recent change in engineering leadership at Oakmont Legal Tech. Is that right?\n\nAcme Engineering provides dedicated engineering and data teams, plus fixed-scope projects, for B2B software companies. If it is, I would be glad to share a perspective.\n\nWhat are you prioritising for the team first?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "gap_medium": {
+      "fingerprint": "9e486cd91946",
+      "prompt_hash": "cda966720cf3",
+      "segment": "recently_funded",
+      "subject": "Question on engineering at Hollis Retail Cloud",
+      "body": "Hi Maya,\n\nBased on our public scan, it looks like Hollis Retail Cloud may not have automated LLM evaluation in CI yet. Is that accurate?\n\nWith a $12M Series A and nine open engineering roles, spare capacity for tooling like that is often tight. Acme Engineering builds this kind of work as a fixed-scope project, with a team that works alongside yours.\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "gap_low_filtered": {
+      "fingerprint": "83a32b6eea7b",
+      "prompt_hash": "6f250c501e7a",
+      "segment": "recently_funded",
+      "subject": "Congrats on your Series A",
+      "body": "Hi Tomas,\n\nCongratulations on the $12M Series A at Juniper Fleet. With nine open engineering roles, hiring alone can limit how quickly new funding turns into shipped product.\n\nAcme Engineering provides dedicated engineering and data teams that work inside your product, so delivery does not have to wait on recruiting.\n\nHow are you thinking about balancing hiring with shipping this year?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "medium_funding_high_hiring": {
+      "fingerprint": "c6cc61ea3acd",
+      "prompt_hash": "fa1ca1186da2",
+      "segment": "recently_funded",
+      "subject": "Question on engineering capacity at Thornbury",
+      "body": "Hi Felix,\n\nLooking at the public signal, it seems Thornbury Energy Software recently raised a Series B, and you have 11 open engineering roles.\n\nFresh budget usually comes with a clock, and hiring alone can slow how fast it turns into shipped product. Acme Engineering provides dedicated engineering teams that work inside your product.\n\nIs that roughly the situation, and how are you thinking about shipping faster?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "low_hiring_high_funding": {
+      "fingerprint": "b13f48230545",
+      "prompt_hash": "f6bf182cd82d",
+      "segment": "recently_funded",
+      "subject": "Congrats on your Series A",
+      "body": "Hi Zoe,\n\nCongratulations on the $7M Series A at Cedarline Travel. New funding usually comes with a clock, and in-house hiring alone can slow how quickly it turns into shipped product.\n\nAcme Engineering provides dedicated engineering and data teams that work inside your product.\n\nWhat are your current hiring priorities for engineering?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "new_data_leader_ai": {
+      "fingerprint": "5fb37cffcccc",
+      "prompt_hash": "d0e4309b353a",
+      "segment": "leadership_transition",
+      "subject": "Question on data priorities at Lindenfield",
+      "body": "Hi Ines,\n\nLooking at the public signal, it seems you may have recently stepped into the Head of Data role at Lindenfield Research, and there are five open engineering roles.\n\nNew technical leaders often revisit how their team is staffed in their first months. Acme Engineering provides dedicated engineering and data teams, and I would be glad to share a perspective.\n\nWhat are you prioritising first?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "layoff_medium_midsize": {
+      "fingerprint": "139578676731",
+      "prompt_hash": "e523c6e0898f",
+      "segment": "restructuring",
+      "subject": "Question on engineering delivery at Marlowe",
+      "body": "Hi Kwame,\n\nMarlowe Logistics has four open engineering roles. At around 450 people, keeping delivery steady while spend stays tight is usually the priority.\n\nAcme Engineering provides dedicated engineering and data teams that can hold delivery steady alongside your in-house engineers.\n\nHow are you thinking about keeping delivery on track while those roles are open?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "seed_stage": {
+      "fingerprint": "96c63391eba0",
+      "prompt_hash": "fd15a949f3cf",
+      "segment": "abstain",
+      "subject": "Congrats on your seed round",
+      "body": "Hi Ada,\n\nCongratulations on the $2M seed round at Puffin Tools. With three open engineering roles, early hiring can take a lot of founder time.\n\nAcme Engineering provides dedicated engineering and data teams, plus fixed-scope projects, for B2B software companies.\n\nRight now, is hiring or delivery the tighter constraint for you?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T12:33:09+00:00"
+    }
+  }
+}

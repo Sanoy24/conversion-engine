@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 import uuid
+from dataclasses import dataclass
 from datetime import datetime
 
 from agent.config import settings
@@ -47,52 +48,15 @@ async def draft_email(
     traces: list[TraceRecord] = []
     thread_id = thread_id or f"thread_{uuid.uuid4().hex[:8]}"
 
-    # ── SCAP: Signal-Confidence-Aware Phrasing ────────────────────────
-    # Pre-prompt transform: strip LOW-confidence signals, soften MEDIUM,
-    # filter LOW-confidence gaps. Controlled by settings.enable_scap plus
-    # sub-flags so ablation variants are selectable. The transform is
-    # audited via draft_metadata["scap_transforms"] for the evidence graph.
-    scap_transforms: list[str] = []
-    scap_ask_block = ""
-    if settings.enable_scap:
-        scap_config = SCAPConfig(
-            strip_low_confidence=settings.scap_strip_low,
-            filter_gap_low=settings.scap_filter_gap_low,
-            soften_medium=settings.scap_soften_medium,
-        )
-        scap_result = apply_scap(signal_brief, gap_brief, scap_config)
-        signal_brief = scap_result.brief
-        gap_brief = scap_result.gap_brief
-        scap_transforms = scap_result.transforms
-        scap_ask_block = render_ask_directives(scap_result.ask_directives)
-        if scap_transforms:
-            logger.info(
-                "SCAP applied for %s: %d transform(s): %s",
-                signal_brief.prospect.company,
-                len(scap_transforms),
-                scap_transforms,
-            )
-
+    prompts = build_draft_prompts(
+        signal_brief, classification, email_type, gap_brief, thread_history
+    )
+    signal_brief = prompts.signal_brief
+    scap_transforms = prompts.scap_transforms
+    system_prompt, user_prompt = prompts.system, prompts.user
     playbook = get_playbook()
     style_guide = playbook.read_text(playbook.voice.style_guide)
-
-    # Build the grounded claims list
     grounded = _extract_grounded_claims(signal_brief)
-
-    system_prompt = _build_system_prompt(playbook, email_type, style_guide)
-
-    # Build the user prompt with signal data
-    user_prompt = _build_user_prompt(
-        signal_brief=signal_brief,
-        classification=classification,
-        email_type=email_type,
-        gap_brief=gap_brief,
-        thread_history=thread_history,
-        grounded_claims=grounded,
-        playbook=playbook,
-    )
-    if scap_ask_block:
-        user_prompt = user_prompt + "\n\n" + scap_ask_block
 
     # Generate email via LLM
     llm = get_llm_client()
@@ -173,6 +137,70 @@ async def draft_email(
     return draft, traces
 
 
+@dataclass
+class DraftPrompts:
+    """The exact prompts the drafter sends, plus the SCAP-transformed brief."""
+
+    system: str
+    user: str
+    signal_brief: HiringSignalBrief
+    scap_transforms: list[str]
+
+
+def build_draft_prompts(
+    signal_brief: HiringSignalBrief,
+    classification: ICPClassification,
+    email_type: EmailType = EmailType.COLD,
+    gap_brief: CompetitorGapBrief | None = None,
+    thread_history: list[dict] | None = None,
+) -> DraftPrompts:
+    """
+    Build the system and user prompts for a draft. No LLM call.
+
+    SCAP (Signal-Confidence-Aware Phrasing) runs first: LOW-confidence signals
+    are stripped and replaced by ASK directives, MEDIUM ones are flagged for
+    soft phrasing, LOW-confidence gaps are dropped. Controlled by
+    settings.enable_scap and its sub-flags; the applied transforms are
+    returned for the draft's audit metadata.
+    """
+    scap_transforms: list[str] = []
+    scap_ask_block = ""
+    if settings.enable_scap:
+        scap_config = SCAPConfig(
+            strip_low_confidence=settings.scap_strip_low,
+            filter_gap_low=settings.scap_filter_gap_low,
+            soften_medium=settings.scap_soften_medium,
+        )
+        scap_result = apply_scap(signal_brief, gap_brief, scap_config)
+        signal_brief = scap_result.brief
+        gap_brief = scap_result.gap_brief
+        scap_transforms = scap_result.transforms
+        scap_ask_block = render_ask_directives(scap_result.ask_directives)
+        if scap_transforms:
+            logger.info(
+                "SCAP applied for %s: %d transform(s): %s",
+                signal_brief.prospect.company,
+                len(scap_transforms),
+                scap_transforms,
+            )
+
+    playbook = get_playbook()
+    style_guide = playbook.read_text(playbook.voice.style_guide)
+    system_prompt = _build_system_prompt(playbook, email_type, style_guide)
+    user_prompt = _build_user_prompt(
+        signal_brief=signal_brief,
+        classification=classification,
+        email_type=email_type,
+        gap_brief=gap_brief,
+        thread_history=thread_history,
+        grounded_claims=_extract_grounded_claims(signal_brief),
+        playbook=playbook,
+    )
+    if scap_ask_block:
+        user_prompt = user_prompt + "\n\n" + scap_ask_block
+    return DraftPrompts(system_prompt, user_prompt, signal_brief, scap_transforms)
+
+
 def _build_system_prompt(playbook: Playbook, email_type: EmailType, style_guide: str) -> str:
     """Build the drafter system prompt from the active playbook."""
     company = playbook.company
@@ -190,6 +218,10 @@ def _build_system_prompt(playbook: Playbook, email_type: EmailType, style_guide:
         f"LENGTH: Max {limits.cold} words for cold outbound, {limits.warm_reply} for warm "
         f"replies, {limits.re_engagement} for re-engagement. No emojis in cold outreach.",
         "ONE ASK per email. Never stack multiple asks.",
+        "SUBJECT HONESTY: The subject line cannot hedge, so never put a medium- or "
+        "low-confidence fact in it. Only high-confidence facts, or none.",
+        "NO INTERNAL TERMS: Never mention our scoring or research process to the prospect: "
+        "no AI maturity scores, confidence levels, segments, ICP, or signal brief.",
         f"SIGNATURE: End with exactly:\n{company.signature}",
     ]
     if voice.subject_prefixes:
