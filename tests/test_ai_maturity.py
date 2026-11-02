@@ -26,7 +26,9 @@ def test_collect_ai_maturity_supporting_signals_prefers_structured_sources():
     record = {
         "github_org_activity": {"org": "acme", "ai_repos": 2, "recent_ai_commits": 5},
         "exec_commentary": [{"quote": "Our CTO says AI is a core strategic priority."}],
-        "announcements": [{"title": "AI roadmap update", "summary": "We are expanding inference platform"}],
+        "announcements": [
+            {"title": "AI roadmap update", "summary": "We are expanding inference platform"}
+        ],
     }
     signals = collect_ai_maturity_supporting_signals(record)
 

@@ -117,9 +117,18 @@ class LLMClient:
                 model=self.model,
                 input_messages=messages,
                 output=content,
-                usage={"prompt_tokens": usage.prompt_tokens, "completion_tokens": usage.completion_tokens} if usage else None,
+                usage={
+                    "prompt_tokens": usage.prompt_tokens,
+                    "completion_tokens": usage.completion_tokens,
+                }
+                if usage
+                else None,
                 cost=cost,
-                metadata={"prospect_company": prospect_company, "thread_id": thread_id, "latency_ms": round(elapsed_ms, 1)},
+                metadata={
+                    "prospect_company": prospect_company,
+                    "thread_id": thread_id,
+                    "latency_ms": round(elapsed_ms, 1),
+                },
             )
 
             return content, trace
@@ -200,11 +209,13 @@ class LLMClient:
         # failures even when response_format=json_object is set.
         try:
             from json_repair import repair_json
+
             repaired = repair_json(content, return_objects=True)
             if isinstance(repaired, dict):
                 logger.warning(
                     "LLM call %s: JSON repaired (original length=%d)",
-                    trace.trace_id, len(content),
+                    trace.trace_id,
+                    len(content),
                 )
                 return repaired, trace
         except Exception as e:
@@ -213,7 +224,8 @@ class LLMClient:
         # Surface the first 300 chars of the raw content to make debugging easy
         logger.error(
             "LLM call %s: could not parse or repair JSON. content[:300]=%r",
-            trace.trace_id, content[:300],
+            trace.trace_id,
+            content[:300],
         )
         raise json.JSONDecodeError("Unparseable and unrepairable LLM JSON", content, 0)
 

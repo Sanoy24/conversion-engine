@@ -15,6 +15,7 @@ Idempotent: re-runs overwrite existing files. Safe to call repeatedly.
 
 from __future__ import annotations
 
+import contextlib
 import csv
 import io
 import json
@@ -33,31 +34,67 @@ CRUNCHBASE_CSV_URL = (
     "Crunchbase-dataset-samples/main/crunchbase-companies-information.csv"
 )
 LAYOFFS_CSV_URL = (
-    "https://raw.githubusercontent.com/bigyaa/"
-    "Layoff-Prediction-Model/master/layoffs_data_fyi.csv"
+    "https://raw.githubusercontent.com/bigyaa/Layoff-Prediction-Model/master/layoffs_data_fyi.csv"
 )
 
 JSON_COLUMNS = {
-    "industries", "social_media_links", "featured_list", "builtwith_tech",
-    "similar_companies", "location", "contacts", "current_employees",
-    "semrush_location_list", "siftery_products", "funding_rounds_list",
-    "bombora", "investors", "event_appearances", "acquisitions",
-    "funds_raised", "investments", "apptopia", "current_advisors", "exits",
-    "leadership_hire", "sub_organizations", "alumni", "diversity_investments",
-    "funds_list", "layoff", "news", "headquarters_regions",
-    "financials_highlights", "ipo_fields", "ipqwery", "overview_highlights",
-    "people_highlights", "technology_highlights", "founders", "funds_total",
-    "acquired_by", "investor_type", "investment_stage", "sub_organization_of",
+    "industries",
+    "social_media_links",
+    "featured_list",
+    "builtwith_tech",
+    "similar_companies",
+    "location",
+    "contacts",
+    "current_employees",
+    "semrush_location_list",
+    "siftery_products",
+    "funding_rounds_list",
+    "bombora",
+    "investors",
+    "event_appearances",
+    "acquisitions",
+    "funds_raised",
+    "investments",
+    "apptopia",
+    "current_advisors",
+    "exits",
+    "leadership_hire",
+    "sub_organizations",
+    "alumni",
+    "diversity_investments",
+    "funds_list",
+    "layoff",
+    "news",
+    "headquarters_regions",
+    "financials_highlights",
+    "ipo_fields",
+    "ipqwery",
+    "overview_highlights",
+    "people_highlights",
+    "technology_highlights",
+    "founders",
+    "funds_total",
+    "acquired_by",
+    "investor_type",
+    "investment_stage",
+    "sub_organization_of",
 }
 
 AI_ROLE_TITLES = [
-    "Senior ML Engineer", "Applied Scientist", "LLM Engineer",
-    "AI Product Manager", "Data Platform Engineer", "MLOps Engineer",
+    "Senior ML Engineer",
+    "Applied Scientist",
+    "LLM Engineer",
+    "AI Product Manager",
+    "Data Platform Engineer",
+    "MLOps Engineer",
 ]
 ENG_ROLE_TITLES = [
-    "Senior Backend Engineer", "Staff Software Engineer",
-    "Site Reliability Engineer", "Full-Stack Engineer",
-    "Engineering Manager", "Senior Data Engineer",
+    "Senior Backend Engineer",
+    "Staff Software Engineer",
+    "Site Reliability Engineer",
+    "Full-Stack Engineer",
+    "Engineering Manager",
+    "Senior Data Engineer",
 ]
 
 logger = logging.getLogger(__name__)
@@ -76,19 +113,18 @@ def fetch_crunchbase() -> Path:
         for col in JSON_COLUMNS:
             raw = rec.get(col)
             if raw and isinstance(raw, str) and raw.strip():
-                try:
+                # Leave as-is if it isn't parseable (some rows have truncated JSON)
+                with contextlib.suppress(json.JSONDecodeError):
                     rec[col] = json.loads(raw)
-                except json.JSONDecodeError:
-                    # Leave as-is if it isn't parseable (some rows have truncated JSON)
-                    pass
         # Populate uuid from id if absent (parser checks both).
         if not rec.get("uuid"):
             rec["uuid"] = rec.get("id")
         records.append(rec)
 
     out.write_text(json.dumps(records, ensure_ascii=False), encoding="utf-8")
-    logger.info("Wrote %d Crunchbase records → %s (%d KB)",
-                len(records), out, out.stat().st_size // 1024)
+    logger.info(
+        "Wrote %d Crunchbase records → %s (%d KB)", len(records), out, out.stat().st_size // 1024
+    )
     return out
 
 
@@ -102,21 +138,29 @@ def fetch_layoffs() -> Path:
     rows: list[dict] = []
     for raw in reader:
         pct = raw.get("Percentage") or ""
-        rows.append({
-            "company": raw.get("Company", ""),
-            "location": raw.get("Location_HQ", ""),
-            "industry": raw.get("Industry", ""),
-            "total_laid_off": raw.get("Laid_Off_Count", ""),
-            "percentage_laid_off": pct,
-            "date": raw.get("Date", ""),  # already YYYY-MM-DD
-            "stage": raw.get("Stage", ""),
-            "country": raw.get("Country", ""),
-            "funds_raised_millions": raw.get("Funds_Raised", ""),
-        })
+        rows.append(
+            {
+                "company": raw.get("Company", ""),
+                "location": raw.get("Location_HQ", ""),
+                "industry": raw.get("Industry", ""),
+                "total_laid_off": raw.get("Laid_Off_Count", ""),
+                "percentage_laid_off": pct,
+                "date": raw.get("Date", ""),  # already YYYY-MM-DD
+                "stage": raw.get("Stage", ""),
+                "country": raw.get("Country", ""),
+                "funds_raised_millions": raw.get("Funds_Raised", ""),
+            }
+        )
 
     fieldnames = [
-        "company", "location", "industry", "total_laid_off",
-        "percentage_laid_off", "date", "stage", "country",
+        "company",
+        "location",
+        "industry",
+        "total_laid_off",
+        "percentage_laid_off",
+        "date",
+        "stage",
+        "country",
         "funds_raised_millions",
     ]
     with out.open("w", encoding="utf-8", newline="") as f:
@@ -139,12 +183,14 @@ def synthesize_job_posts_snapshot(top_n: int = 60, seed: int = 42) -> Path:
     rng = random.Random(seed)
     cb_file = DATA_DIR / "crunchbase_odm_sample.json"
     records = json.loads(cb_file.read_text(encoding="utf-8"))
+
     # Prefer active, for-profit companies with a cb_rank present; take top-N.
     def rank(r: dict) -> int:
         try:
             return int(r.get("cb_rank") or 10**9)
         except (TypeError, ValueError):
             return 10**9
+
     companies = sorted(records, key=rank)[:top_n]
 
     snapshot = []
@@ -154,19 +200,20 @@ def synthesize_job_posts_snapshot(top_n: int = 60, seed: int = 42) -> Path:
         base = max(1, 25 - (i // 5))
         n_ai = rng.randint(0, max(1, base // 3))
         n_eng = rng.randint(max(1, base // 2), base)
-        jobs = (
-            [{"title": rng.choice(AI_ROLE_TITLES)} for _ in range(n_ai)]
-            + [{"title": rng.choice(ENG_ROLE_TITLES)} for _ in range(n_eng)]
-        )
+        jobs = [{"title": rng.choice(AI_ROLE_TITLES)} for _ in range(n_ai)] + [
+            {"title": rng.choice(ENG_ROLE_TITLES)} for _ in range(n_eng)
+        ]
         delta_60d = rng.choice(["+3", "+5", "+7", "+12", "+18", "-2", "0"])
-        snapshot.append({
-            "company": c.get("name"),
-            "jobs": jobs,
-            "delta_60d": delta_60d,
-            "source_url": c.get("website") or c.get("url"),
-            "synthetic": True,
-            "seed_cb_rank": c.get("cb_rank"),
-        })
+        snapshot.append(
+            {
+                "company": c.get("name"),
+                "jobs": jobs,
+                "delta_60d": delta_60d,
+                "source_url": c.get("website") or c.get("url"),
+                "synthetic": True,
+                "seed_cb_rank": c.get("cb_rank"),
+            }
+        )
 
     out = DATA_DIR / "job_posts_snapshot.json"
     out.write_text(json.dumps(snapshot, indent=2, ensure_ascii=False), encoding="utf-8")

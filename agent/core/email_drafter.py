@@ -67,7 +67,9 @@ async def draft_email(
         if scap_transforms:
             logger.info(
                 "SCAP applied for %s: %d transform(s): %s",
-                signal_brief.prospect.company, len(scap_transforms), scap_transforms,
+                signal_brief.prospect.company,
+                len(scap_transforms),
+                scap_transforms,
             )
 
     playbook = get_playbook()

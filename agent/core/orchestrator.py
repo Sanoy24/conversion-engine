@@ -359,13 +359,10 @@ async def _book_discovery_call(
     start_time, end_time = _default_booking_window()
 
     segment_label = (
-        conversation.classification.segment
-        if conversation.classification
-        else "unknown"
+        conversation.classification.segment if conversation.classification else "unknown"
     )
-    notes = (
-        f"Thread {conversation.thread_id} | Segment: {segment_label}"
-        + (f" | Prospect note: {reply_content[:200]}" if reply_content else "")
+    notes = f"Thread {conversation.thread_id} | Segment: {segment_label}" + (
+        f" | Prospect note: {reply_content[:200]}" if reply_content else ""
     )
 
     sdr_email = settings.sdr_email or None
@@ -417,7 +414,10 @@ async def _book_discovery_call(
 
     logger.info(
         "Discovery call booked for %s: id=%s time=%s sdr=%s",
-        conversation.prospect.company, booking_id, start_time, sdr_email or "none",
+        conversation.prospect.company,
+        booking_id,
+        start_time,
+        sdr_email or "none",
     )
 
     return {
@@ -444,7 +444,9 @@ async def handle_calcom_event(
     booking_uid = booking_payload.get("uid") or booking_payload.get("id") or ""
     metadata = booking_payload.get("metadata") or {}
     thread_id = metadata.get("thread_id")
-    conversation = get_conversation(thread_id) if thread_id else get_conversation_by_booking_id(booking_uid)
+    conversation = (
+        get_conversation(thread_id) if thread_id else get_conversation_by_booking_id(booking_uid)
+    )
     if not conversation:
         return {
             "status": "ok",
@@ -457,7 +459,9 @@ async def handle_calcom_event(
         conversation.calcom_booking_id = booking_uid or conversation.calcom_booking_id
         update_status(conversation.thread_id, ConversationStatus.CALL_BOOKED)
         if conversation.hubspot_contact_id:
-            await get_hubspot_client().update_contact_status(conversation.hubspot_contact_id, "QUALIFIED")
+            await get_hubspot_client().update_contact_status(
+                conversation.hubspot_contact_id, "QUALIFIED"
+            )
             await get_hubspot_client().add_note(
                 contact_id=conversation.hubspot_contact_id,
                 note_body=f"Cal.com confirmed booking {booking_uid}",
@@ -525,6 +529,7 @@ async def handle_inbound_sms(from_phone: str, message: str) -> dict:
 
     # Create a minimal conversation so subsequent replies can correlate.
     from agent.models import ProspectInfo
+
     prospect = ProspectInfo(
         company=f"SMS-Inbound-{from_phone[-4:] if from_phone else 'unknown'}",
         contact_phone=from_phone,
@@ -536,7 +541,9 @@ async def handle_inbound_sms(from_phone: str, message: str) -> dict:
     )
     # create_conversation already seeds the initial inbound SMS message.
     if conversation.messages:
-        conversation.messages[0].metadata.update({"inbound_source": "sms_webhook", "from_phone": from_phone})
+        conversation.messages[0].metadata.update(
+            {"inbound_source": "sms_webhook", "from_phone": from_phone}
+        )
 
     # Best-effort HubSpot search — if the phone matches an existing contact,
     # attach a note recording the inbound SMS.
@@ -566,6 +573,7 @@ async def handle_sms_opt_out(from_phone: str) -> dict:
     """
     logger.info("SMS opt-out: %s", from_phone)
     from agent.core.conversation import get_conversation_by_phone
+
     conversation = get_conversation_by_phone(from_phone) if from_phone else None
     if conversation:
         update_status(conversation.thread_id, ConversationStatus.OPTED_OUT)
@@ -636,9 +644,7 @@ def _build_outbound_note(conversation: ConversationState, email_draft) -> str:
         "grounded_claims": [claim.claim for claim in email_draft.grounded_claims],
         "requires_human_review": needs_review,
         "human_review_reason": (
-            conversation.signal_brief.human_review_reason
-            if conversation.signal_brief
-            else None
+            conversation.signal_brief.human_review_reason if conversation.signal_brief else None
         ),
     }
     return json.dumps(note, ensure_ascii=True)
@@ -678,7 +684,8 @@ def _is_qualified_for_booking(conversation: ConversationState) -> bool:
 
     # Rule 3 — at least one warm reply already in the thread
     warm_replies = [
-        m for m in conversation.messages
+        m
+        for m in conversation.messages
         if m.role == "agent" and m.metadata.get("email_type") == "warm_reply"
     ]
     return bool(warm_replies)
@@ -709,6 +716,12 @@ def _default_booking_window() -> tuple[str, str]:
 
 
 def _is_warm_lead_for_sms(conversation: ConversationState) -> bool:
-    if conversation.status in (ConversationStatus.REPLIED, ConversationStatus.QUALIFIED, ConversationStatus.CALL_BOOKED):
+    if conversation.status in (
+        ConversationStatus.REPLIED,
+        ConversationStatus.QUALIFIED,
+        ConversationStatus.CALL_BOOKED,
+    ):
         return True
-    return any(msg.role == "prospect" and msg.channel == ChannelType.EMAIL for msg in conversation.messages)
+    return any(
+        msg.role == "prospect" and msg.channel == ChannelType.EMAIL for msg in conversation.messages
+    )

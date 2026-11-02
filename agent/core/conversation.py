@@ -80,8 +80,7 @@ def get_conversation_by_phone(phone: str) -> ConversationState | None:
     if not phone:
         return None
     matches = [
-        c for c in _conversations.values()
-        if c.prospect and c.prospect.contact_phone == phone
+        c for c in _conversations.values() if c.prospect and c.prospect.contact_phone == phone
     ]
     if not matches:
         return None

@@ -124,7 +124,10 @@ def _check_snapshot(company_name: str) -> HiringSignal | None:
         if not company_key or company_key != entry_key:
             continue
 
-        if _is_synthetic_snapshot(snapshot, entry) and not settings.allow_synthetic_job_posts_snapshot:
+        if (
+            _is_synthetic_snapshot(snapshot, entry)
+            and not settings.allow_synthetic_job_posts_snapshot
+        ):
             logger.warning(
                 "Ignoring synthetic job-post snapshot entry for %s; replace with a frozen or live public dataset.",
                 company_name,
@@ -150,7 +153,11 @@ def _parse_snapshot_entry(entry: dict, *, synthetic: bool = False) -> HiringSign
             if _is_ai_adjacent(title):
                 ai_count += 1
 
-    delta_60d = _compute_delta_60d_from_snapshot_jobs(jobs) or entry.get("delta_60d") or entry.get("velocity")
+    delta_60d = (
+        _compute_delta_60d_from_snapshot_jobs(jobs)
+        or entry.get("delta_60d")
+        or entry.get("velocity")
+    )
 
     confidence = Confidence.HIGH if eng_count > 0 else Confidence.LOW
     if synthetic and confidence == Confidence.HIGH:
@@ -245,13 +252,17 @@ async def _scrape_live(
 
                     if await _robots_disallow(page, target_url):
                         source_refs.append(
-                            SourceRef(url=target_url, description="Skipped by robots.txt disallow rule")
+                            SourceRef(
+                                url=target_url, description="Skipped by robots.txt disallow rule"
+                            )
                         )
                         continue
 
                     await page.goto(target_url, timeout=15000, wait_until="domcontentloaded")
                     content = await page.content()
-                    titles = _extract_job_titles_for_source(target_url=target_url, html_content=content)
+                    titles = _extract_job_titles_for_source(
+                        target_url=target_url, html_content=content
+                    )
                     if titles:
                         scraped_titles.extend(titles)
                         source_refs.append(
@@ -262,11 +273,15 @@ async def _scrape_live(
                         )
                     else:
                         source_refs.append(
-                            SourceRef(url=target_url, description="Live scrape found zero visible roles")
+                            SourceRef(
+                                url=target_url, description="Live scrape found zero visible roles"
+                            )
                         )
                 except Exception as e:
                     logger.warning("Playwright scraping error for %s: %s", target_url, e)
-                    source_refs.append(SourceRef(url=target_url, description=f"Live scrape failed: {e}"))
+                    source_refs.append(
+                        SourceRef(url=target_url, description=f"Live scrape failed: {e}")
+                    )
                 finally:
                     await page.close()
 

@@ -73,11 +73,24 @@ def score_ai_maturity(
       - MEDIUM: GitHub activity, executive commentary
       - LOW: modern ML/data stack, strategic communications
     """
-    if github_activity is None or exec_commentary is None or tech_stack_signals is None or strategic_communications is None:
+    if (
+        github_activity is None
+        or exec_commentary is None
+        or tech_stack_signals is None
+        or strategic_communications is None
+    ):
         collected = collect_ai_maturity_supporting_signals(crunchbase_record)
-        github_activity = github_activity if github_activity is not None else collected["github_activity"]
-        exec_commentary = exec_commentary if exec_commentary is not None else collected["exec_commentary"]
-        tech_stack_signals = tech_stack_signals if tech_stack_signals is not None else collected["tech_stack_signals"]
+        github_activity = (
+            github_activity if github_activity is not None else collected["github_activity"]
+        )
+        exec_commentary = (
+            exec_commentary if exec_commentary is not None else collected["exec_commentary"]
+        )
+        tech_stack_signals = (
+            tech_stack_signals
+            if tech_stack_signals is not None
+            else collected["tech_stack_signals"]
+        )
         strategic_communications = (
             strategic_communications
             if strategic_communications is not None
@@ -132,11 +145,20 @@ def score_ai_maturity(
         low_hits += 1
         weighted_points += _WEIGHT_POINTS[SignalWeight.LOW]
 
-    score = _compute_score(high_hits=high_hits, medium_hits=medium_hits, low_hits=low_hits, weighted_points=weighted_points)
-    confidence = _compute_confidence(score=score, high_hits=high_hits, medium_hits=medium_hits, weighted_points=weighted_points)
+    score = _compute_score(
+        high_hits=high_hits,
+        medium_hits=medium_hits,
+        low_hits=low_hits,
+        weighted_points=weighted_points,
+    )
+    confidence = _compute_confidence(
+        score=score, high_hits=high_hits, medium_hits=medium_hits, weighted_points=weighted_points
+    )
     language_notes = _generate_language_notes(score=score, confidence=confidence, inputs=inputs)
 
-    return AIMaturitySignal(score=score, confidence=confidence, inputs=inputs, language_notes=language_notes)
+    return AIMaturitySignal(
+        score=score, confidence=confidence, inputs=inputs, language_notes=language_notes
+    )
 
 
 def _build_ai_adjacent_roles_input(hiring: HiringSignal | None) -> tuple[AIMaturityInput, bool]:
@@ -151,14 +173,18 @@ def _build_ai_adjacent_roles_input(hiring: HiringSignal | None) -> tuple[AIMatur
     if ai_roles > 0 and total_eng > 0:
         fraction = ai_roles / total_eng
         evidence = f"{ai_roles} of {total_eng} eng roles are AI/ML adjacent ({fraction:.0%})"
-        return AIMaturityInput(type="ai_adjacent_roles", weight=SignalWeight.HIGH, evidence=evidence), True
+        return AIMaturityInput(
+            type="ai_adjacent_roles", weight=SignalWeight.HIGH, evidence=evidence
+        ), True
     return AIMaturityInput(type="ai_adjacent_roles", weight=SignalWeight.HIGH, evidence=None), False
 
 
 def _build_named_leadership_input(crunchbase_record: dict | None) -> tuple[AIMaturityInput, bool]:
     people = crunchbase_record.get("people") if crunchbase_record else None
     if not people:
-        return AIMaturityInput(type="named_ai_leadership", weight=SignalWeight.HIGH, evidence=None), False
+        return AIMaturityInput(
+            type="named_ai_leadership", weight=SignalWeight.HIGH, evidence=None
+        ), False
     for person in people:
         title = (person.get("title") or person.get("role") or "").lower()
         if any(marker in title for marker in _AI_LEADERSHIP_TITLES):
@@ -169,7 +195,9 @@ def _build_named_leadership_input(crunchbase_record: dict | None) -> tuple[AIMat
                 weight=SignalWeight.HIGH,
                 evidence=f"{name} — {pretty_title}",
             ), True
-    return AIMaturityInput(type="named_ai_leadership", weight=SignalWeight.HIGH, evidence=None), False
+    return AIMaturityInput(
+        type="named_ai_leadership", weight=SignalWeight.HIGH, evidence=None
+    ), False
 
 
 def _build_github_input(github_activity: dict | None) -> tuple[AIMaturityInput, bool]:
@@ -198,7 +226,9 @@ def _build_exec_commentary_input(exec_commentary: list[str] | None) -> tuple[AIM
             weight=SignalWeight.MEDIUM,
             evidence="Not checked — absence is not proof of absence",
         ), False
-    ai_mentions = [text for text in exec_commentary if any(token in text.lower() for token in _AI_KEYWORDS)]
+    ai_mentions = [
+        text for text in exec_commentary if any(token in text.lower() for token in _AI_KEYWORDS)
+    ]
     if ai_mentions:
         snippet = ai_mentions[0][:120].strip()
         return AIMaturityInput(
@@ -219,25 +249,35 @@ def _build_stack_input(tech_stack_signals: list[str] | None) -> tuple[AIMaturity
     found = [token for token in tech_stack_signals if token.lower() in _ML_STACK_TOOLS]
     if found:
         unique = ", ".join(sorted(set(found))[:5])
-        return AIMaturityInput(type="ml_stack", weight=SignalWeight.LOW, evidence=f"Stack signals: {unique}"), True
+        return AIMaturityInput(
+            type="ml_stack", weight=SignalWeight.LOW, evidence=f"Stack signals: {unique}"
+        ), True
     return AIMaturityInput(type="ml_stack", weight=SignalWeight.LOW, evidence=None), False
 
 
-def _build_strategic_comms_input(strategic_communications: list[str] | None) -> tuple[AIMaturityInput, bool]:
+def _build_strategic_comms_input(
+    strategic_communications: list[str] | None,
+) -> tuple[AIMaturityInput, bool]:
     if strategic_communications is None:
         return AIMaturityInput(
             type="strategic_communications",
             weight=SignalWeight.LOW,
             evidence="Not checked — absence is not proof of absence",
         ), False
-    ai_mentions = [text for text in strategic_communications if any(token in text.lower() for token in _AI_KEYWORDS)]
+    ai_mentions = [
+        text
+        for text in strategic_communications
+        if any(token in text.lower() for token in _AI_KEYWORDS)
+    ]
     if ai_mentions:
         return AIMaturityInput(
             type="strategic_communications",
             weight=SignalWeight.LOW,
             evidence=f"{len(ai_mentions)} AI-forward strategic communication signal(s)",
         ), True
-    return AIMaturityInput(type="strategic_communications", weight=SignalWeight.LOW, evidence=None), False
+    return AIMaturityInput(
+        type="strategic_communications", weight=SignalWeight.LOW, evidence=None
+    ), False
 
 
 def _compute_score(*, high_hits: int, medium_hits: int, low_hits: int, weighted_points: int) -> int:
@@ -254,7 +294,9 @@ def _compute_score(*, high_hits: int, medium_hits: int, low_hits: int, weighted_
     return 1
 
 
-def _compute_confidence(*, score: int, high_hits: int, medium_hits: int, weighted_points: int) -> Confidence:
+def _compute_confidence(
+    *, score: int, high_hits: int, medium_hits: int, weighted_points: int
+) -> Confidence:
     if score == 0:
         return Confidence.LOW
     if high_hits >= 2 and medium_hits >= 1 and weighted_points >= 8:
@@ -264,7 +306,9 @@ def _compute_confidence(*, score: int, high_hits: int, medium_hits: int, weighte
     return Confidence.LOW
 
 
-def _generate_language_notes(score: int, confidence: Confidence, inputs: list[AIMaturityInput]) -> str:
+def _generate_language_notes(
+    score: int, confidence: Confidence, inputs: list[AIMaturityInput]
+) -> str:
     notes: list[str] = []
     if score == 0:
         notes.append(
@@ -349,7 +393,15 @@ def _collect_tech_stack_signals(crunchbase_record: dict) -> list[str] | None:
     Collect modern stack indicators from text metadata.
     """
     blobs = []
-    for key in ("tech_stack", "technology_stack", "stack", "tools", "keywords", "about", "description"):
+    for key in (
+        "tech_stack",
+        "technology_stack",
+        "stack",
+        "tools",
+        "keywords",
+        "about",
+        "description",
+    ):
         value = crunchbase_record.get(key)
         if value:
             blobs.append(str(value).lower())

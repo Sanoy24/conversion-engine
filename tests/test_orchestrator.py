@@ -38,11 +38,15 @@ class _FakeHubSpotClient:
 
     async def create_contact(self, prospect, signal_brief=None, classification=None):
         self.created.append((prospect.company, classification.segment if classification else None))
-        return {"id": "hs_123"}, TraceRecord(trace_id="tr_hs_create", event_type="hubspot_contact_created")
+        return {"id": "hs_123"}, TraceRecord(
+            trace_id="tr_hs_create", event_type="hubspot_contact_created"
+        )
 
     async def add_note(self, contact_id, note_body, prospect_company=None):
         self.notes.append((contact_id, note_body, prospect_company))
-        return {"id": "note_123"}, TraceRecord(trace_id="tr_hs_note", event_type="hubspot_note_added")
+        return {"id": "note_123"}, TraceRecord(
+            trace_id="tr_hs_note", event_type="hubspot_note_added"
+        )
 
     async def update_contact_status(self, contact_id, status, properties=None):
         self.status_updates.append((contact_id, status, properties))
@@ -212,7 +216,7 @@ async def test_handle_prospect_reply_uses_sms_fallback_when_requested(
     monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
     monkeypatch.setattr("agent.core.orchestrator.send_sms", fake_send_sms)
     monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
-    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", lambda: _FakeCalComClient())
+    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", _FakeCalComClient)
 
     created = await process_new_prospect(
         company_name=fake_signal_brief.prospect.company,
@@ -237,7 +241,9 @@ async def test_handle_calcom_event_updates_matched_conversation(monkeypatch):
     monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
 
     prospect = ProspectInfo(company="CalEvent Co", contact_email="cal@example.com")
-    conversation = conversation_module.create_conversation(prospect=prospect, channel=ChannelType.EMAIL)
+    conversation = conversation_module.create_conversation(
+        prospect=prospect, channel=ChannelType.EMAIL
+    )
     conversation.hubspot_contact_id = "hs_123"
 
     result = await handle_calcom_event(
@@ -294,7 +300,7 @@ async def test_qualification_gate_blocks_booking_on_first_reply_medium_confidenc
     monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
     # Cal.com client should never be reached; bind it anyway so an accidental
     # call surfaces a clear AttributeError rather than a config read.
-    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", lambda: _FakeCalComClient())
+    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", _FakeCalComClient)
 
     created = await process_new_prospect(
         company_name=fake_signal_brief.prospect.company,

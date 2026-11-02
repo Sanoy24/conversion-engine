@@ -32,35 +32,33 @@ async def main() -> None:
         env={"PRIVATE_APP_ACCESS_TOKEN": settings.hubspot_access_token},
     )
 
-    async with stdio_client(params) as (read, write):
-        async with ClientSession(read, write) as session:
-            await session.initialize()
-            tools_resp = await session.list_tools()
-            tools = tools_resp.tools
+    async with stdio_client(params) as (read, write), ClientSession(read, write) as session:
+        await session.initialize()
+        tools_resp = await session.list_tools()
+        tools = tools_resp.tools
 
-            # Write to JSON to avoid Windows console encoding issues with emoji
-            import pathlib
-            out_path = pathlib.Path("outputs/hubspot_mcp_tools.json")
-            out_path.parent.mkdir(exist_ok=True)
-            dump = [
-                {
-                    "name": t.name,
-                    "description": (t.description or "").strip(),
-                    "args": list((t.inputSchema or {}).get("properties", {}).keys()),
-                    "inputSchema": t.inputSchema,
-                }
-                for t in tools
-            ]
-            out_path.write_text(
-                json.dumps(dump, indent=2, ensure_ascii=False), encoding="utf-8"
-            )
+        # Write to JSON to avoid Windows console encoding issues with emoji
+        import pathlib
 
-            # Print names only (ASCII-safe)
-            print(f"\n=== HubSpot MCP server exposes {len(tools)} tools ===\n")
-            for t in tools:
-                args = list((t.inputSchema or {}).get("properties", {}).keys())
-                print(f"  {t.name}  ({', '.join(args[:6])})")
-            print(f"\nFull tool catalog written to: {out_path}")
+        out_path = pathlib.Path("outputs/hubspot_mcp_tools.json")
+        out_path.parent.mkdir(exist_ok=True)
+        dump = [
+            {
+                "name": t.name,
+                "description": (t.description or "").strip(),
+                "args": list((t.inputSchema or {}).get("properties", {}).keys()),
+                "inputSchema": t.inputSchema,
+            }
+            for t in tools
+        ]
+        out_path.write_text(json.dumps(dump, indent=2, ensure_ascii=False), encoding="utf-8")
+
+        # Print names only (ASCII-safe)
+        print(f"\n=== HubSpot MCP server exposes {len(tools)} tools ===\n")
+        for t in tools:
+            args = list((t.inputSchema or {}).get("properties", {}).keys())
+            print(f"  {t.name}  ({', '.join(args[:6])})")
+        print(f"\nFull tool catalog written to: {out_path}")
 
 
 if __name__ == "__main__":

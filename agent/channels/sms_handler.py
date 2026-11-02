@@ -253,4 +253,6 @@ def _is_opt_out_sms(message: str) -> bool:
 
 def _extract_booking_confirmation(message: str) -> bool:
     lowered = message.strip().lower()
-    return any(token in lowered for token in ("booked", "confirmed", "calendar invite", "see you then"))
+    return any(
+        token in lowered for token in ("booked", "confirmed", "calendar invite", "see you then")
+    )

@@ -128,9 +128,7 @@ def process_reply_webhook(payload: dict) -> dict:
     """
     # 1. Validate payload shape up front — never silently drop malformed data.
     if not isinstance(payload, dict):
-        logger.warning(
-            "Resend webhook: non-dict payload (%s); ignoring", type(payload).__name__
-        )
+        logger.warning("Resend webhook: non-dict payload (%s); ignoring", type(payload).__name__)
         return {
             "event_type": "malformed",
             "is_reply": False,
@@ -146,7 +144,8 @@ def process_reply_webhook(payload: dict) -> dict:
     is_reply = raw_event in _REPLY_EVENTS or (
         # Heuristic: if no event type is set but there's a text/html body with a
         # `from` header, treat it as an inbound reply (legacy webhook shape).
-        not raw_event and bool(data.get("from") or data.get("sender"))
+        not raw_event
+        and bool(data.get("from") or data.get("sender"))
         and bool(data.get("text") or data.get("html"))
     )
     is_bounce = raw_event in _BOUNCE_EVENTS
@@ -176,12 +175,14 @@ def process_reply_webhook(payload: dict) -> dict:
     if is_bounce:
         logger.warning(
             "Resend webhook: bounce/complaint for %s (resend_id=%s)",
-            record["from_email"], record["resend_id"],
+            record["from_email"],
+            record["resend_id"],
         )
     elif is_reply:
         logger.info(
             "Resend webhook: reply from %s (thread=%s)",
-            record["from_email"], record["thread_id"],
+            record["from_email"],
+            record["thread_id"],
         )
     elif record["is_delivery"]:
         logger.debug("Resend webhook: delivery event %s", raw_event)

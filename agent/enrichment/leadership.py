@@ -127,7 +127,9 @@ def _check_press_records(record: dict) -> LeadershipSignal:
         if value:
             text_blobs.append(str(value))
     if not text_blobs:
-        return LeadershipSignal(observed_at=datetime.now(UTC).isoformat(), confidence=Confidence.LOW)
+        return LeadershipSignal(
+            observed_at=datetime.now(UTC).isoformat(), confidence=Confidence.LOW
+        )
 
     joined = " ".join(text_blobs)
     role_match = re.search(
@@ -136,12 +138,16 @@ def _check_press_records(record: dict) -> LeadershipSignal:
         flags=re.IGNORECASE,
     )
     if not role_match:
-        return LeadershipSignal(observed_at=datetime.now(UTC).isoformat(), confidence=Confidence.LOW)
+        return LeadershipSignal(
+            observed_at=datetime.now(UTC).isoformat(), confidence=Confidence.LOW
+        )
 
     date_match = re.search(r"(20\d{2}-\d{2}-\d{2})", joined)
     appointed_at = date_match.group(1) if date_match else None
     if appointed_at and not _is_recent_transition(appointed_at):
-        return LeadershipSignal(observed_at=datetime.now(UTC).isoformat(), confidence=Confidence.LOW)
+        return LeadershipSignal(
+            observed_at=datetime.now(UTC).isoformat(), confidence=Confidence.LOW
+        )
 
     return LeadershipSignal(
         change=True,

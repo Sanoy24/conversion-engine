@@ -219,8 +219,12 @@ async def email_reply_webhook(request: Request):
         )
         return JSONResponse(content=result)
     except Exception as e:
-        logger.error("Email reply handling failed for thread %s: %s",
-                     parsed.get("thread_id"), e, exc_info=True)
+        logger.error(
+            "Email reply handling failed for thread %s: %s",
+            parsed.get("thread_id"),
+            e,
+            exc_info=True,
+        )
         return JSONResponse(
             status_code=500,
             content={"status": "error", "error": str(e)},

@@ -24,8 +24,14 @@ logger = logging.getLogger(__name__)
 
 HUBSPOT_API_BASE = "https://api.hubapi.com"
 
-_HS_EMP_BUCKETS = [(5, "1-5"), (25, "5-25"), (50, "25-50"), (100, "50-100"),
-                   (500, "100-500"), (1000, "500-1000")]
+_HS_EMP_BUCKETS = [
+    (5, "1-5"),
+    (25, "5-25"),
+    (50, "25-50"),
+    (100, "50-100"),
+    (500, "100-500"),
+    (1000, "500-1000"),
+]
 
 
 # Custom HubSpot contact properties that carry the agent's enrichment output
@@ -117,25 +123,27 @@ async def ensure_custom_properties(access_token: str) -> None:
                 else:
                     logger.warning(
                         "HubSpot: could not create property '%s' (status %d): %s",
-                        prop["name"], r.status_code, r.text[:200],
+                        prop["name"],
+                        r.status_code,
+                        r.text[:200],
                     )
             except Exception as e:
                 logger.warning("HubSpot property bootstrap error for '%s': %s", prop["name"], e)
     _props_bootstrapped = True
 
 
-ENRICHMENT_PROPERTY_NAMES = frozenset({
-    "enrichment_timestamp",
-    "icp_segment",
-    "icp_confidence",
-    "ai_maturity_score",
-    "signal_brief_trace_id",
-})
+ENRICHMENT_PROPERTY_NAMES = frozenset(
+    {
+        "enrichment_timestamp",
+        "icp_segment",
+        "icp_confidence",
+        "ai_maturity_score",
+        "signal_brief_trace_id",
+    }
+)
 
 
-def _enrichment_properties(
-    signal_brief, classification, trace_id: str | None = None
-) -> dict:
+def _enrichment_properties(signal_brief, classification, trace_id: str | None = None) -> dict:
     """
     Build the enrichment-related properties dict added to every contact create/update.
 
@@ -234,8 +242,7 @@ class HubSpotClient:
             # Resilience: if a custom enrichment property doesn't exist in the
             # portal yet (scope issue on bootstrap), strip them and retry so
             # the contact still gets created with standard fields.
-            if (response.status_code == 400 and
-                    "PROPERTY_DOESNT_EXIST" in response.text):
+            if response.status_code == 400 and "PROPERTY_DOESNT_EXIST" in response.text:
                 logger.warning(
                     "HubSpot: custom enrichment properties missing in portal — "
                     "retrying without enrichment_timestamp/icp_segment. Grant "
@@ -269,7 +276,9 @@ class HubSpotClient:
                 msg = body.get("message", "")
                 if "Existing ID:" in msg:
                     existing_id = msg.split("Existing ID:")[-1].strip().rstrip("}")
-                logger.info("HubSpot contact already exists for %s (ID: %s)", prospect.company, existing_id)
+                logger.info(
+                    "HubSpot contact already exists for %s (ID: %s)", prospect.company, existing_id
+                )
                 trace = TraceRecord(
                     trace_id=trace_id,
                     event_type="hubspot_contact_created",
@@ -447,13 +456,12 @@ def get_hubspot_client():
     if settings.use_hubspot_mcp:
         try:
             from agent.integrations.hubspot_mcp import get_hubspot_mcp_client
+
             _hubspot_client_impl = get_hubspot_mcp_client()
             logger.info("HubSpot: routing via MCP server (@hubspot/mcp-server)")
             return _hubspot_client_impl
         except Exception as e:
-            logger.warning(
-                "HubSpot MCP unavailable (%s); falling back to direct REST API", e
-            )
+            logger.warning("HubSpot MCP unavailable (%s); falling back to direct REST API", e)
 
     if _hubspot is None:
         _hubspot = HubSpotClient()

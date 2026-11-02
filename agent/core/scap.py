@@ -29,8 +29,8 @@ rule independently so their contributions can be measured separately.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 
 from agent.models import (
     AIMaturitySignal,
@@ -58,11 +58,11 @@ class SCAPConfig:
     soften_medium: bool = True
 
     @classmethod
-    def full(cls) -> "SCAPConfig":
+    def full(cls) -> SCAPConfig:
         return cls(True, True, True)
 
     @classmethod
-    def off(cls) -> "SCAPConfig":
+    def off(cls) -> SCAPConfig:
         return cls(False, False, False)
 
 
@@ -131,7 +131,10 @@ def _strip_low_confidence_signals(
     if brief.funding.confidence == Confidence.LOW and brief.funding.event:
         original = brief.funding.event
         brief.funding = FundingSignal(
-            event=None, amount_usd=None, confidence=Confidence.LOW, sources=brief.funding.sources,
+            event=None,
+            amount_usd=None,
+            confidence=Confidence.LOW,
+            sources=brief.funding.sources,
         )
         transforms.append(f"stripped funding.event ({original}) [confidence=LOW]")
         asks.append(
@@ -158,7 +161,10 @@ def _strip_low_confidence_signals(
     # Layoffs — if LOW confidence, do not reference layoffs at all.
     if brief.layoffs.confidence == Confidence.LOW and brief.layoffs.event:
         brief.layoffs = LayoffSignal(
-            event=False, headcount_pct=None, confidence=Confidence.LOW, sources=brief.layoffs.sources,
+            event=False,
+            headcount_pct=None,
+            confidence=Confidence.LOW,
+            sources=brief.layoffs.sources,
         )
         transforms.append("stripped layoffs.event [confidence=LOW]")
         # No ASK directive here — layoffs are never raised in cold first touch.
@@ -221,8 +227,9 @@ def _tag_medium_confidence_signals(
         return
 
     hint = (
-        "SCAP: phrase " + ", ".join(medium_signals)
-        + " as SOFT-ASSERT (\"looking at the public signal, it seems...\") "
+        "SCAP: phrase "
+        + ", ".join(medium_signals)
+        + ' as SOFT-ASSERT ("looking at the public signal, it seems...") '
         "not as direct claim. Do not quote hiring delta_60d unless confidence is HIGH."
     )
     brief.pitch_guidance.language_notes = (notes + " " + hint).strip()

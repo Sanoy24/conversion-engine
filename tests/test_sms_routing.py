@@ -28,12 +28,14 @@ from agent.models import ChannelType
 
 class _FakeConversation:
     """Minimal stand-in for a ConversationState, enough for routing tests."""
+
     def __init__(self, thread_id: str):
         self.thread_id = thread_id
 
 
 class _Recorder:
     """Captures handler calls so tests can assert the routing happened."""
+
     def __init__(self):
         self.calls: list[tuple[str, dict]] = []
 
@@ -41,16 +43,19 @@ class _Recorder:
         async def handler(**kwargs):
             self.calls.append((name, kwargs))
             return return_value or {"handler": name, "received": kwargs}
+
         return handler
 
 
 @pytest.mark.asyncio
 async def test_process_inbound_sms_parses_reply_payload():
     """The parse layer alone produces structured output — no routing yet."""
-    parsed = process_inbound_sms({
-        "from": "+254700000001",
-        "text": "Thanks, Thursday 14:00 UTC works.",
-    })
+    parsed = process_inbound_sms(
+        {
+            "from": "+254700000001",
+            "text": "Thanks, Thursday 14:00 UTC works.",
+        }
+    )
     assert parsed["from_phone"] == "+254700000001"
     assert parsed["message"] == "Thanks, Thursday 14:00 UTC works."
     assert parsed["is_opt_out"] is False
@@ -174,10 +179,10 @@ async def test_route_inbound_sms_never_dead_ends():
     Zero handlers = dead-end = rubric failure.
     """
     payloads = [
-        {"from": "+1", "text": "Sure, 2pm"},            # reply, match
-        {"from": "+2", "text": "Sure, 2pm"},            # reply, no match
-        {"from": "+3", "text": "STOP"},                 # opt-out
-        {"from": "+4", "text": "HELP"},                 # help
+        {"from": "+1", "text": "Sure, 2pm"},  # reply, match
+        {"from": "+2", "text": "Sure, 2pm"},  # reply, no match
+        {"from": "+3", "text": "STOP"},  # opt-out
+        {"from": "+4", "text": "HELP"},  # help
     ]
     existing = {"+1": _FakeConversation(thread_id="t1")}
 
@@ -189,7 +194,7 @@ async def test_route_inbound_sms_never_dead_ends():
             handle_inbound_sms=rec.make_handler("handle_inbound_sms"),
             handle_sms_opt_out=rec.make_handler("handle_sms_opt_out"),
             handle_sms_help=rec.make_handler("handle_sms_help"),
-            get_conversation_by_phone=lambda phone: existing.get(phone),
+            get_conversation_by_phone=existing.get,
             channel_type=ChannelType.SMS,
         )
         assert len(rec.calls) == 1, (

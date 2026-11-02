@@ -75,9 +75,11 @@ async def generate_competitor_gap_brief(
     # benchmark.
     if len(sector_peers) < MIN_VIABLE_COHORT:
         logger.warning(
-            "Sparse sector for %s (%s, %s): only %d viable peers found; "
-            "returning empty gap brief.",
-            prospect.company, industry, size_band, len(sector_peers),
+            "Sparse sector for %s (%s, %s): only %d viable peers found; returning empty gap brief.",
+            prospect.company,
+            industry,
+            size_band,
+            len(sector_peers),
         )
         return CompetitorGapBrief(
             prospect=prospect,
@@ -111,7 +113,10 @@ async def generate_competitor_gap_brief(
     if len(top_quartile_scored) < MIN_VIABLE_COHORT:
         logger.warning(
             "Top-quartile subset too small for %s (%s/%s): %d peers",
-            prospect.company, industry, size_band, len(top_quartile_scored),
+            prospect.company,
+            industry,
+            size_band,
+            len(top_quartile_scored),
         )
         return CompetitorGapBrief(
             prospect=prospect,
@@ -162,7 +167,9 @@ async def generate_competitor_gap_brief(
     )
 
 
-def _select_top_quartile_competitors(scored_peers: list[tuple[dict, int]]) -> list[tuple[dict, int]]:
+def _select_top_quartile_competitors(
+    scored_peers: list[tuple[dict, int]],
+) -> list[tuple[dict, int]]:
     """
     Select 5-10 top-quartile peers by AI maturity score.
     """
@@ -201,8 +208,7 @@ def _identify_gaps(
     leaders_with_ai_leadership = len(peers_with_ai_leadership)
     if leaders_with_ai_leadership >= 3 and not prospect_has_leadership:
         evidence = [
-            f"{c.company} (AI maturity score {c.ai_maturity})"
-            for c in peers_with_ai_leadership[:3]
+            f"{c.company} (AI maturity score {c.ai_maturity})" for c in peers_with_ai_leadership[:3]
         ]
         evidence_urls = [u for c in peers_with_ai_leadership[:3] for u in c.source_urls]
         # MEDIUM only when we actively scraped the prospect and found nothing;
@@ -222,8 +228,9 @@ def _identify_gaps(
     # Check: High AI maturity score (active AI function)
     high_maturity_peers = [c for c in cohort if c.ai_maturity >= 3]
     if len(high_maturity_peers) >= 3 and prospect_ai_score < 3:
-        evidence = [f"{c.company} scores 3 (multiple dedicated AI roles)"
-                    for c in high_maturity_peers[:3]]
+        evidence = [
+            f"{c.company} scores 3 (multiple dedicated AI roles)" for c in high_maturity_peers[:3]
+        ]
         evidence_urls = [u for c in high_maturity_peers[:3] for u in c.source_urls]
         # Active AI function absence: score < 3 is a direct measurement, MEDIUM is justified
         # only when the score is backed by at least one explicit input signal.
@@ -246,8 +253,10 @@ def _identify_gaps(
     )
     ai_hiring_peers = [c for c in cohort if c.ai_maturity >= 1]
     if len(ai_hiring_peers) >= 3 and not prospect_has_ai_roles:
-        evidence = [f"{c.company} (AI maturity {c.ai_maturity}, public hiring signal)"
-                    for c in ai_hiring_peers[:3]]
+        evidence = [
+            f"{c.company} (AI maturity {c.ai_maturity}, public hiring signal)"
+            for c in ai_hiring_peers[:3]
+        ]
         evidence_urls = [u for c in ai_hiring_peers[:3] for u in c.source_urls]
         gaps.append(
             GapEntry(

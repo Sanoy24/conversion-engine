@@ -134,7 +134,9 @@ class Segment(BaseModel):
     id: str
     label: str
     description: str = ""
-    pitch: str = Field(default="", description="Guidance for the drafter when pitching this segment.")
+    pitch: str = Field(
+        default="", description="Guidance for the drafter when pitching this segment."
+    )
     criteria: list[Criterion]
     exclude: list[Condition] = Field(default_factory=list)
 

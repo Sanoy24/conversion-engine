@@ -26,11 +26,11 @@ Reference: https://developers.hubspot.com/mcp (nine tools as of Feb 2026).
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import uuid
 from contextlib import AsyncExitStack
-from datetime import datetime
 from typing import Any
 
 from agent.config import settings
@@ -48,8 +48,14 @@ class HubSpotMCPUnavailable(RuntimeError):
     """Raised when the HubSpot MCP server cannot be reached."""
 
 
-_HS_EMP_BUCKETS = [(5, "1-5"), (25, "5-25"), (50, "25-50"), (100, "50-100"),
-                   (500, "100-500"), (1000, "500-1000")]
+_HS_EMP_BUCKETS = [
+    (5, "1-5"),
+    (25, "5-25"),
+    (50, "25-50"),
+    (100, "50-100"),
+    (500, "100-500"),
+    (1000, "500-1000"),
+]
 
 
 def _employee_count_bucket(count: int | None) -> str | None:
@@ -153,6 +159,7 @@ def _existing_id_from_conflict(error_text: str) -> str | None:
     if not error_text:
         return None
     import re as _re
+
     m = _re.search(r"Existing ID:\s*(\d+)", error_text)
     return m.group(1) if m else None
 
@@ -196,6 +203,7 @@ class HubSpotMCPClient:
             if not owner_id:
                 text = payload.get("text") or ""
                 import re as _re
+
                 # Grab the first {...} JSON object we can find
                 match = _re.search(r"\{[^{}]*\"userId\"[^{}]*\}", text, _re.DOTALL)
                 if not match:
@@ -213,8 +221,8 @@ class HubSpotMCPClient:
                 logger.info("HubSpot MCP: resolved ownerId=%s", self._owner_id)
             else:
                 logger.warning(
-                    "HubSpot MCP: could not resolve ownerId from get-user-details "
-                    "(text=%r)", (payload.get("text") or "")[:400],
+                    "HubSpot MCP: could not resolve ownerId from get-user-details (text=%r)",
+                    (payload.get("text") or "")[:400],
                 )
             return self._owner_id
         except Exception as e:
@@ -230,9 +238,7 @@ class HubSpotMCPClient:
             from mcp import ClientSession, StdioServerParameters
             from mcp.client.stdio import stdio_client
         except ImportError as e:
-            raise HubSpotMCPUnavailable(
-                "mcp Python package not installed. Run: uv add mcp"
-            ) from e
+            raise HubSpotMCPUnavailable("mcp Python package not installed. Run: uv add mcp") from e
 
         if not self.access_token:
             raise HubSpotMCPUnavailable("HUBSPOT_ACCESS_TOKEN is empty")
@@ -254,10 +260,8 @@ class HubSpotMCPClient:
         except Exception as e:
             # Tear down anything we partially set up
             if self._exit_stack:
-                try:
+                with contextlib.suppress(Exception):
                     await self._exit_stack.aclose()
-                except Exception:
-                    pass
             self._exit_stack = None
             self._session = None
             raise HubSpotMCPUnavailable(f"Failed to start HubSpot MCP server: {e}") from e
@@ -307,6 +311,7 @@ class HubSpotMCPClient:
             _enrichment_properties,
             ensure_custom_properties,
         )
+
         properties.update(_enrichment_properties(signal_brief, classification, trace_id))
         # Bootstrap the custom properties via the direct REST API (idempotent).
         # We do this via REST rather than via the hubspot-create-property MCP
@@ -331,10 +336,12 @@ class HubSpotMCPClient:
             # Resilience: if the portal doesn't have the custom enrichment
             # properties (scope / bootstrap failure), retry without them so
             # the contact still gets created with standard CRM fields.
-            if (payload.get("is_error") and
-                    ("PROPERTY_DOESNT_EXIST" in (payload.get("text") or "")
-                     or "does not exist" in (payload.get("text") or ""))):
+            if payload.get("is_error") and (
+                "PROPERTY_DOESNT_EXIST" in (payload.get("text") or "")
+                or "does not exist" in (payload.get("text") or "")
+            ):
                 from agent.integrations.hubspot import strip_enrichment_properties
+
                 logger.warning(
                     "HubSpot MCP: custom enrichment properties missing in portal — "
                     "retrying without enrichment_timestamp/icp_segment. Grant "
@@ -349,7 +356,9 @@ class HubSpotMCPClient:
             # HubSpot MCP response format matches what we parse.
             logger.info(
                 "HubSpot MCP create_contact payload keys=%s id=%s is_error=%s text=%r",
-                list(payload.keys())[:10], contact_id, payload.get("is_error"),
+                list(payload.keys())[:10],
+                contact_id,
+                payload.get("is_error"),
                 (payload.get("text") or "")[:400],
             )
 
@@ -379,7 +388,8 @@ class HubSpotMCPClient:
                 existing_id = _existing_id_from_conflict(msg)
                 logger.info(
                     "HubSpot MCP: contact already exists for %s (ID: %s)",
-                    prospect.company, existing_id,
+                    prospect.company,
+                    existing_id,
                 )
                 trace = TraceRecord(
                     trace_id=trace_id,
@@ -419,8 +429,8 @@ class HubSpotMCPClient:
             # contact_id must be an int for the `associations.contactIds` array
             try:
                 contact_id_int = int(contact_id)
-            except (TypeError, ValueError):
-                raise RuntimeError(f"Invalid contact_id for MCP note: {contact_id!r}")
+            except (TypeError, ValueError) as err:
+                raise RuntimeError(f"Invalid contact_id for MCP note: {contact_id!r}") from err
 
             arguments: dict[str, Any] = {
                 "type": "NOTE",
@@ -436,7 +446,9 @@ class HubSpotMCPClient:
             note_id = _extract_id(payload)
             logger.info(
                 "HubSpot MCP add_note payload keys=%s id=%s is_error=%s engagement=%r",
-                list(payload.keys())[:10], note_id, payload.get("is_error"),
+                list(payload.keys())[:10],
+                note_id,
+                payload.get("is_error"),
                 str(payload.get("engagement"))[:300],
             )
 
@@ -505,11 +517,7 @@ class HubSpotMCPClient:
                 arguments={
                     "objectType": "contacts",
                     "filterGroups": [
-                        {
-                            "filters": [
-                                {"propertyName": "email", "operator": "EQ", "value": email}
-                            ]
-                        }
+                        {"filters": [{"propertyName": "email", "operator": "EQ", "value": email}]}
                     ],
                 },
             )
