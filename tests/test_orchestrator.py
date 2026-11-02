@@ -331,3 +331,34 @@ async def test_qualification_gate_blocks_booking_on_first_reply_medium_confidenc
     )
     # No booking was created
     assert updated.calcom_booking_id is None
+
+
+@pytest.mark.asyncio
+async def test_booking_confirmation_is_emailed(monkeypatch):
+    from agent.core.orchestrator import _book_discovery_call
+    from agent.models import ProspectInfo
+
+    sent = []
+
+    async def fake_send_email(to_email, draft, reply_to=None):
+        sent.append((to_email, draft))
+        return {"status": "sink", "id": "e1"}, TraceRecord(trace_id="t", event_type="x")
+
+    monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
+    monkeypatch.setattr("agent.core.orchestrator.get_calendar_client", _FakeCalComClient)
+    conversation = conversation_module.create_conversation(
+        ProspectInfo(company="Acme", contact_email="jane@acme.io")
+    )
+
+    result = await _book_discovery_call(conversation, reply_content="Tuesday works")
+
+    assert result["confirmation_delivery"]["status"] == "sink"
+    [(to, draft)] = sent
+    assert to == "jane@acme.io"
+    assert draft.email_type == EmailType.BOOKING_CONFIRMATION
+    assert draft.subject.startswith("Confirmed: discovery call on")
+    assert "Booking reference: booking_123" in draft.body
+    assert draft.thread_id == conversation.thread_id  # replies route back to the thread
+    message = conversation_module.get_conversation(conversation.thread_id).messages[-1]
+    assert message.metadata["delivery"]["status"] == "sink"
+    assert message.metadata["sent_at"]

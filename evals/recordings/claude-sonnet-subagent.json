@@ -309,6 +309,306 @@
       "proposed_times": [],
       "tone_score": null,
       "recorded_at": "2026-11-02T12:33:09+00:00"
+    },
+    "funded_clean@re_engagement": {
+      "fingerprint": "0fb59bef9a81",
+      "prompt_hash": "eb34df138285",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series A",
+      "body": "Hi Priya,\n\nCongrats on the $8M Series A. With 12 open engineering roles, which is harder right now: hiring or ramp-up?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "funded_medium_hiring@re_engagement": {
+      "fingerprint": "c805eb0f3cd0",
+      "prompt_hash": "e1fe9084c728",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series B",
+      "body": "Hi Daniel,\n\nCongrats on the $22M Series B. What is the first engineering priority for it?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "funded_low_confidence_funding@re_engagement": {
+      "fingerprint": "2c278dd331b5",
+      "prompt_hash": "98246fb46110",
+      "segment": "abstain",
+      "subject": "Question on engineering hiring",
+      "body": "Hi Mei,\n\nI see 9 open engineering roles. Did you close a round recently?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "no_signals@re_engagement": {
+      "fingerprint": "77b0ee15218b",
+      "prompt_hash": "631f06de2817",
+      "segment": "abstain",
+      "subject": "Question on engineering priorities",
+      "body": "Hi Sam,\n\nWhat is your engineering team most stretched on this quarter? No worries if now isn't the time.\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "layoff_midsize@re_engagement": {
+      "fingerprint": "d68a86a52270",
+      "prompt_hash": "7609dfee5bae",
+      "segment": "restructuring",
+      "subject": "Question on delivery planning",
+      "body": "Hi Grace,\n\nHow do you keep delivery steady as priorities shift? No pressure either way.\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "layoff_low_confidence_funded@re_engagement": {
+      "fingerprint": "00d28c6a88d6",
+      "prompt_hash": "87c21f38d7cb",
+      "segment": "abstain",
+      "subject": "Congrats on the Series A",
+      "body": "Hi Omar,\n\nCongrats on the $6M Series A. With 8 open engineering roles, which is hardest to fill?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "new_cto@re_engagement": {
+      "fingerprint": "7f3ede85c1b3",
+      "prompt_hash": "401ef41fa939",
+      "segment": "leadership_transition",
+      "subject": "Congrats on the new CTO role",
+      "body": "Hi Lena,\n\nCongrats on joining as CTO. What are you prioritising in your first few months?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "leadership_low_confidence_with_funding@re_engagement": {
+      "fingerprint": "bf208da81443",
+      "prompt_hash": "151a9ba56c37",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series B",
+      "body": "Hi Arjun,\n\nCongrats on the $15M Series B. Have there been recent changes on your engineering team?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "ai_capability_high@re_engagement": {
+      "fingerprint": "53d8232d8879",
+      "prompt_hash": "fd4790699713",
+      "segment": "capability_gap",
+      "subject": "Note on your model-serving work",
+      "body": "Hi Sofia,\n\nI noticed your public model-serving job posts. Could a scoped project cover part of that?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "ai_low_confidence@re_engagement": {
+      "fingerprint": "029748f6649b",
+      "prompt_hash": "897cbef69b17",
+      "segment": "abstain",
+      "subject": "Question on AI priorities",
+      "body": "Hi Jonas,\n\nWhat are your AI priorities for the year ahead, if any?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "ai_medium_only@re_engagement": {
+      "fingerprint": "ff47051efb63",
+      "prompt_hash": "4007eced40b1",
+      "segment": "abstain",
+      "subject": "Question on engineering plans",
+      "body": "Hi Hana,\n\nLooking at the public signal, it seems AI work is growing there. What is next on your roadmap?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "funded_too_big@re_engagement": {
+      "fingerprint": "6ce5dfa20265",
+      "prompt_hash": "778bc1545924",
+      "segment": "abstain",
+      "subject": "Congrats on the Series B",
+      "body": "Hi Ethan,\n\nCongrats on the $40M Series B. With 20 open engineering roles, what is hardest to staff?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "funded_and_new_leader@re_engagement": {
+      "fingerprint": "81272166f48d",
+      "prompt_hash": "d91132a645b0",
+      "segment": "leadership_transition",
+      "subject": "Congrats on the new VP Engineering role",
+      "body": "Hi Nadia,\n\nCongrats on the new role and the $9M Series A. What are you prioritising first?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "series_c@re_engagement": {
+      "fingerprint": "10eca0290486",
+      "prompt_hash": "cd0836011da9",
+      "segment": "abstain",
+      "subject": "Congrats on the Series C",
+      "body": "Hi Lucas,\n\nCongrats on the $60M Series C. Which of your 15 open engineering roles matters most to fill first?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "medium_funding_only@re_engagement": {
+      "fingerprint": "71d6e7b06a55",
+      "prompt_hash": "999e18f2a4ba",
+      "segment": "abstain",
+      "subject": "Question on engineering plans",
+      "body": "Hi Amara,\n\nLooking at the public signal, it seems you raised a Series A. What ships next?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "funded_few_roles@re_engagement": {
+      "fingerprint": "a40a8d726e2f",
+      "prompt_hash": "f54b86557bb7",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series A",
+      "body": "Hi Ben,\n\nCongrats on the $3M Series A. Which matters more right now: hiring in-house or shipping sooner?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "layoff_small_funded@re_engagement": {
+      "fingerprint": "86cc1eb1b1ac",
+      "prompt_hash": "83e4f39a57f2",
+      "segment": "restructuring",
+      "subject": "Question on engineering delivery at Bluefin",
+      "body": "Hi Chloe,\n\nAfter your Series A, how are you planning to keep engineering delivery steady this year?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "new_cto_and_layoff@re_engagement": {
+      "fingerprint": "f1ecbcfc103d",
+      "prompt_hash": "7a5c2970431e",
+      "segment": "leadership_transition",
+      "subject": "Congrats on the new CTO role",
+      "body": "Hi Victor,\n\nCongrats on the new CTO role. What are you prioritising for the engineering team in your first months?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "hiring_surge_only@re_engagement": {
+      "fingerprint": "8c5a7af65729",
+      "prompt_hash": "7f61cd14d4b8",
+      "segment": "abstain",
+      "subject": "Question on Redwood's engineering roadmap",
+      "body": "Hi Ivy,\n\nRedwood has 25 open engineering roles. Is filling those the main constraint on your roadmap?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "midsize_no_layoff@re_engagement": {
+      "fingerprint": "288d60e82e9f",
+      "prompt_hash": "20aeb26afd93",
+      "segment": "abstain",
+      "subject": "Question on Silverline's engineering hiring",
+      "body": "Hi Raj,\n\nSilverline has 30 open engineering roles. Which are the hardest to fill?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "funded_with_ai@re_engagement": {
+      "fingerprint": "84ec2f824535",
+      "prompt_hash": "917eb29f1f17",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series B",
+      "body": "Hi Elena,\n\nCongrats on the $30M Series B. With 14 open engineering roles, which are hardest to fill?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "unknown_contact_and_timezone@re_engagement": {
+      "fingerprint": "ce1a1d01c5cc",
+      "prompt_hash": "31f645bea5de",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series A",
+      "body": "Hi,\n\nCongrats on the $10M Series A. With 6 open engineering roles, which are hardest to fill?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "human_review_leadership@re_engagement": {
+      "fingerprint": "567886067da0",
+      "prompt_hash": "bd4c0813f7b8",
+      "segment": "abstain",
+      "subject": "Question on Oakmont's engineering priorities",
+      "body": "Hi Paul,\n\nLooking at the public signal, it seems engineering leadership at Oakmont is changing. What are you prioritising for the team?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "gap_medium@re_engagement": {
+      "fingerprint": "06d47d4e3a7a",
+      "prompt_hash": "810ffe032bf7",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series A",
+      "body": "Hi Maya,\n\nCongrats on the $12M Series A. Which of your 9 open engineering roles is hardest to fill?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "gap_low_filtered@re_engagement": {
+      "fingerprint": "aedae1079d15",
+      "prompt_hash": "2b839a0dc0b2",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series A",
+      "body": "Hi Tomas,\n\nCongrats on the $12M Series A. How are you deciding which of your 9 open engineering roles to fill first?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "medium_funding_high_hiring@re_engagement": {
+      "fingerprint": "0ee072a1deaa",
+      "prompt_hash": "9ef88ca8b402",
+      "segment": "recently_funded",
+      "subject": "Question on Thornbury's engineering hiring",
+      "body": "Hi Felix,\n\nLooking at the public signal, it seems you raised a Series B. Which of your 11 open engineering roles is hardest to fill?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "low_hiring_high_funding@re_engagement": {
+      "fingerprint": "423318cfdcd5",
+      "prompt_hash": "158ea7aa4f70",
+      "segment": "recently_funded",
+      "subject": "Congrats on the Series A",
+      "body": "Hi Zoe,\n\nCongrats on the $7M Series A. What are your engineering hiring priorities this year?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "new_data_leader_ai@re_engagement": {
+      "fingerprint": "cb1d5e1634f7",
+      "prompt_hash": "e969e172c18f",
+      "segment": "leadership_transition",
+      "subject": "Question on Lindenfield's data priorities",
+      "body": "Hi Ines,\n\nLooking at the public signal, it seems you recently stepped into the Head of Data role. What are you prioritising for the team?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "layoff_medium_midsize@re_engagement": {
+      "fingerprint": "d6c4cdd8a817",
+      "prompt_hash": "14ee63421108",
+      "segment": "restructuring",
+      "subject": "Question on Marlowe's engineering delivery",
+      "body": "Hi Kwame,\n\nHow are you keeping engineering delivery steady at Marlowe with 4 open roles?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
+    },
+    "seed_stage@re_engagement": {
+      "fingerprint": "06a9138f24ca",
+      "prompt_hash": "d3935c5bb15a",
+      "segment": "abstain",
+      "subject": "Congrats on the seed round",
+      "body": "Hi Ada,\n\nCongrats on the $2M seed round. How are you thinking about growing the engineering team?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": null,
+      "recorded_at": "2026-11-02T14:04:16+00:00"
     }
   }
 }

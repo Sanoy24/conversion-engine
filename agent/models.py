@@ -24,6 +24,7 @@ class EmailType(StrEnum):
     COLD = "cold"
     WARM_REPLY = "warm_reply"
     RE_ENGAGEMENT = "re_engagement"
+    BOOKING_CONFIRMATION = "booking_confirmation"  # fixed template, not drafted
 
 
 class SignalWeight(StrEnum):

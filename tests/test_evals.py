@@ -91,6 +91,48 @@ def test_sender_numbers_only_in_sentences_about_the_sender():
     assert "numbers_grounded" in _failures("layoff_midsize", theirs)
 
 
+def test_numbers_written_as_words_are_checked():
+    # funded_clean: 12 open roles
+    assert "numbers_grounded" in _failures("funded_clean", "Hi Priya, you have fifteen open roles.")
+    assert "numbers_grounded" in _failures(
+        "funded_clean", "Hi Priya, congrats on the fifteen million raise."
+    )
+    assert "numbers_grounded" not in _failures(
+        "funded_clean", "Hi Priya, you have twelve open roles."
+    )
+    assert "numbers_grounded" not in _failures(
+        "funded_clean", "Hi Priya, a dozen open roles is a lot."
+    )
+    assert "numbers_grounded" not in _failures("funded_clean", "Hi Priya, one quick question.")
+
+
+def test_ranges_and_self_references_are_not_claims():
+    assert "numbers_grounded" not in _failures("funded_clean", "Hi Priya, a 2 to 6 month project.")
+    times = [{"prospect_local": "Tue 10:00", "utc": "Tue 15:00"}] * 2
+    assert "numbers_grounded" not in _failures(
+        "funded_clean", "Hi Priya, I have proposed two times below.", times=times
+    )
+
+
+def test_follow_up_rules():
+    from agent.models import EmailType
+
+    def follow_up_failures(body: str) -> dict:
+        draft = Draft(subject="Question on hiring", body=body + "\n\n" + SIGNATURE)
+        results = check_draft(CASES["funded_clean"], draft, get_playbook(), EmailType.RE_ENGAGEMENT)
+        return {r.name: r.detail for r in results if not r.passed}
+
+    assert "no_chaser_phrases" in follow_up_failures(
+        "Hi Priya, just following up on my last email."
+    )
+    assert "no_chaser_phrases" in follow_up_failures("Hi Priya, circling back on this.")
+    assert "no_chaser_phrases" not in follow_up_failures("Hi Priya, one more angle on hiring.")
+    # Follow-ups have their own (shorter) word limit: 70 in the example playbook.
+    assert "word_limit" in follow_up_failures("Hi Priya, " + "word " * 80)
+    # Chaser phrases are only a follow-up rule.
+    assert "no_chaser_phrases" not in _failures("funded_clean", "Hi Priya, just following up.")
+
+
 def test_hedged_medium_claims_pass():
     assert "medium_hedged" not in _failures(
         "medium_funding_high_hiring", "Hi Felix, it looks like you closed a Series B recently?"
@@ -126,8 +168,11 @@ def test_subject_and_signature_rules():
 @pytest.mark.parametrize("path", sorted(RECORDINGS_DIR.glob("*.json")), ids=lambda p: p.stem)
 def test_recordings_are_current(path):
     """Recordings must match the current cases; re-record after changing a case."""
-    result = score_recording(path, list(CASES.values()))
-    assert not result["stale"], f"re-record: {result['stale']}"
+    from evals.run import EMAIL_TYPES
+
+    for email_type in EMAIL_TYPES:
+        result = score_recording(path, list(CASES.values()), email_type)
+        assert not result["stale"], f"re-record: {result['stale']}"
 
 
 def test_prompts_export_and_import_round_trip(tmp_path, monkeypatch):

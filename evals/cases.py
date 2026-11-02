@@ -68,3 +68,16 @@ def _build(entry: dict) -> EvalCase:
         gap_brief=gap_brief,
         expected_segment=entry["expect"]["segment"],
     )
+
+
+def previous_email(case: EvalCase, signature: str) -> str:
+    """
+    The neutral first email follow-up cases reply to. Fixed and fact-free on
+    purpose, so follow-up scores don't depend on any model's cold draft.
+    """
+    name = (case.brief.prospect.contact_name or "").split()
+    greeting = f"Hi {name[0]}," if name else "Hi,"
+    return (
+        f"{greeting}\n\nI work with engineering teams on shipping faster than in-house hiring "
+        f"alone allows. Would a short call be useful?\n\n{signature}"
+    )
