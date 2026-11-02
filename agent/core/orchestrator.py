@@ -32,7 +32,7 @@ from agent.core.suppression import (
     get_suppression_list,
 )
 from agent.enrichment.signal_brief import generate_signal_brief
-from agent.integrations.calcom import get_calcom_client
+from agent.integrations.calendar import get_calendar_client
 from agent.integrations.crm import get_crm_client
 from agent.models import (
     ChannelType,
@@ -184,7 +184,7 @@ async def handle_prospect_reply(
     """
     Handle a reply from a prospect in an existing conversation.
     This can lead to a warm email reply, SMS scheduling handoff, or direct
-    Cal.com booking.
+    booking (Cal.com or Calendly).
     """
     conversation = get_conversation(thread_id)
     if not conversation:
@@ -220,7 +220,7 @@ async def handle_prospect_reply(
 
     if handoff_action == HandoffAction.BOOK_CALL:
         # Qualification gate (qualify over a few turns, then book).
-        # Only proceed to Cal.com if the prospect has been through at least one
+        # Only proceed to booking if the prospect has been through at least one
         # warm qualifying exchange. If not, fall through to a warm reply — the
         # LLM will acknowledge the scheduling interest and propose times, giving
         # us the qualifying turn before the next booking attempt.
@@ -338,7 +338,7 @@ async def _handoff_to_sms(conversation: ConversationState) -> dict:
 
     sms_body = (
         "Happy to switch to SMS for scheduling. "
-        f"You can also book directly here: {get_calcom_client().get_booking_link()}"
+        f"You can also book directly here: {get_calendar_client().get_booking_link()}"
     )
     sms_result, _sms_trace = await send_sms(
         to_phone=conversation.prospect.contact_phone or "",
@@ -378,13 +378,13 @@ async def _book_discovery_call(
 
     Both the prospect AND a designated SDR should
     receive a calendar invite. This is satisfied by passing sdr_email as
-    a Cal.com guest when the setting is configured.
+    a guest on the booking when the setting is configured.
 
     Future improvement: parse reply_content for an explicit time preference
     (e.g. "Thursday at 2pm") and use get_available_slots() to find the
     nearest matching real slot instead of the default window.
     """
-    calcom_client = get_calcom_client()
+    calendar = get_calendar_client()
     start_time, end_time = _default_booking_window()
 
     segment_label = (
@@ -395,7 +395,7 @@ async def _book_discovery_call(
     )
 
     sdr_email = settings.sdr_email or None
-    booking_result, booking_trace = await calcom_client.create_booking(
+    booking_result, booking_trace = await calendar.create_booking(
         prospect=conversation.prospect,
         start_time=start_time,
         end_time=end_time,
@@ -412,7 +412,7 @@ async def _book_discovery_call(
     update_status(conversation.thread_id, ConversationStatus.CALL_BOOKED)
 
     # Human-readable confirmation so the prospect knows the exact time —
-    # not just a raw ISO string. The SDR invite goes via Cal.com directly.
+    # not just a raw ISO string. The SDR invite goes via the calendar provider.
     human_time = _format_booking_time(start_time)
     confirmation = (
         f"I've booked a 30-minute discovery call for {human_time}. "

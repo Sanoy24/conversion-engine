@@ -157,7 +157,7 @@ async def test_handle_prospect_reply_books_call_on_scheduling_intent(
     monkeypatch.setattr("agent.core.orchestrator.draft_email", fake_draft_email)
     monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
     monkeypatch.setattr("agent.core.orchestrator.get_crm_client", lambda: fake_hubspot)
-    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", lambda: fake_calcom)
+    monkeypatch.setattr("agent.core.orchestrator.get_calendar_client", lambda: fake_calcom)
 
     created = await process_new_prospect(
         company_name=fake_signal_brief.prospect.company,
@@ -207,7 +207,7 @@ async def test_handle_prospect_reply_uses_sms_fallback_when_requested(
     monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
     monkeypatch.setattr("agent.core.orchestrator.send_sms", fake_send_sms)
     monkeypatch.setattr("agent.core.orchestrator.get_crm_client", lambda: fake_hubspot)
-    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", _FakeCalComClient)
+    monkeypatch.setattr("agent.core.orchestrator.get_calendar_client", _FakeCalComClient)
 
     created = await process_new_prospect(
         company_name=fake_signal_brief.prospect.company,
@@ -291,7 +291,7 @@ async def test_qualification_gate_blocks_booking_on_first_reply_medium_confidenc
     monkeypatch.setattr("agent.core.orchestrator.get_crm_client", lambda: fake_hubspot)
     # Cal.com client should never be reached; bind it anyway so an accidental
     # call surfaces a clear AttributeError rather than a config read.
-    monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", _FakeCalComClient)
+    monkeypatch.setattr("agent.core.orchestrator.get_calendar_client", _FakeCalComClient)
 
     created = await process_new_prospect(
         company_name=fake_signal_brief.prospect.company,

@@ -12,6 +12,7 @@ from datetime import datetime
 
 from agent.config import settings
 from agent.core.scap import SCAPConfig, apply_scap, render_ask_directives
+from agent.integrations.calendar import get_calendar_client
 from agent.llm import get_llm_client
 from agent.models import (
     CompetitorGapBrief,
@@ -153,7 +154,7 @@ async def draft_email(
         subject=result.get("subject", ""),
         body=result.get("body", ""),
         proposed_times=[ProposedTime(**t) for t in result.get("proposed_times", [])],
-        calcom_link=result.get("calcom_link", f"{settings.calcom_base_url}/book"),
+        calcom_link=result.get("calcom_link") or get_calendar_client().get_booking_link(),
         grounded_claims=grounded,
         handoff_to_human=handoff,
         handoff_reason=handoff_reason,

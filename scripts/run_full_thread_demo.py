@@ -8,10 +8,10 @@ Flow (all stages emit traces to outputs/full_thread_traces.jsonl):
   4. Draft warm reply
   5. Send SMS scheduling ping (Africa's Talking; kill-switch applies)
   6. Create CRM contact with enrichment fields + timestamp
-  7. Book Cal.com discovery-call slot (30 min, +24h)
+  7. Book a discovery-call slot (CALENDAR_PROVIDER) (30 min, +24h)
   8. Write outputs/full_thread_trace.json with per-stage timing + status
 
-Integration calls (CRM, Cal.com) that lack real credentials degrade
+Integration calls (CRM, calendar) that lack real credentials degrade
 gracefully: the stage is marked `ok=False` with the error captured in the
 trace, and the demo continues so later stages can be observed.
 """
@@ -31,7 +31,7 @@ from agent.channels.email_handler import send_email
 from agent.channels.sms_handler import send_sms
 from agent.config import settings
 from agent.core.orchestrator import handle_prospect_reply, process_new_prospect
-from agent.integrations.calcom import get_calcom_client
+from agent.integrations.calendar import get_calendar_client
 from agent.integrations.crm import get_crm_client, reset_crm_client
 from agent.models import EmailDraft, ProspectInfo
 
@@ -208,10 +208,10 @@ async def run(
             )
         )
 
-    # ── 6. Book Cal.com discovery call ──────────────────────────────────
+    # ── 6. Book discovery call ──────────────────────────────────────────
     t0 = time.monotonic()
-    calcom = get_calcom_client()
-    # Try candidate slots spread across future days/hours until Cal.com accepts one.
+    calendar = get_calendar_client()
+    # Try candidate slots spread across future days/hours until the calendar accepts one.
     # We have 1 calendar owner across the whole demo, so each 30-min slot can
     # only take one prospect. Generate a wide pool (many days x many hours) so
     # 20+ back-to-back runs don't exhaust it.
@@ -236,7 +236,7 @@ async def run(
         )
         start = _fb.isoformat() + "Z"
         end = (_fb + timedelta(minutes=30)).isoformat() + "Z"
-        cal_resp, cal_trace = await calcom.create_booking(
+        cal_resp, cal_trace = await calendar.create_booking(
             prospect=prospect,
             start_time=start,
             end_time=end,
@@ -250,7 +250,7 @@ async def run(
     _booking_id = cal_resp.get("id") or cal_resp.get("uid") if isinstance(cal_resp, dict) else None
     _emit(
         _stage_record(
-            "6_calcom_booking",
+            "6_booking",
             t0,
             cal_trace.success,
             booking_id=_booking_id,
@@ -260,8 +260,8 @@ async def run(
         )
     )
 
-    # ── 7. Link Cal.com booking → CRM update ──────────
-    # A completed Cal.com booking triggers a corresponding CRM record
+    # ── 7. Link booking → CRM update ──────────────────
+    # A completed booking triggers a corresponding CRM record
     # update: lead status → CALL_BOOKED plus an engagement note with the
     # booking metadata. Skipped if the booking failed or we don't have a
     # CRM contact id to attach to.
@@ -274,7 +274,7 @@ async def run(
                 properties={"hs_lead_status": "CALL_BOOKED"},
             )
             booking_note = (
-                f"Discovery call booked via Cal.com.\n"
+                f"Discovery call booked via {settings.calendar_provider}.\n"
                 f"Booking ID: {_booking_id}\n"
                 f"Scheduled: {start}\n"
                 f"Segment: {pipeline['classification']['segment']}\n"
@@ -287,7 +287,7 @@ async def run(
             )
             _emit(
                 _stage_record(
-                    "7_calcom_to_crm_link",
+                    "7_booking_to_crm_link",
                     t0,
                     _link_note_trace.success,
                     crm_contact_id=crm_contact_id,
@@ -296,10 +296,10 @@ async def run(
                 )
             )
         except Exception as e:
-            logger.error("Cal.com → CRM link failed: %s", e)
+            logger.error("Booking → CRM link failed: %s", e)
             _emit(
                 _stage_record(
-                    "7_calcom_to_crm_link",
+                    "7_booking_to_crm_link",
                     t0,
                     False,
                     error=str(e),

@@ -104,7 +104,21 @@ class Settings(BaseSettings):
     hubspot_mcp_command: str = "npx"
     hubspot_mcp_args: str = "-y,@hubspot/mcp-server"
 
-    # --- Calendar (Cal.com) ---
+    # --- Calendar ---
+    # Which service books discovery calls.
+    calendar_provider: Literal["calcom", "calendly"] = "calcom"
+
+    # Calendly (booking via API needs a paid plan)
+    calendly_api_token: str = ""
+    calendly_event_type_uri: str = ""  # https://api.calendly.com/event_types/<uuid>
+    calendly_scheduling_url: str = ""  # public link, e.g. https://calendly.com/acme/discovery
+    # The event type's location kind (zoom_conference, google_conference, ...);
+    # empty when the event type has no location. CALENDLY_LOCATION holds the
+    # value for kinds that need one (e.g. a phone number).
+    calendly_location_kind: str = ""
+    calendly_location: str = ""
+
+    # Cal.com
     calcom_api_key: str = ""
     # Secret set on the Cal.com webhook; verifies X-Cal-Signature-256.
     calcom_webhook_secret: str = ""

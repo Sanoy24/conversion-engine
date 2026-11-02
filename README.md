@@ -13,7 +13,7 @@ Most outbound tools personalise with mail-merge fields. The Conversion Engine pe
 Everything company-specific (who you are, how you sound, who you sell to) lives in a **playbook**, so the same engine can sell for any company.
 
 - **Stack:** Python 3.12 · FastAPI · [uv](https://docs.astral.sh/uv/) · OpenRouter (any chat model)
-- **Integrations:** Email: Resend, SendGrid or any SMTP server (SES, Gmail, Postmark, ...) · SMS: Africa's Talking or Twilio · CRM: HubSpot (REST or MCP), Pipedrive, Salesforce or Attio · Cal.com · Langfuse
+- **Integrations:** Email: Resend, SendGrid or any SMTP server (SES, Gmail, Postmark, ...) · SMS: Africa's Talking or Twilio · CRM: HubSpot (REST or MCP), Pipedrive, Salesforce or Attio · Calendar: Cal.com or Calendly · Langfuse
 - **Status:** early / pre-1.0. Interfaces may change.
 
 > ⚠️ **Safe by default.** `LIVE_OUTBOUND_ENABLED=false` is the default: no email or SMS is delivered, everything is logged to a sink. Only enable live sending once you have reviewed drafts and are sure you're allowed to contact the recipients under the laws that apply to you (CAN-SPAM, GDPR/PECR, TCPA, ...).
@@ -40,14 +40,14 @@ flowchart LR
     DRAFT --> EMAIL[Email]
     EMAIL -. reply .-> ORCH[Orchestrator]
     ORCH --> SMS[SMS<br/>warm leads only]
-    ORCH --> CAL[Cal.com booking]
+    ORCH --> CAL[Booking<br/>Cal.com · Calendly]
     ORCH --> CRM[CRM<br/>HubSpot · Pipedrive<br/>Salesforce · Attio]
 ```
 
 1. **Enrich:** builds a `HiringSignalBrief` from public data, with a confidence level and sources for every signal.
 2. **Classify:** scores the brief against your playbook's segments. Low confidence → `abstain` → a generic exploratory email instead of a targeted pitch.
 3. **Draft:** an LLM writes the email in your voice. SCAP rewrites the brief first, so the model never sees weak evidence presented as fact; a second LLM call scores tone and triggers one regeneration if it drifts.
-4. **Deliver and follow up:** email first. SMS only once a prospect has replied (cold SMS is blocked in code). Bookings go to Cal.com and every event goes to the CRM.
+4. **Deliver and follow up:** email first. SMS only once a prospect has replied (cold SMS is blocked in code). Bookings go to Cal.com or Calendly and every event goes to the CRM.
 
 ---
 
@@ -165,7 +165,7 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 | `EMAIL_PROVIDER`, `EMAIL_FROM` | `resend` (default), `sendgrid` or `smtp`, and the sender. See [Email providers](#email-providers) |
 | `SMS_PROVIDER` | `africastalking` (default) or `twilio`. See [SMS providers](#sms-providers) |
 | `CRM_PROVIDER` | `hubspot` (default), `pipedrive`, `salesforce` or `attio`. See [CRM providers](#crm-providers) |
-| `CALCOM_API_KEY`, `CALCOM_BASE_URL`, `CALCOM_EVENT_TYPE_ID`, `CALCOM_WEBHOOK_SECRET`, `SDR_EMAIL` | Booking |
+| `CALENDAR_PROVIDER`, `SDR_EMAIL` | `calcom` (default) or `calendly`, and the SDR invited to every call. See [Calendar providers](#calendar-providers) |
 | `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | Tracing (optional; falls back to local JSONL) |
 | `ENABLE_SCAP` (+ `SCAP_*` sub-flags) | Confidence-aware phrasing. Default on |
 
@@ -191,6 +191,15 @@ SMS is for warm leads only (cold SMS is blocked in code). Set `SMS_PROVIDER` and
 | --- | --- | --- |
 | `africastalking` | `AT_USERNAME`, `AT_API_KEY`, `AT_SHORTCODE`, `AT_WEBHOOK_TOKEN` | `POST /webhooks/sms/inbound?token=<AT_WEBHOOK_TOKEN>` |
 | `twilio` | `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_FROM_NUMBER` or `TWILIO_MESSAGING_SERVICE_SID` | `POST /webhooks/sms/twilio` (set as the number's "A message comes in" URL). Requires `PUBLIC_BASE_URL`, because Twilio signs the public URL |
+
+### Calendar providers
+
+Discovery calls are booked directly through the provider's API. `SDR_EMAIL` is added as a guest so both sides get an invite. Set `CALENDAR_PROVIDER` and that provider's settings.
+
+| Provider | Settings | Notes |
+| --- | --- | --- |
+| `calcom` | `CALCOM_API_KEY`, `CALCOM_BASE_URL`, `CALCOM_EVENT_TYPE_ID`, `CALCOM_WEBHOOK_SECRET` | Cloud or self-hosted. Booking created / cancelled / rescheduled events come back through `/webhooks/calcom` |
+| `calendly` | `CALENDLY_API_TOKEN`, `CALENDLY_EVENT_TYPE_URI`, `CALENDLY_SCHEDULING_URL`; `CALENDLY_LOCATION_KIND` (+ `CALENDLY_LOCATION`) if the event type has a location | Uses the Scheduling API (`POST /invitees`), which needs a paid Calendly plan. Calendly webhooks aren't handled yet, so bookings the prospect makes through the link aren't tracked automatically |
 
 ### CRM providers
 
@@ -241,7 +250,7 @@ agent/
   core/              orchestrator, ICP classifier, email drafter, SCAP, conversation store
   enrichment/        Crunchbase, job posts, layoffs, leadership, AI maturity, competitor gap
   channels/          email (Resend, SendGrid, SMTP), SMS (Africa's Talking, Twilio), handoff policy
-  integrations/      CRMs (HubSpot REST + MCP, Pipedrive, Salesforce, Attio), Cal.com
+  integrations/      CRMs (HubSpot REST + MCP, Pipedrive, Salesforce, Attio), calendars (Cal.com, Calendly)
   observability/     Langfuse + JSONL traces
 playbooks/example/   fictional company playbook: copy this to start
 scripts/             fetch_data, run_full_thread_demo, list_hubspot_mcp_tools
@@ -254,7 +263,7 @@ tests/
 
 - Conversations are kept in a local SQLite file (`CONVERSATION_DB_PATH`, default `./data/conversations.db`), so they survive restarts. It assumes a **single process**: run one uvicorn worker, and on hosts with an ephemeral filesystem (e.g. Render free plan) mount a persistent disk or threads are lost on redeploy. A shared Postgres store is planned.
 - The API has a single shared key, with no per-user accounts or scopes.
-- The calendar provider (Cal.com) is still fixed; making it pluggable like email, SMS and the CRM is planned.
+- Calendly webhooks (bookings made through the link, cancellations) aren't handled yet; Cal.com's are.
 - Inbound email (replies, bounces) is only handled for Resend.
 - Enrichment is tuned for selling to software companies (it counts engineering roles).
 

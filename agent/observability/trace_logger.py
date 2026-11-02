@@ -105,5 +105,5 @@ def compute_metrics() -> dict:
         "crm_writes": sum(
             1 for t in traces if t.event_type.startswith("crm_") or "hubspot" in t.event_type
         ),
-        "bookings": sum(1 for t in traces if "calcom" in t.event_type),
+        "bookings": sum(1 for t in traces if t.event_type.endswith("booking_created")),
     }
