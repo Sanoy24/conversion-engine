@@ -1,5 +1,7 @@
 # Conversion Engine
 
+[![CI](https://github.com/Sanoy24/conversion-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/Sanoy24/conversion-engine/actions/workflows/ci.yml)
+
 **Signal-grounded B2B prospecting: research a company from public data, decide whether it's worth contacting, write an evidence-backed first email, handle replies, and book the meeting.**
 
 Most outbound tools personalise with mail-merge fields. The Conversion Engine personalises with *evidence*, and it keeps track of how strong that evidence is:
