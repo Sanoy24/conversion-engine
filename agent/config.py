@@ -23,7 +23,26 @@ class Settings(BaseSettings):
     dev_model: str = "deepseek/deepseek-chat-v3-0324"
     eval_model: str = "anthropic/claude-sonnet-4-20250514"
 
-    # --- Email (Resend) ---
+    # --- Email ---
+    # Which service delivers outbound email.
+    email_provider: Literal["resend", "sendgrid", "smtp"] = "resend"
+    # Sender, e.g. "Sam at Acme <sam@acme.example>". Falls back to RESEND_FROM_EMAIL.
+    email_from: str = ""
+
+    # SendGrid
+    sendgrid_api_key: str = ""
+
+    # SMTP (Amazon SES, Gmail/Workspace, Postmark, Mailgun, your own server)
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_username: str = ""
+    smtp_password: str = ""
+    # Implicit TLS (usually port 465). Otherwise STARTTLS is used unless
+    # SMTP_STARTTLS=false (only for local test servers such as Mailpit).
+    smtp_use_ssl: bool = False
+    smtp_starttls: bool = True
+
+    # Resend (also receives replies and bounces via webhook)
     resend_api_key: str = ""
     resend_from_email: str = "outbound@yourdomain.com"
     # Svix signing secret (whsec_...) from Resend -> Webhooks.
@@ -144,6 +163,10 @@ class Settings(BaseSettings):
     allow_synthetic_job_posts_snapshot: bool = False
     # Max distinct companies live-crawled for job posts per process (politeness cap).
     live_crawl_cap: int = 200
+
+    @property
+    def sender_email(self) -> str:
+        return self.email_from or self.resend_from_email
 
     @property
     def is_dev(self) -> bool:

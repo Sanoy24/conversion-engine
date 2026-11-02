@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from agent.channels import email_handler
+from agent.channels import email_providers
 from agent.channels.email_handler import process_reply_webhook, send_email
 from agent.channels.sms_handler import send_sms
 from agent.config import settings
@@ -118,7 +118,7 @@ async def test_email_carries_footer_and_one_click_headers(unsubscribe_configured
 async def test_live_email_refused_without_unsubscribe_config(monkeypatch):
     monkeypatch.setattr(settings, "live_outbound_enabled", True)
     calls = []
-    monkeypatch.setattr(email_handler.resend.Emails, "send", calls.append)
+    monkeypatch.setattr(email_providers.resend.Emails, "send", calls.append)
 
     result, trace = await send_email("jane@acme.io", _draft())
 
@@ -137,11 +137,12 @@ async def test_live_email_sends_when_configured(monkeypatch, unsubscribe_configu
         calls.append(data)
         return {"id": "re_1"}
 
-    monkeypatch.setattr(email_handler.resend.Emails, "send", fake_send)
+    monkeypatch.setattr(settings, "resend_api_key", "re_key")
+    monkeypatch.setattr(email_providers.resend.Emails, "send", fake_send)
 
     result, _trace = await send_email("jane@acme.io", _draft())
 
-    assert result == {"id": "re_1"}
+    assert result == {"status": "sent", "provider": "resend", "id": "re_1"}
     assert "List-Unsubscribe" in calls[0]["headers"]
 
 

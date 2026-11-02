@@ -1,7 +1,7 @@
 """
-Resend email handler.
-Primary outbound channel.
-Handles: email sending, reply webhook processing.
+Email handler. Primary outbound channel.
+Handles: email sending (via the provider in EMAIL_PROVIDER, see
+email_providers.py) and Resend reply/bounce webhook processing.
 """
 
 from __future__ import annotations
@@ -10,8 +10,7 @@ import logging
 import uuid
 from datetime import datetime
 
-import resend
-
+from agent.channels.email_providers import deliver
 from agent.config import settings
 from agent.core.suppression import (
     BOUNCE,
@@ -26,18 +25,13 @@ from agent.playbook import get_playbook
 logger = logging.getLogger(__name__)
 
 
-def init_resend():
-    """Initialize the Resend client."""
-    resend.api_key = settings.resend_api_key
-
-
 async def send_email(
     to_email: str,
     draft: EmailDraft,
     reply_to: str | None = None,
 ) -> tuple[dict, TraceRecord]:
     """
-    Send an email via Resend.
+    Send an email via the configured provider (EMAIL_PROVIDER).
 
     Suppressed addresses are never sent to, in any mode. Every email gets an
     unsubscribe footer and List-Unsubscribe headers when PUBLIC_BASE_URL and
@@ -73,11 +67,11 @@ async def send_email(
         headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
 
     email_data = {
-        "from": settings.resend_from_email,
+        "from": settings.sender_email,
         "to": [to_email],
         "subject": draft.subject,
         "text": draft.body + _footer(unsubscribe),
-        "reply_to": reply_to or settings.resend_from_email,
+        "reply_to": reply_to or settings.sender_email,
         "headers": headers,
     }
 
@@ -116,24 +110,24 @@ async def send_email(
         )
         return {"status": "error", "error": error}, trace
 
+    provider = settings.email_provider
     try:
-        init_resend()
-        response = resend.Emails.send(email_data)
+        message_id = await deliver(email_data)
 
         trace = TraceRecord(
             trace_id=trace_id,
             event_type="email_sent",
-            prospect_company=draft.draft_metadata.get("prospect_company"),
+            prospect_company=company,
             thread_id=draft.thread_id,
             input_data={"to": to_email, "subject": draft.subject},
-            output_data={"resend_id": response.get("id"), "status": "sent"},
-            cost_usd=0.0,  # Resend free tier
+            output_data={"provider": provider, "message_id": message_id, "status": "sent"},
+            cost_usd=0.0,
             latency_ms=0,
             success=True,
         )
 
-        logger.info("Email sent to %s (Resend ID: %s)", to_email, response.get("id"))
-        return response, trace
+        logger.info("Email sent to %s via %s (id: %s)", to_email, provider, message_id)
+        return {"status": "sent", "provider": provider, "id": message_id}, trace
 
     except Exception as e:
         logger.error("Failed to send email to %s: %s", to_email, str(e))

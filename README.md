@@ -13,7 +13,7 @@ Most outbound tools personalise with mail-merge fields. The Conversion Engine pe
 Everything company-specific (who you are, how you sound, who you sell to) lives in a **playbook**, so the same engine can sell for any company.
 
 - **Stack:** Python 3.12 · FastAPI · [uv](https://docs.astral.sh/uv/) · OpenRouter (any chat model)
-- **Integrations:** Resend (email) · Africa's Talking (SMS) · CRM: HubSpot (REST or MCP), Pipedrive, Salesforce or Attio · Cal.com · Langfuse
+- **Integrations:** Email: Resend, SendGrid or any SMTP server (SES, Gmail, Postmark, ...) · Africa's Talking (SMS) · CRM: HubSpot (REST or MCP), Pipedrive, Salesforce or Attio · Cal.com · Langfuse
 - **Status:** early / pre-1.0. Interfaces may change.
 
 > ⚠️ **Safe by default.** `LIVE_OUTBOUND_ENABLED=false` is the default: no email or SMS is delivered, everything is logged to a sink. Only enable live sending once you have reviewed drafts and are sure you're allowed to contact the recipients under the laws that apply to you (CAN-SPAM, GDPR/PECR, TCPA, ...).
@@ -162,7 +162,7 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 | `API_KEY` | Required on `/api/*`. Unset = open in development, closed in production |
 | `PUBLIC_BASE_URL`, `UNSUBSCRIBE_SECRET` | Unsubscribe links. **Required for live email**: without them every send is refused |
 | `CONVERSATION_DB_PATH` | SQLite file for threads and the suppression list. Default `./data/conversations.db`; empty = in memory |
-| `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_WEBHOOK_SECRET` | Email |
+| `EMAIL_PROVIDER`, `EMAIL_FROM` | `resend` (default), `sendgrid` or `smtp`, and the sender. See [Email providers](#email-providers) |
 | `AT_USERNAME`, `AT_API_KEY`, `AT_SHORTCODE`, `AT_WEBHOOK_TOKEN` | SMS (Africa's Talking) |
 | `CRM_PROVIDER` | `hubspot` (default), `pipedrive`, `salesforce` or `attio`. See [CRM providers](#crm-providers) |
 | `CALCOM_API_KEY`, `CALCOM_BASE_URL`, `CALCOM_EVENT_TYPE_ID`, `CALCOM_WEBHOOK_SECRET`, `SDR_EMAIL` | Booking |
@@ -170,6 +170,18 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 | `ENABLE_SCAP` (+ `SCAP_*` sub-flags) | Confidence-aware phrasing. Default on |
 
 Integrations without credentials degrade gracefully: the stage records an error in its trace and the pipeline continues.
+
+### Email providers
+
+Set `EMAIL_PROVIDER` and `EMAIL_FROM` (e.g. `Sam at Acme <sam@acme.example>`). Every provider sends the same message: plain text, the unsubscribe footer, and `List-Unsubscribe` / `List-Unsubscribe-Post` headers.
+
+| Provider | Settings | Notes |
+| --- | --- | --- |
+| `resend` | `RESEND_API_KEY` | Default. Replies and bounces come back through `/webhooks/email/reply` |
+| `sendgrid` | `SENDGRID_API_KEY` | v3 Mail Send API |
+| `smtp` | `SMTP_HOST`, `SMTP_PORT` (587), `SMTP_USERNAME`, `SMTP_PASSWORD`; `SMTP_USE_SSL=true` for port 465 | Works with Amazon SES, Gmail/Workspace, Postmark, Mailgun or your own server. STARTTLS is on unless `SMTP_STARTTLS=false` |
+
+Inbound replies and bounce/complaint events are only wired up for Resend so far. With SendGrid or SMTP, forward replies to `POST /api/prospect/reply` and add bounced addresses with `POST /api/suppressions`.
 
 ### CRM providers
 
@@ -218,7 +230,7 @@ agent/
   playbook.py        playbook schema + loader
   core/              orchestrator, ICP classifier, email drafter, SCAP, conversation store
   enrichment/        Crunchbase, job posts, layoffs, leadership, AI maturity, competitor gap
-  channels/          email (Resend), SMS (Africa's Talking), handoff policy
+  channels/          email (Resend, SendGrid, SMTP), SMS (Africa's Talking), handoff policy
   integrations/      CRMs (HubSpot REST + MCP, Pipedrive, Salesforce, Attio), Cal.com
   observability/     Langfuse + JSONL traces
 playbooks/example/   fictional company playbook: copy this to start
@@ -232,7 +244,8 @@ tests/
 
 - Conversations are kept in a local SQLite file (`CONVERSATION_DB_PATH`, default `./data/conversations.db`), so they survive restarts. It assumes a **single process**: run one uvicorn worker, and on hosts with an ephemeral filesystem (e.g. Render free plan) mount a persistent disk or threads are lost on redeploy. A shared Postgres store is planned.
 - The API has a single shared key, with no per-user accounts or scopes.
-- Email (Resend), SMS (Africa's Talking) and calendar (Cal.com) providers are still fixed; making them pluggable like the CRM is planned.
+- SMS (Africa's Talking) and calendar (Cal.com) providers are still fixed; making them pluggable like email and the CRM is planned.
+- Inbound email (replies, bounces) is only handled for Resend.
 - Enrichment is tuned for selling to software companies (it counts engineering roles).
 
 ---
