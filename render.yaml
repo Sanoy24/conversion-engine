@@ -40,7 +40,9 @@ services:
       - key: AT_WEBHOOK_TOKEN
         generateValue: true  # add ?token=<value> to the AT callback URL
 
-      # ── CRM (HubSpot) ────────────────────────────────────────────────
+      # ── CRM ──────────────────────────────────────────────────────────
+      - key: CRM_PROVIDER
+        value: hubspot       # or pipedrive / salesforce / attio (add that provider's keys)
       - key: HUBSPOT_ACCESS_TOKEN
         sync: false
       - key: HUBSPOT_PORTAL_ID

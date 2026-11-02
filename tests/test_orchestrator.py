@@ -122,14 +122,14 @@ async def test_process_new_prospect_wires_hubspot_and_email(
     monkeypatch.setattr("agent.core.orchestrator.generate_signal_brief", fake_generate_signal_brief)
     monkeypatch.setattr("agent.core.orchestrator.draft_email", fake_draft_email)
     monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
-    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+    monkeypatch.setattr("agent.core.orchestrator.get_crm_client", lambda: fake_hubspot)
 
     result = await process_new_prospect(
         company_name=fake_signal_brief.prospect.company,
         contact_email=fake_signal_brief.prospect.contact_email,
     )
 
-    assert result["hubspot_contact_id"] == "hs_123"
+    assert result["crm_contact_id"] == "hs_123"
     assert result["email_delivery"]["status"] == "sink"
     assert fake_hubspot.created == [("FreshFund Inc", "recently_funded")]
     assert len(fake_hubspot.notes) == 1
@@ -156,7 +156,7 @@ async def test_handle_prospect_reply_books_call_on_scheduling_intent(
     monkeypatch.setattr("agent.core.orchestrator.generate_signal_brief", fake_generate_signal_brief)
     monkeypatch.setattr("agent.core.orchestrator.draft_email", fake_draft_email)
     monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
-    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+    monkeypatch.setattr("agent.core.orchestrator.get_crm_client", lambda: fake_hubspot)
     monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", lambda: fake_calcom)
 
     created = await process_new_prospect(
@@ -206,7 +206,7 @@ async def test_handle_prospect_reply_uses_sms_fallback_when_requested(
     monkeypatch.setattr("agent.core.orchestrator.draft_email", fake_draft_email)
     monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
     monkeypatch.setattr("agent.core.orchestrator.send_sms", fake_send_sms)
-    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+    monkeypatch.setattr("agent.core.orchestrator.get_crm_client", lambda: fake_hubspot)
     monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", _FakeCalComClient)
 
     created = await process_new_prospect(
@@ -229,13 +229,13 @@ async def test_handle_prospect_reply_uses_sms_fallback_when_requested(
 @pytest.mark.asyncio
 async def test_handle_calcom_event_updates_matched_conversation(monkeypatch):
     fake_hubspot = _FakeHubSpotClient()
-    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+    monkeypatch.setattr("agent.core.orchestrator.get_crm_client", lambda: fake_hubspot)
 
     prospect = ProspectInfo(company="CalEvent Co", contact_email="cal@example.com")
     conversation = conversation_module.create_conversation(
         prospect=prospect, channel=ChannelType.EMAIL
     )
-    conversation.hubspot_contact_id = "hs_123"
+    conversation.crm_contact_id = "hs_123"
 
     result = await handle_calcom_event(
         trigger="BOOKING_CREATED",
@@ -288,7 +288,7 @@ async def test_qualification_gate_blocks_booking_on_first_reply_medium_confidenc
     monkeypatch.setattr("agent.core.orchestrator.generate_signal_brief", fake_generate_signal_brief)
     monkeypatch.setattr("agent.core.orchestrator.draft_email", fake_draft_email)
     monkeypatch.setattr("agent.core.orchestrator.send_email", fake_send_email)
-    monkeypatch.setattr("agent.core.orchestrator.get_hubspot_client", lambda: fake_hubspot)
+    monkeypatch.setattr("agent.core.orchestrator.get_crm_client", lambda: fake_hubspot)
     # Cal.com client should never be reached; bind it anyway so an accidental
     # call surfaces a clear AttributeError rather than a config read.
     monkeypatch.setattr("agent.core.orchestrator.get_calcom_client", _FakeCalComClient)

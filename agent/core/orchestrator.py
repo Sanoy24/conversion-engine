@@ -33,7 +33,7 @@ from agent.core.suppression import (
 )
 from agent.enrichment.signal_brief import generate_signal_brief
 from agent.integrations.calcom import get_calcom_client
-from agent.integrations.hubspot import get_hubspot_client
+from agent.integrations.crm import get_crm_client
 from agent.models import (
     ChannelType,
     Confidence,
@@ -60,7 +60,7 @@ async def process_new_prospect(
     1. Enrich with signal brief
     2. Classify into ICP segment
     3. Draft outbound email
-    4. Create HubSpot record and note
+    4. Create CRM record and note
     5. Send outbound email
     6. Return the execution result
     """
@@ -118,12 +118,12 @@ async def process_new_prospect(
     )
     all_traces.extend(draft_traces)
 
-    hubspot_trace, note_trace = await _log_new_prospect_to_hubspot(
+    crm_trace, note_trace = await _log_new_prospect_to_crm(
         conversation=conversation,
         email_draft=email_draft,
     )
-    if hubspot_trace is not None:
-        all_traces.append(hubspot_trace)
+    if crm_trace is not None:
+        all_traces.append(crm_trace)
     if note_trace is not None:
         all_traces.append(note_trace)
 
@@ -168,7 +168,7 @@ async def process_new_prospect(
         "gap_brief": gap_brief.model_dump() if gap_brief else None,
         "email_draft": email_draft.model_dump(),
         "email_delivery": email_result,
-        "hubspot_contact_id": conversation.hubspot_contact_id,
+        "crm_contact_id": conversation.crm_contact_id,
         "pipeline_latency_ms": pipeline_latency_ms,
         "trace_count": len(all_traces),
         "total_cost_usd": total_cost,
@@ -191,7 +191,7 @@ async def handle_prospect_reply(
         raise ValueError(f"Conversation {thread_id} not found")
 
     add_message(thread_id, role="prospect", content=reply_content, channel=channel)
-    await _log_reply_to_hubspot(conversation, reply_content, channel)
+    await _log_reply_to_crm(conversation, reply_content, channel)
 
     if conversation.status == ConversationStatus.OPTED_OUT:
         # Opting out in one thread opts the address out everywhere.
@@ -260,9 +260,9 @@ async def handle_prospect_reply(
         )
         update_status(thread_id, ConversationStatus.QUALIFIED)
 
-        if conversation.hubspot_contact_id:
-            await get_hubspot_client().update_contact_status(
-                conversation.hubspot_contact_id,
+        if conversation.crm_contact_id:
+            await get_crm_client().update_contact_status(
+                conversation.crm_contact_id,
                 "QUALIFIED",
             )
 
@@ -281,7 +281,7 @@ async def handle_prospect_reply(
     }
 
 
-async def _log_new_prospect_to_hubspot(
+async def _log_new_prospect_to_crm(
     conversation: ConversationState,
     email_draft,
 ) -> tuple[TraceRecord | None, TraceRecord | None]:
@@ -289,38 +289,38 @@ async def _log_new_prospect_to_hubspot(
     if not conversation.prospect.contact_email:
         return None, None
 
-    hubspot_client = get_hubspot_client()
-    hubspot_contact, hubspot_trace = await hubspot_client.create_contact(
+    crm = get_crm_client()
+    crm_contact, crm_trace = await crm.create_contact(
         prospect=conversation.prospect,
         signal_brief=conversation.signal_brief,
         classification=conversation.classification,
     )
-    conversation.hubspot_contact_id = hubspot_contact.get("id")
+    conversation.crm_contact_id = crm_contact.get("id")
     save_conversation(conversation)
 
-    if not conversation.hubspot_contact_id:
-        return hubspot_trace, None
+    if not conversation.crm_contact_id:
+        return crm_trace, None
 
-    _, note_trace = await hubspot_client.add_note(
-        contact_id=conversation.hubspot_contact_id,
+    _, note_trace = await crm.add_note(
+        contact_id=conversation.crm_contact_id,
         note_body=_build_outbound_note(conversation, email_draft),
         prospect_company=conversation.prospect.company,
     )
-    return hubspot_trace, note_trace
+    return crm_trace, note_trace
 
 
-async def _log_reply_to_hubspot(
+async def _log_reply_to_crm(
     conversation: ConversationState,
     reply_content: str,
     channel: ChannelType,
 ) -> None:
-    """Attach inbound replies to the HubSpot timeline when a contact exists."""
-    if not conversation.hubspot_contact_id:
+    """Attach inbound replies to the CRM timeline when a contact exists."""
+    if not conversation.crm_contact_id:
         return
 
     note_body = f"Prospect reply via {channel.value}: {reply_content}"
-    await get_hubspot_client().add_note(
-        contact_id=conversation.hubspot_contact_id,
+    await get_crm_client().add_note(
+        contact_id=conversation.crm_contact_id,
         note_body=note_body,
         prospect_company=conversation.prospect.company,
     )
@@ -355,9 +355,9 @@ async def _handoff_to_sms(conversation: ConversationState) -> dict:
     )
     update_status(conversation.thread_id, ConversationStatus.QUALIFIED)
 
-    if conversation.hubspot_contact_id:
-        await get_hubspot_client().update_contact_status(
-            conversation.hubspot_contact_id,
+    if conversation.crm_contact_id:
+        await get_crm_client().update_contact_status(
+            conversation.crm_contact_id,
             "QUALIFIED",
         )
 
@@ -433,11 +433,11 @@ async def _book_discovery_call(
         },
     )
 
-    if conversation.hubspot_contact_id:
-        hubspot_client = get_hubspot_client()
-        await hubspot_client.update_contact_status(conversation.hubspot_contact_id, "QUALIFIED")
-        await hubspot_client.add_note(
-            contact_id=conversation.hubspot_contact_id,
+    if conversation.crm_contact_id:
+        crm = get_crm_client()
+        await crm.update_contact_status(conversation.crm_contact_id, "QUALIFIED")
+        await crm.add_note(
+            contact_id=conversation.crm_contact_id,
             note_body=confirmation,
             prospect_company=conversation.prospect.company,
         )
@@ -489,12 +489,10 @@ async def handle_calcom_event(
         conversation.calcom_booking_id = booking_uid or conversation.calcom_booking_id
         save_conversation(conversation)
         update_status(conversation.thread_id, ConversationStatus.CALL_BOOKED)
-        if conversation.hubspot_contact_id:
-            await get_hubspot_client().update_contact_status(
-                conversation.hubspot_contact_id, "QUALIFIED"
-            )
-            await get_hubspot_client().add_note(
-                contact_id=conversation.hubspot_contact_id,
+        if conversation.crm_contact_id:
+            await get_crm_client().update_contact_status(conversation.crm_contact_id, "QUALIFIED")
+            await get_crm_client().add_note(
+                contact_id=conversation.crm_contact_id,
                 note_body=f"Cal.com confirmed booking {booking_uid}",
                 prospect_company=conversation.prospect.company,
             )
@@ -507,9 +505,9 @@ async def handle_calcom_event(
 
     if trigger_upper == "BOOKING_CANCELLED":
         update_status(conversation.thread_id, ConversationStatus.QUALIFIED)
-        if conversation.hubspot_contact_id:
-            await get_hubspot_client().add_note(
-                contact_id=conversation.hubspot_contact_id,
+        if conversation.crm_contact_id:
+            await get_crm_client().add_note(
+                contact_id=conversation.crm_contact_id,
                 note_body=f"Cal.com booking cancelled: {booking_uid}",
                 prospect_company=conversation.prospect.company,
             )
@@ -522,9 +520,9 @@ async def handle_calcom_event(
 
     if trigger_upper == "BOOKING_RESCHEDULED":
         update_status(conversation.thread_id, ConversationStatus.CALL_BOOKED)
-        if conversation.hubspot_contact_id:
-            await get_hubspot_client().add_note(
-                contact_id=conversation.hubspot_contact_id,
+        if conversation.crm_contact_id:
+            await get_crm_client().add_note(
+                contact_id=conversation.crm_contact_id,
                 note_body=f"Cal.com booking rescheduled: {booking_uid}",
                 prospect_company=conversation.prospect.company,
             )
@@ -549,7 +547,7 @@ async def handle_inbound_sms(from_phone: str, message: str) -> dict:
     Downstream handler for inbound SMS with no matching existing conversation.
 
     Opens a new inbound-originated conversation thread so the reply doesn't
-    dead-end, writes a HubSpot note if we can resolve the contact by phone,
+    dead-end, writes a CRM note if we can resolve the contact by phone,
     and logs the trace. This is the application-level handler that the SMS
     webhook routes to when `get_conversation_by_phone` returns None.
 
@@ -576,18 +574,18 @@ async def handle_inbound_sms(from_phone: str, message: str) -> dict:
             {"inbound_source": "sms_webhook", "from_phone": from_phone}
         )
 
-    # Best-effort HubSpot search — if the phone matches an existing contact,
+    # Best-effort CRM search — if the phone matches an existing contact,
     # attach a note recording the inbound SMS.
     try:
-        contact = await get_hubspot_client().search_contact(email=from_phone)  # phone-fallback
+        contact = await get_crm_client().search_contact(email=from_phone)  # phone-fallback
         if contact and contact.get("id"):
-            await get_hubspot_client().add_note(
+            await get_crm_client().add_note(
                 contact_id=contact["id"],
                 note_body=f"Inbound SMS from {from_phone}: {message[:500]}",
                 prospect_company=prospect.company,
             )
     except Exception as e:
-        logger.debug("HubSpot attach for inbound SMS skipped: %s", e)
+        logger.debug("CRM attach for inbound SMS skipped: %s", e)
 
     return {
         "thread_id": conversation.thread_id,
@@ -623,15 +621,15 @@ async def handle_sms_opt_out(from_phone: str) -> dict:
             channel=ChannelType.SMS,
             metadata={"opt_out": True},
         )
-        if conversation.hubspot_contact_id:
+        if conversation.crm_contact_id:
             try:
-                await get_hubspot_client().update_contact_status(
-                    conversation.hubspot_contact_id,
+                await get_crm_client().update_contact_status(
+                    conversation.crm_contact_id,
                     "UNQUALIFIED",
                     properties={"hs_lead_status": "UNQUALIFIED"},
                 )
             except Exception as e:
-                logger.warning("HubSpot opt-out update failed: %s", e)
+                logger.warning("CRM opt-out update failed: %s", e)
     return {
         "action": "opt_out",
         "from_phone": from_phone,
@@ -654,15 +652,15 @@ async def handle_unsubscribe(email: str, reason: str = UNSUBSCRIBE_LINK) -> dict
         if conversation.status != ConversationStatus.OPTED_OUT:
             update_status(conversation.thread_id, ConversationStatus.OPTED_OUT)
             closed.append(conversation.thread_id)
-        if conversation.hubspot_contact_id:
+        if conversation.crm_contact_id:
             try:
-                await get_hubspot_client().update_contact_status(
-                    conversation.hubspot_contact_id,
+                await get_crm_client().update_contact_status(
+                    conversation.crm_contact_id,
                     "UNQUALIFIED",
                     properties={"hs_lead_status": "UNQUALIFIED"},
                 )
             except Exception as e:
-                logger.warning("HubSpot unsubscribe update failed: %s", e)
+                logger.warning("CRM unsubscribe update failed: %s", e)
     return {"action": "unsubscribed", "newly_suppressed": newly_added, "threads_closed": closed}
 
 

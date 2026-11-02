@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 # ── Enums ──────────────────────────────────────────────────────────────
 
@@ -271,7 +271,11 @@ class ConversationState(BaseModel):
     signal_brief: HiringSignalBrief | None = None
     gap_brief: CompetitorGapBrief | None = None
     classification: ICPClassification | None = None
-    hubspot_contact_id: str | None = None
+    # Contact id in the configured CRM. Threads saved before CRM_PROVIDER
+    # existed stored it as `hubspot_contact_id`; that name still loads.
+    crm_contact_id: str | None = Field(
+        default=None, validation_alias=AliasChoices("crm_contact_id", "hubspot_contact_id")
+    )
     calcom_booking_id: str | None = None
     created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
     updated_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
