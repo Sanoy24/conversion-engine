@@ -18,7 +18,7 @@ from agent.core.suppression import (
     get_suppression_list,
     unsubscribe_url,
 )
-from agent.integrations.calcom import get_calcom_client
+from agent.integrations.calendar import get_calendar_client
 from agent.models import EmailDraft, TraceRecord
 from agent.playbook import get_playbook
 
@@ -231,7 +231,7 @@ def process_reply_webhook(payload: dict) -> dict:
         "received_at": datetime.utcnow().isoformat(),
         # Email handler references Cal.com booking-link generation for warm-thread
         # scheduling continuity, mirroring SMS handler behavior.
-        "booking_link": get_calcom_client().get_booking_link(),
+        "booking_link": get_calendar_client().get_booking_link(),
         "raw_payload": payload,
     }
 

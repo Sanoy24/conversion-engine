@@ -14,7 +14,7 @@ from datetime import datetime
 from agent.channels.sms_providers import deliver_sms
 from agent.config import settings
 from agent.core.suppression import get_suppression_list
-from agent.integrations.calcom import get_calcom_client
+from agent.integrations.calendar import get_calendar_client
 from agent.models import TraceRecord
 
 logger = logging.getLogger(__name__)
@@ -132,7 +132,7 @@ def process_inbound_sms(payload: dict) -> dict:
         "received_at": date,
         "is_opt_out": _is_opt_out_sms(message),
         "is_help": message.strip().upper() == "HELP",
-        "booking_link": get_calcom_client().get_booking_link(),
+        "booking_link": get_calendar_client().get_booking_link(),
         "booking_confirmation": _extract_booking_confirmation(message),
     }
 

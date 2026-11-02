@@ -54,7 +54,9 @@ services:
       - key: HUBSPOT_PORTAL_ID
         sync: false
 
-      # ── Calendar (Cal.com) ───────────────────────────────────────────
+      # ── Calendar ────────────────────────────────────────────────────
+      - key: CALENDAR_PROVIDER
+        value: calcom          # or calendly (add CALENDLY_* keys)
       - key: CALCOM_API_KEY
         sync: false
       - key: CALCOM_BASE_URL
