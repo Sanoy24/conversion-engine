@@ -1,0 +1,12 @@
+{
+  "_doc": "Placeholder capacity for the example playbook. The agent must never commit to more than what is listed here.",
+  "as_of": "2026-01-01",
+  "total_available": 12,
+  "stacks": {
+    "python": { "available": 4 },
+    "data": { "available": 3 },
+    "ml": { "available": 2 },
+    "go": { "available": 1 },
+    "infra": { "available": 2 }
+  }
+}

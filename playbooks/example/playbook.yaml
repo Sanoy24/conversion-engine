@@ -1,0 +1,110 @@
+# Example playbook — a fictional engineering-services firm.
+#
+# Copy this directory, edit it for your own company, and point the engine at it:
+#     PLAYBOOK_DIR=./playbooks/my-company
+#
+# Every path below is relative to this directory.
+
+company:
+  name: Acme Engineering
+  website: acme.example
+  offering: >-
+    Acme Engineering provides dedicated engineering and data teams to B2B software
+    companies, plus fixed-scope projects for data platforms and applied AI.
+  sender_name: Sam
+  sender_title: Research Partner
+  support_email: hello@acme.example
+
+voice:
+  style_guide: style_guide.md
+  subject_prefixes: ["Question on", "Context:", "Note on", "Congrats on"]
+  banned_phrases:
+    - world-class
+    - top talent
+    - rockstar
+    - ninja
+    - A-players
+    - synergy
+  max_words:
+    cold: 120
+    warm_reply: 100
+    re_engagement: 70
+  extra_rules:
+    - Refer to delivery capacity as "the team" — never as headcount for sale.
+  # Drafts scoring below this on the LLM tone check are regenerated once.
+  tone_check_threshold: 0.7
+
+# What the agent may say about available capacity. Omit to disable capacity checks.
+capacity: capacity.json
+
+# Ideal-customer-profile segments, in priority order (earlier wins a score tie).
+#
+# A segment is disqualified if any `exclude` condition matches or any `required`
+# criterion fails; otherwise its score is the sum of matched criterion weights.
+# Available conditions (set exactly one per entry):
+#   funding_rounds: [series a, series b]   employees: {min: 15, max: 80}
+#   layoffs: true|false                    leadership_change: true|false
+#   ai_maturity_min: 2                     ai_roles_min: 2
+#   open_roles_min: 5
+segments:
+  - id: leadership_transition
+    label: Engineering-leadership transition
+    description: A new CTO or VP Engineering appointed in the last 90 days.
+    pitch: >-
+      New technical leaders often revisit how their team is staffed in their first
+      months. Offer a perspective, not a pitch; ask what they are prioritising.
+    criteria:
+      - when: {leadership_change: true}
+        weight: 4
+        required: true
+
+  - id: restructuring
+    label: Restructuring for efficiency
+    description: Mid-sized company (200-2,000 people) with a recent layoff.
+    pitch: >-
+      Focus on keeping delivery capacity steady while costs come down. Never mention
+      the layoff directly.
+    criteria:
+      - when: {layoffs: true}
+        weight: 3
+      - when: {employees: {min: 200, max: 2000}}
+        weight: 1
+
+  - id: recently_funded
+    label: Recently funded startup
+    description: Series A/B in the last 6 months, 15-80 people, hiring faster than recruiting can keep up.
+    pitch: >-
+      Fresh budget and a runway clock. Frame the conversation around shipping faster
+      than in-house hiring alone allows.
+    criteria:
+      - when: {funding_rounds: [series a, series b]}
+        weight: 3
+      - when: {employees: {min: 15, max: 80}}
+        weight: 1
+    exclude:
+      - layoffs: true
+      - employees: {min: 201}
+
+  - id: capability_gap
+    label: Specialised capability gap
+    description: Visible AI/ML ambition (AI maturity 2+) that in-house skills may not cover.
+    pitch: >-
+      Offer a scoped project rather than ongoing staffing. Lead with a specific,
+      evidenced observation, framed as a question.
+    criteria:
+      - when: {ai_maturity_min: 2}
+        weight: 2
+        required: true
+      - when: {ai_roles_min: 2}
+        weight: 1
+
+# Extra material injected into the drafter prompt. `use_for` limits it to some
+# email types (cold, warm_reply, re_engagement). Directories load every *.md file.
+knowledge:
+  - path: knowledge/services.md
+    label: Services and pricing
+    use_for: [cold, warm_reply, re_engagement]
+  - path: knowledge/proof_points.md
+    label: Proof points (warm replies only)
+    use_for: [warm_reply]
+    max_chars: 1500
