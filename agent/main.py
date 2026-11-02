@@ -11,7 +11,7 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel
 
 from agent.channels.email_handler import process_reply_webhook
@@ -31,6 +31,7 @@ from agent.security import (
     check_calcom_signature,
     check_resend_signature,
     check_sms_webhook_token,
+    check_twilio_signature,
 )
 
 logging.basicConfig(
@@ -55,7 +56,9 @@ async def lifespan(_app: FastAPI):
                 ("API_KEY", settings.api_key),
                 ("RESEND_WEBHOOK_SECRET", settings.resend_webhook_secret),
                 ("CALCOM_WEBHOOK_SECRET", settings.calcom_webhook_secret),
-                ("AT_WEBHOOK_TOKEN", settings.at_webhook_token),
+                ("AT_WEBHOOK_TOKEN", settings.at_webhook_token)
+                if settings.sms_provider == "africastalking"
+                else ("TWILIO_AUTH_TOKEN", settings.twilio_auth_token),
             )
             if not value
         ]
@@ -305,7 +308,39 @@ async def sms_inbound_webhook(request: Request):
             status_code=400,
             content={"status": "error", "reason": "malformed_body"},
         )
+    return await _route_sms(payload)
 
+
+@app.post("/webhooks/sms/twilio")
+async def twilio_sms_webhook(request: Request):
+    """
+    Webhook endpoint for Twilio inbound SMS (Messaging -> "A message comes in").
+
+    Verifies X-Twilio-Signature, maps Twilio's fields onto the shared router's
+    payload, and answers with empty TwiML so Twilio sends no automatic reply.
+    """
+    try:
+        params = {k: str(v) for k, v in (await request.form()).items()}
+    except Exception as e:
+        logger.warning("Twilio webhook: malformed form body: %s", e)
+        return JSONResponse(
+            status_code=400, content={"status": "error", "reason": "malformed_body"}
+        )
+
+    path_and_query = request.url.path + (f"?{request.url.query}" if request.url.query else "")
+    if not check_twilio_signature(request.headers, path_and_query, params):
+        return _unauthorized("invalid_signature")
+
+    from agent.channels.sms_providers import normalize_twilio_inbound
+
+    result = await _route_sms(normalize_twilio_inbound(params))
+    if isinstance(result, JSONResponse) and result.status_code >= 400:
+        return result
+    return Response(content="<Response/>", media_type="application/xml")
+
+
+async def _route_sms(payload: dict):
+    """Hand a normalized inbound SMS to the shared router (one handler per message)."""
     try:
         from agent.channels.sms_handler import route_inbound_sms
         from agent.core.conversation import get_conversation_by_phone

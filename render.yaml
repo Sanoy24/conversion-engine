@@ -32,7 +32,9 @@ services:
       - key: RESEND_WEBHOOK_SECRET
         sync: false
 
-      # ── SMS (Africa's Talking) ───────────────────────────────────────
+      # ── SMS ────────────────────────────────────────────────────────
+      - key: SMS_PROVIDER
+        value: africastalking  # or twilio (add TWILIO_* keys)
       - key: AT_USERNAME
         value: sandbox
       - key: AT_API_KEY
