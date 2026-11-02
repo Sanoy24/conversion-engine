@@ -11,6 +11,7 @@ run with an open API or unauthenticated webhooks by accident.
 - Cal.com: `X-Cal-Signature-256`, hex HMAC-SHA256 of the body (`CALCOM_WEBHOOK_SECRET`)
 - Africa's Talking: it does not sign requests, so the callback URL carries a
   shared token instead: `/webhooks/sms/inbound?token=<AT_WEBHOOK_TOKEN>`
+- Twilio: `X-Twilio-Signature` over the public URL + form fields (`TWILIO_AUTH_TOKEN`)
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ import logging
 import time
 from collections.abc import Mapping
 
+from agent.channels.sms_providers import twilio_signature
 from agent.config import settings
 
 logger = logging.getLogger(__name__)
@@ -93,3 +95,21 @@ def check_sms_webhook_token(token: str) -> bool:
     if not settings.at_webhook_token:
         return _secret_missing("AT_WEBHOOK_TOKEN")
     return hmac.compare_digest(token.encode(), settings.at_webhook_token.encode())
+
+
+def check_twilio_signature(
+    headers: Mapping[str, str], path_and_query: str, params: Mapping[str, str]
+) -> bool:
+    """
+    Verify X-Twilio-Signature. Twilio signs the URL it called, so it is
+    rebuilt from PUBLIC_BASE_URL: behind a proxy the app may see http:// or an
+    internal host instead.
+    """
+    if not settings.twilio_auth_token:
+        return _secret_missing("TWILIO_AUTH_TOKEN")
+    if not settings.public_base_url:
+        logger.error("PUBLIC_BASE_URL is required to verify Twilio signatures")
+        return False
+    url = settings.public_base_url.rstrip("/") + path_and_query
+    expected = twilio_signature(settings.twilio_auth_token, url, params)
+    return hmac.compare_digest(headers.get("x-twilio-signature", ""), expected)

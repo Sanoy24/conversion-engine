@@ -48,7 +48,18 @@ class Settings(BaseSettings):
     # Svix signing secret (whsec_...) from Resend -> Webhooks.
     resend_webhook_secret: str = ""
 
-    # --- SMS (Africa's Talking) ---
+    # --- SMS ---
+    # Which service sends and receives SMS.
+    sms_provider: Literal["africastalking", "twilio"] = "africastalking"
+
+    # Twilio: account SID + auth token (the token also verifies inbound
+    # webhooks), and a sender: a phone number or a Messaging Service.
+    twilio_account_sid: str = ""
+    twilio_auth_token: str = ""
+    twilio_from_number: str = ""
+    twilio_messaging_service_sid: str = ""
+
+    # Africa's Talking
     at_username: str = "sandbox"
     # Africa's Talking does not sign callbacks; put this token in the callback
     # URL instead: /webhooks/sms/inbound?token=<AT_WEBHOOK_TOKEN>

@@ -1,5 +1,5 @@
 """
-Africa's Talking SMS handler.
+SMS handler (provider chosen by SMS_PROVIDER, see sms_providers.py).
 Secondary channel — only for warm leads who have replied by email
 and prefer fast coordination for scheduling.
 Never used for cold outbound.
@@ -11,29 +11,13 @@ import logging
 import uuid
 from datetime import datetime
 
+from agent.channels.sms_providers import deliver_sms
 from agent.config import settings
 from agent.core.suppression import get_suppression_list
 from agent.integrations.calcom import get_calcom_client
 from agent.models import TraceRecord
 
 logger = logging.getLogger(__name__)
-
-# Lazy-load Africa's Talking SDK
-_at_sms = None
-
-
-def _get_at_client():
-    """Initialize Africa's Talking SMS client."""
-    global _at_sms
-    if _at_sms is None:
-        import africastalking
-
-        africastalking.initialize(
-            username=settings.at_username,
-            api_key=settings.at_api_key,
-        )
-        _at_sms = africastalking.SMS
-    return _at_sms
 
 
 class SMSChannelPolicyError(RuntimeError):
@@ -47,7 +31,7 @@ async def send_sms(
     warm_lead: bool = True,
 ) -> tuple[dict, TraceRecord]:
     """
-    Send an SMS via Africa's Talking sandbox.
+    Send an SMS via the configured provider (SMS_PROVIDER).
 
     Channel policy (hard-enforced): SMS is a WARM-LEAD channel only. The
     B2B buyer persona (founders, CTOs, VPs Engineering) regards cold
@@ -95,25 +79,20 @@ async def send_sms(
         return {"status": "sink"}, trace
 
     try:
-        sms_client = _get_at_client()
-        response = sms_client.send(
-            message=message,
-            recipients=[to_phone],
-            sender_id=settings.at_shortcode or None,
-        )
+        response = await deliver_sms(to_phone, message)
 
         trace = TraceRecord(
             trace_id=trace_id,
             event_type="sms_sent",
             thread_id=thread_id,
             input_data={"to": to_phone, "message_length": len(message)},
-            output_data={"response": str(response)},
-            cost_usd=0.0,  # Sandbox is free
+            output_data=response,
+            cost_usd=0.0,
             success=True,
         )
 
-        logger.info("SMS sent to %s via Africa's Talking sandbox.", to_phone)
-        return response, trace
+        logger.info("SMS sent to %s via %s.", to_phone, response["provider"])
+        return {"status": "sent", **response}, trace
 
     except Exception as e:
         logger.error("SMS send failed to %s: %s", to_phone, str(e))
