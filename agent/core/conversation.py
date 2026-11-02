@@ -2,6 +2,10 @@
 Conversation State Manager.
 Tracks multi-turn, multi-channel conversations with prospects.
 Persists state for each thread, prevents multi-thread leakage.
+
+Storage is pluggable (see `conversation_store`). Functions here save after
+every change they make; callers that edit a `ConversationState` in place must
+call `save_conversation()` afterwards for the change to survive a restart.
 """
 
 from __future__ import annotations
@@ -10,6 +14,8 @@ import logging
 import uuid
 from datetime import datetime
 
+from agent.config import settings
+from agent.core.conversation_store import ConversationStore, create_store
 from agent.models import (
     ChannelType,
     ConversationMessage,
@@ -20,11 +26,26 @@ from agent.models import (
 
 logger = logging.getLogger(__name__)
 
-# In-memory state store (swap with DB for production)
-_conversations: dict[str, ConversationState] = {}
+_store: ConversationStore | None = None
 
-# Keyed by company for multi-thread leakage detection
-_company_threads: dict[str, list[str]] = {}
+
+def get_store() -> ConversationStore:
+    """The process-wide conversation store, created on first use from settings."""
+    global _store
+    if _store is None:
+        _store = create_store(settings.conversation_db_path)
+    return _store
+
+
+def set_store(store: ConversationStore) -> None:
+    """Replace the process-wide store (used by tests and embedding apps)."""
+    global _store
+    _store = store
+
+
+def save_conversation(state: ConversationState) -> None:
+    """Persist a conversation after editing it in place."""
+    get_store().save(state)
 
 
 def create_conversation(
@@ -34,20 +55,11 @@ def create_conversation(
 ) -> ConversationState:
     """Create a new conversation thread for a prospect."""
     thread_id = f"thread_{uuid.uuid4().hex[:8]}"
-    company = (prospect.company or "").lower()
-
     state = ConversationState(
         thread_id=thread_id,
         prospect=prospect,
         channel=channel,
     )
-
-    _conversations[thread_id] = state
-
-    # Track threads per company for leakage detection
-    if company not in _company_threads:
-        _company_threads[company] = []
-    _company_threads[company].append(thread_id)
 
     if initial_message:
         state.messages.append(
@@ -59,13 +71,15 @@ def create_conversation(
             )
         )
 
+    save_conversation(state)
+
     logger.info("Created conversation %s for %s via %s", thread_id, prospect.company, channel.value)
     return state
 
 
 def get_conversation(thread_id: str) -> ConversationState | None:
     """Get a conversation by thread ID."""
-    return _conversations.get(thread_id)
+    return get_store().get(thread_id)
 
 
 def get_conversation_by_phone(phone: str) -> ConversationState | None:
@@ -79,9 +93,7 @@ def get_conversation_by_phone(phone: str) -> ConversationState | None:
     """
     if not phone:
         return None
-    matches = [
-        c for c in _conversations.values() if c.prospect and c.prospect.contact_phone == phone
-    ]
+    matches = [c for c in get_store().all() if c.prospect and c.prospect.contact_phone == phone]
     if not matches:
         return None
     return max(matches, key=lambda c: c.updated_at)
@@ -91,7 +103,7 @@ def get_conversation_by_booking_id(booking_id: str) -> ConversationState | None:
     """Look up a conversation by associated Cal.com booking ID."""
     if not booking_id:
         return None
-    for conversation in _conversations.values():
+    for conversation in get_store().all():
         if conversation.calcom_booking_id == booking_id:
             return conversation
     return None
@@ -105,7 +117,7 @@ def add_message(
     metadata: dict | None = None,
 ) -> ConversationState:
     """Add a message to a conversation thread."""
-    state = _conversations.get(thread_id)
+    state = get_store().get(thread_id)
     if not state:
         raise ValueError(f"Conversation {thread_id} not found")
 
@@ -125,24 +137,27 @@ def add_message(
         elif state.status == ConversationStatus.OUTBOUND_SENT:
             state.status = ConversationStatus.REPLIED
 
+    save_conversation(state)
+
     logger.debug("Added message to %s: role=%s, status=%s", thread_id, role, state.status.value)
     return state
 
 
 def update_status(thread_id: str, status: ConversationStatus) -> ConversationState:
     """Update the conversation status."""
-    state = _conversations.get(thread_id)
+    state = get_store().get(thread_id)
     if not state:
         raise ValueError(f"Conversation {thread_id} not found")
 
     state.status = status
     state.updated_at = datetime.utcnow().isoformat()
+    save_conversation(state)
     return state
 
 
 def get_thread_history(thread_id: str) -> list[dict]:
     """Get the message history for a specific thread (NOT the company)."""
-    state = _conversations.get(thread_id)
+    state = get_store().get(thread_id)
     if not state:
         return []
 
@@ -157,13 +172,13 @@ def has_sibling_threads(thread_id: str) -> bool:
     Check if this thread has sibling threads at the same company.
     Used for multi-thread leakage prevention.
     """
-    state = _conversations.get(thread_id)
+    state = get_store().get(thread_id)
     if not state:
         return False
 
     company = (state.prospect.company or "").lower()
-    threads = _company_threads.get(company, [])
-    return len(threads) > 1
+    siblings = [c for c in get_store().all() if (c.prospect.company or "").lower() == company]
+    return len(siblings) > 1
 
 
 def get_active_conversations(
@@ -171,7 +186,7 @@ def get_active_conversations(
     channel: ChannelType | None = None,
 ) -> list[ConversationState]:
     """Get all active conversations, optionally filtered."""
-    results = list(_conversations.values())
+    results = get_store().all()
 
     if status:
         results = [c for c in results if c.status == status]
@@ -186,7 +201,7 @@ def get_stalled_conversations(stall_hours: int = 48) -> list[ConversationState]:
     cutoff = datetime.utcnow().timestamp() - (stall_hours * 3600)
     stalled = []
 
-    for state in _conversations.values():
+    for state in get_store().all():
         if state.status in (ConversationStatus.OUTBOUND_SENT, ConversationStatus.REPLIED):
             try:
                 updated = datetime.fromisoformat(state.updated_at).timestamp()

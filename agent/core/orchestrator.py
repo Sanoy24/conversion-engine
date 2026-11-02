@@ -20,6 +20,7 @@ from agent.core.conversation import (
     get_conversation,
     get_conversation_by_booking_id,
     get_thread_history,
+    save_conversation,
     update_status,
 )
 from agent.core.email_drafter import draft_email
@@ -90,6 +91,7 @@ async def process_new_prospect(
     conversation.signal_brief = signal_brief
     conversation.gap_brief = gap_brief
     conversation.classification = classification
+    save_conversation(conversation)
 
     email_draft, draft_traces = await draft_email(
         signal_brief=signal_brief,
@@ -268,6 +270,7 @@ async def _log_new_prospect_to_hubspot(
         classification=conversation.classification,
     )
     conversation.hubspot_contact_id = hubspot_contact.get("id")
+    save_conversation(conversation)
 
     if not conversation.hubspot_contact_id:
         return hubspot_trace, None
@@ -379,6 +382,7 @@ async def _book_discovery_call(
     booking_data = booking_result.get("data", booking_result)
     booking_id = booking_data.get("id") or booking_data.get("uid")
     conversation.calcom_booking_id = booking_id
+    save_conversation(conversation)
     update_status(conversation.thread_id, ConversationStatus.CALL_BOOKED)
 
     # Human-readable confirmation so the prospect knows the exact time —
@@ -457,6 +461,7 @@ async def handle_calcom_event(
 
     if trigger_upper == "BOOKING_CREATED":
         conversation.calcom_booking_id = booking_uid or conversation.calcom_booking_id
+        save_conversation(conversation)
         update_status(conversation.thread_id, ConversationStatus.CALL_BOOKED)
         if conversation.hubspot_contact_id:
             await get_hubspot_client().update_contact_status(

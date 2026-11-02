@@ -74,6 +74,11 @@ class Settings(BaseSettings):
     app_host: str = "0.0.0.0"
     log_level: str = "INFO"
 
+    # --- Conversation storage ---
+    # SQLite file that keeps conversation threads across restarts. Set to an
+    # empty string to keep threads in memory only (lost on restart).
+    conversation_db_path: str = "./data/conversations.db"
+
     # --- Kill Switch ---
     live_outbound_enabled: bool = False
 

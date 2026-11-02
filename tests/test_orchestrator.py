@@ -21,15 +21,6 @@ from agent.models import (
 from tests.helpers import make_brief
 
 
-@pytest.fixture(autouse=True)
-def clear_conversation_state():
-    conversation_module._conversations.clear()
-    conversation_module._company_threads.clear()
-    yield
-    conversation_module._conversations.clear()
-    conversation_module._company_threads.clear()
-
-
 class _FakeHubSpotClient:
     def __init__(self):
         self.created = []

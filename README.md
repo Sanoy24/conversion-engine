@@ -196,7 +196,7 @@ tests/
 
 ## Known limitations
 
-- The conversation store is **in memory**, so threads are lost on restart. A persistent store is the top roadmap item.
+- Conversations are kept in a local SQLite file (`CONVERSATION_DB_PATH`, default `./data/conversations.db`), so they survive restarts. It assumes a **single process**: run one uvicorn worker, and on hosts with an ephemeral filesystem (e.g. Render free plan) mount a persistent disk or threads are lost on redeploy. A shared Postgres store is planned.
 - Email has no unsubscribe link or suppression list yet. Add them before any real sending.
 - Providers are hardwired (Resend, Africa's Talking, HubSpot, Cal.com). Pluggable provider interfaces are planned.
 - Enrichment is tuned for selling to software companies (it counts engineering roles).

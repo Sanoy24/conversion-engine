@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import pytest
 
+from agent.core import conversation as conversation_module
+from agent.core.conversation_store import InMemoryConversationStore
 from agent.models import (
     AIMaturitySignal,
     Confidence,
@@ -13,6 +15,14 @@ from agent.models import (
     LeadershipSignal,
     ProspectInfo,
 )
+
+
+@pytest.fixture(autouse=True)
+def fresh_conversation_store():
+    """Give every test an empty in-memory store, never the on-disk database."""
+    conversation_module.set_store(InMemoryConversationStore())
+    yield
+    conversation_module.set_store(InMemoryConversationStore())
 
 
 @pytest.fixture
