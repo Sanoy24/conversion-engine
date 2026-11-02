@@ -85,6 +85,8 @@ services:
         sync: false          # e.g. https://conversion-engine.onrender.com
       - key: UNSUBSCRIBE_SECRET
         generateValue: true  # signs unsubscribe links; keep it stable
+      - key: FOLLOW_UP_DAYS
+        value: "3,7"
       - key: DAILY_SEND_LIMIT
         value: "50"
       - key: EMAIL_WARMUP_START

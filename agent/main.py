@@ -6,6 +6,7 @@ for prospect processing and system health.
 
 from __future__ import annotations
 
+import asyncio
 import html
 import logging
 from contextlib import asynccontextmanager
@@ -18,6 +19,7 @@ from pydantic import BaseModel
 from agent.channels.email_handler import process_reply_webhook
 from agent.config import settings
 from agent.core.conversation import get_active_conversations, get_stalled_conversations
+from agent.core.follow_ups import run_follow_ups
 from agent.core.orchestrator import (
     ReviewError,
     approve_review,
@@ -77,8 +79,25 @@ async def lifespan(_app: FastAPI):
             "Live outbound is on but PUBLIC_BASE_URL / UNSUBSCRIBE_SECRET are unset: "
             "every email will be refused until both are configured."
         )
+    follow_up_task = None
+    if settings.follow_up_interval_minutes > 0 and settings.follow_up_schedule:
+        follow_up_task = asyncio.create_task(_follow_up_loop())
     yield
+    if follow_up_task:
+        follow_up_task.cancel()
     logger.info("Conversion Engine shutting down.")
+
+
+async def _follow_up_loop() -> None:
+    """Run due follow-ups every FOLLOW_UP_INTERVAL_MINUTES."""
+    while True:
+        await asyncio.sleep(settings.follow_up_interval_minutes * 60)
+        try:
+            summary = await run_follow_ups()
+            if summary["follow_ups"] or summary["stalled"] or summary["held"]:
+                logger.info("Follow-up run: %s", summary)
+        except Exception:
+            logger.exception("Follow-up run failed")
 
 
 app = FastAPI(
@@ -527,6 +546,15 @@ async def reject_review_item(review_id: str, request: RejectRequest):
     except ReviewError as e:
         raise HTTPException(status_code=409, detail=str(e)) from e
     return item.model_dump(exclude={"draft"})
+
+
+# ── Follow-ups ─────────────────────────────────────────────────────────
+
+
+@app.post("/api/follow-ups/run")
+async def run_follow_ups_now():
+    """Draft every follow-up that is due now (for cron jobs). Returns what happened."""
+    return await run_follow_ups()
 
 
 # ── Sending limits ─────────────────────────────────────────────────────
