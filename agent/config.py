@@ -26,10 +26,14 @@ class Settings(BaseSettings):
     # --- Email (Resend) ---
     resend_api_key: str = ""
     resend_from_email: str = "outbound@yourdomain.com"
+    # Svix signing secret (whsec_...) from Resend -> Webhooks.
     resend_webhook_secret: str = ""
 
     # --- SMS (Africa's Talking) ---
     at_username: str = "sandbox"
+    # Africa's Talking does not sign callbacks; put this token in the callback
+    # URL instead: /webhooks/sms/inbound?token=<AT_WEBHOOK_TOKEN>
+    at_webhook_token: str = ""
     at_api_key: str = ""
     at_shortcode: str = ""
     at_environment: str = "sandbox"
@@ -49,6 +53,8 @@ class Settings(BaseSettings):
 
     # --- Calendar (Cal.com) ---
     calcom_api_key: str = ""
+    # Secret set on the Cal.com webhook; verifies X-Cal-Signature-256.
+    calcom_webhook_secret: str = ""
     calcom_base_url: str = "http://localhost:3000"
     calcom_event_type_id: int = 1
     # SDR who co-hosts every discovery call — added as a guest on the Cal.com
@@ -70,6 +76,9 @@ class Settings(BaseSettings):
 
     # --- Application ---
     app_env: Literal["development", "production"] = "development"
+    # Required on /api/* as `X-API-Key` or `Authorization: Bearer`. When unset,
+    # the API is open in development and closed in production.
+    api_key: str = ""
     app_port: int = 8000
     app_host: str = "0.0.0.0"
     log_level: str = "INFO"
