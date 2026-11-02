@@ -161,6 +161,7 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 | `PLAYBOOK_DIR` | Active playbook. Default `./playbooks/example` |
 | **`LIVE_OUTBOUND_ENABLED`** | **Kill switch.** Default `false`: nothing is delivered |
 | `REQUIRE_APPROVAL` | Default `true`: drafted emails wait in the [review queue](#review-queue) |
+| `DAILY_SEND_LIMIT`, `EMAIL_WARMUP_START` | Live emails per day (default 50), and a warm-up ramp for a new sending domain. See [Sending limits](#sending-limits) |
 | `API_KEY` | Required on `/api/*`. Unset = open in development, closed in production |
 | `PUBLIC_BASE_URL`, `UNSUBSCRIBE_SECRET` | Unsubscribe links. **Required for live email**: without them every send is refused |
 | `CONVERSATION_DB_PATH` | SQLite file for threads and the suppression list. Default `./data/conversations.db`; empty = in memory |
@@ -240,6 +241,16 @@ With `REQUIRE_APPROVAL=true` (the default), every LLM-drafted email (cold outrea
 - API: `GET /api/review?status=pending|sent|failed|rejected|all`, `POST /api/review/{id}/approve {"subject"?, "body"?}`, `POST /api/review/{id}/reject {"reason"?}`.
 
 Set `REQUIRE_APPROVAL=false` to send drafts immediately (the full-thread demo script does this).
+
+### Sending limits
+
+Live email is capped to protect your sending domain's reputation (sink mode is never limited):
+
+- **Daily cap:** `DAILY_SEND_LIMIT` (default 50) emails per UTC day.
+- **Warm-up:** set `EMAIL_WARMUP_START` to the date a new domain started sending; the cap is 10/day in week one and doubles weekly until it reaches `DAILY_SEND_LIMIT`.
+- **Auto-pause:** sending stops when the 7-day bounce rate exceeds `BOUNCE_PAUSE_RATE` (5%, once 20+ emails went out) or the spam-complaint rate exceeds `COMPLAINT_PAUSE_RATE` (0.3%, the Gmail/Yahoo threshold). At low volume a single complaint pauses. Bounces and complaints come from the Resend webhook.
+
+A held email isn't lost: approving a draft over the cap leaves it pending in the review queue. `GET /api/sending` shows the cap, today's count and the 7-day rates; `POST /api/sending/pause {"reason"}` and `POST /api/sending/resume` control the pause (rates are measured afresh after a resume).
 
 ### Unsubscribe and suppression
 

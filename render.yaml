@@ -85,6 +85,10 @@ services:
         sync: false          # e.g. https://conversion-engine.onrender.com
       - key: UNSUBSCRIBE_SECRET
         generateValue: true  # signs unsubscribe links; keep it stable
+      - key: DAILY_SEND_LIMIT
+        value: "50"
+      - key: EMAIL_WARMUP_START
+        sync: false          # YYYY-MM-DD for a new sending domain
       - key: REQUIRE_APPROVAL
         value: "true"        # drafts wait for approval at /review
       - key: LIVE_OUTBOUND_ENABLED

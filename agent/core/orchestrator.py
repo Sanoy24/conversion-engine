@@ -351,6 +351,11 @@ async def approve_review(
     draft = item.draft.model_copy(update={"subject": item.subject, "body": item.body})
 
     result, _trace = await send_email(to_email=item.to, draft=draft)
+    if result.get("status") == "held":
+        # Daily limit or paused sending: keep the (edited) draft in the queue.
+        item.status = "pending"
+        queue.save(item)
+        raise ReviewError(f"Not sent, still pending: {result['reason']}")
     item.delivery = result
     item.status = "sent" if result.get("status") in ("sent", "sink") else "failed"
     item.decided_at = datetime.now(UTC).isoformat(timespec="seconds")

@@ -163,6 +163,15 @@ class Settings(BaseSettings):
     # invalidates every link already sent.
     unsubscribe_secret: str = ""
 
+    # --- Sending limits (live email only) ---
+    daily_send_limit: int = 50
+    # ISO date the sending domain started sending (e.g. 2026-11-01). While
+    # set, the daily limit ramps 10/day in week one, doubling weekly.
+    email_warmup_start: str = ""
+    # Pause automatically when the 7-day bounce or spam-complaint rate exceeds these.
+    bounce_pause_rate: float = 0.05
+    complaint_pause_rate: float = 0.003
+
     # --- Review ---
     # When true, every LLM-drafted email waits in the review queue
     # (/review, /api/review) until a person approves it.
