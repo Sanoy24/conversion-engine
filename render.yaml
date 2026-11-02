@@ -37,6 +37,8 @@ services:
         sync: false
       - key: AT_ENVIRONMENT
         value: sandbox
+      - key: AT_WEBHOOK_TOKEN
+        generateValue: true  # add ?token=<value> to the AT callback URL
 
       # ── CRM (HubSpot) ────────────────────────────────────────────────
       - key: HUBSPOT_ACCESS_TOKEN
@@ -51,6 +53,8 @@ services:
         value: https://api.cal.com
       - key: CALCOM_EVENT_TYPE_ID
         value: "1"
+      - key: CALCOM_WEBHOOK_SECRET
+        sync: false          # same secret as on the Cal.com webhook
 
       # ── Observability (Langfuse) ─────────────────────────────────────
       - key: LANGFUSE_PUBLIC_KEY
@@ -63,6 +67,8 @@ services:
       # ── Application ──────────────────────────────────────────────────
       - key: APP_ENV
         value: production
+      - key: API_KEY
+        generateValue: true  # send as X-API-Key on /api/* requests
       - key: LOG_LEVEL
         value: INFO
       - key: PUBLIC_BASE_URL

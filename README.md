@@ -69,6 +69,7 @@ Run the API:
 ```bash
 uv run uvicorn agent.main:app --reload
 
+# The API is open in development; once API_KEY is set, add -H "X-API-Key: $API_KEY"
 curl -X POST http://localhost:8000/api/prospect/new \
   -H "Content-Type: application/json" \
   -d '{"company_name": "Example Corp", "contact_email": "cto@example.com"}'
@@ -158,12 +159,13 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 | `DEV_MODEL` / `EVAL_MODEL` | Model used when `APP_ENV` is `development` / `production` |
 | `PLAYBOOK_DIR` | Active playbook. Default `./playbooks/example` |
 | **`LIVE_OUTBOUND_ENABLED`** | **Kill switch.** Default `false`: nothing is delivered |
+| `API_KEY` | Required on `/api/*`. Unset = open in development, closed in production |
 | `PUBLIC_BASE_URL`, `UNSUBSCRIBE_SECRET` | Unsubscribe links. **Required for live email**: without them every send is refused |
 | `CONVERSATION_DB_PATH` | SQLite file for threads and the suppression list. Default `./data/conversations.db`; empty = in memory |
 | `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_WEBHOOK_SECRET` | Email |
-| `AT_USERNAME`, `AT_API_KEY`, `AT_SHORTCODE` | SMS (Africa's Talking) |
+| `AT_USERNAME`, `AT_API_KEY`, `AT_SHORTCODE`, `AT_WEBHOOK_TOKEN` | SMS (Africa's Talking) |
 | `HUBSPOT_ACCESS_TOKEN`, `USE_HUBSPOT_MCP` | CRM; MCP mode needs Node 18+ for `npx @hubspot/mcp-server` |
-| `CALCOM_API_KEY`, `CALCOM_BASE_URL`, `CALCOM_EVENT_TYPE_ID`, `SDR_EMAIL` | Booking |
+| `CALCOM_API_KEY`, `CALCOM_BASE_URL`, `CALCOM_EVENT_TYPE_ID`, `CALCOM_WEBHOOK_SECRET`, `SDR_EMAIL` | Booking |
 | `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | Tracing (optional; falls back to local JSONL) |
 | `ENABLE_SCAP` (+ `SCAP_*` sub-flags) | Confidence-aware phrasing. Default on |
 
@@ -171,11 +173,17 @@ Integrations without credentials degrade gracefully: the stage records an error 
 
 ### Webhooks
 
-| Route | Source |
-| --- | --- |
-| `POST /webhooks/email/reply` | Resend inbound / bounce events |
-| `POST /webhooks/sms/inbound` | Africa's Talking (handles STOP / HELP) |
-| `POST /webhooks/calcom` | Cal.com booking created / cancelled / rescheduled |
+| Route | Source | Authenticated by |
+| --- | --- | --- |
+| `POST /webhooks/email/reply` | Resend inbound / bounce events | Svix signature, `RESEND_WEBHOOK_SECRET` |
+| `POST /webhooks/sms/inbound?token=...` | Africa's Talking (handles STOP / HELP) | URL token, `AT_WEBHOOK_TOKEN` |
+| `POST /webhooks/calcom` | Cal.com booking created / cancelled / rescheduled | `X-Cal-Signature-256`, `CALCOM_WEBHOOK_SECRET` |
+
+### Authentication
+
+`/api/*` requires `API_KEY`, sent as `X-API-Key: <key>` or `Authorization: Bearer <key>`. `/health`, `/unsubscribe` and the webhooks are public, and each webhook checks its own signature or token.
+
+Every secret works the same way: when it is set it is always enforced; when it is unset, requests are accepted in development (with a warning) and **rejected in production** (`APP_ENV=production`). The app logs any missing secrets at startup.
 
 ### Unsubscribe and suppression
 
@@ -210,7 +218,7 @@ tests/
 ## Known limitations
 
 - Conversations are kept in a local SQLite file (`CONVERSATION_DB_PATH`, default `./data/conversations.db`), so they survive restarts. It assumes a **single process**: run one uvicorn worker, and on hosts with an ephemeral filesystem (e.g. Render free plan) mount a persistent disk or threads are lost on redeploy. A shared Postgres store is planned.
-- The HTTP API has **no authentication** and webhook signatures are not verified yet. Don't expose `/api/*` on a public URL: it returns prospect data and the suppression list. Only `/unsubscribe` and `/webhooks/*` need to be public.
+- The API has a single shared key, with no per-user accounts or scopes.
 - Providers are hardwired (Resend, Africa's Talking, HubSpot, Cal.com). Pluggable provider interfaces are planned.
 - Enrichment is tuned for selling to software companies (it counts engineering roles).
 

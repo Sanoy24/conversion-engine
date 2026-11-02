@@ -26,6 +26,12 @@ from agent.core.orchestrator import (
 from agent.core.suppression import MANUAL, get_suppression_list, verify_unsubscribe_token
 from agent.models import ChannelType, ConversationStatus
 from agent.observability.trace_logger import compute_metrics, init_trace_logger
+from agent.security import (
+    check_api_key,
+    check_calcom_signature,
+    check_resend_signature,
+    check_sms_webhook_token,
+)
 
 logging.basicConfig(
     level=getattr(logging, settings.log_level),
@@ -42,6 +48,19 @@ async def lifespan(_app: FastAPI):
         "Conversion Engine starting (env=%s, model=%s)", settings.app_env, settings.active_model
     )
     logger.info("Kill switch: live_outbound=%s", settings.live_outbound_enabled)
+    if not settings.is_dev:
+        unset = [
+            name
+            for name, value in (
+                ("API_KEY", settings.api_key),
+                ("RESEND_WEBHOOK_SECRET", settings.resend_webhook_secret),
+                ("CALCOM_WEBHOOK_SECRET", settings.calcom_webhook_secret),
+                ("AT_WEBHOOK_TOKEN", settings.at_webhook_token),
+            )
+            if not value
+        ]
+        if unset:
+            logger.error("Unset in production, matching requests will be rejected: %s", unset)
     if settings.live_outbound_enabled and not (
         settings.public_base_url and settings.unsubscribe_secret
     ):
@@ -59,6 +78,18 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+
+def _unauthorized(reason: str) -> JSONResponse:
+    return JSONResponse(status_code=401, content={"status": "error", "reason": reason})
+
+
+@app.middleware("http")
+async def require_api_key(request: Request, call_next):
+    """Every /api/* route needs the API key; health, webhooks and unsubscribe stay public."""
+    if request.url.path.startswith("/api/") and not check_api_key(request.headers):
+        return _unauthorized("invalid_or_missing_api_key")
+    return await call_next(request)
 
 
 # ── Request Models ─────────────────────────────────────────────────────
@@ -196,6 +227,8 @@ async def email_reply_webhook(request: Request):
     handler; bounces and delivery pings are acknowledged and logged but NOT
     treated as replies (which would create spurious conversation turns).
     """
+    if not check_resend_signature(request.headers, await request.body()):
+        return _unauthorized("invalid_signature")
     try:
         payload = await request.json()
     except Exception as e:
@@ -261,6 +294,8 @@ async def sms_inbound_webhook(request: Request):
     (`handle_prospect_reply`, `handle_inbound_sms`, `handle_sms_opt_out`, or
     `handle_sms_help`) — nothing dead-ends at parsing.
     """
+    if not check_sms_webhook_token(request.query_params.get("token", "")):
+        return _unauthorized("invalid_token")
     try:
         form = await request.form()
         payload = dict(form)
@@ -312,7 +347,10 @@ async def calcom_webhook(request: Request):
     Configure in Cal.com → Settings → Webhooks → Add webhook:
       URL: https://<your-render-service>.onrender.com/webhooks/calcom
       Events: BOOKING_CREATED, BOOKING_CANCELLED, BOOKING_RESCHEDULED
+      Secret: same value as CALCOM_WEBHOOK_SECRET
     """
+    if not check_calcom_signature(request.headers, await request.body()):
+        return _unauthorized("invalid_signature")
     try:
         payload = await request.json()
     except Exception:
