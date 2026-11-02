@@ -1,5 +1,5 @@
 """
-Deterministic quality checks for a drafted cold email.
+Deterministic quality checks for a drafted email (cold or follow-up).
 
 Nothing here calls an LLM. Each check works out from the case's own signal
 brief (after the same SCAP transform the drafter applies) what the email is
@@ -15,7 +15,11 @@ grounding
     greeting_grounded    the greeting uses the real contact name (or a generic one)
     no_invented_times    no proposed times when the prospect's timezone is unknown
 voice
-    word_limit, no_banned_phrases, subject_rules, signature_present
+    word_limit, no_banned_phrases, subject_rules, signature_present,
+    no_chaser_phrases (follow-ups: no "just following up", "circling back", ...)
+
+Numbers written as words ("fifteen roles", "a dozen") are converted to digits
+before the number checks, so they are held to the same standard.
 
 The regexes are deliberately simple; tests/test_evals.py pins their
 behaviour on hand-written good and bad drafts.
@@ -27,7 +31,7 @@ import re
 from dataclasses import dataclass, field
 
 from agent.core.scap import apply_scap
-from agent.models import Confidence
+from agent.models import Confidence, EmailType
 from agent.playbook import Playbook
 from evals.cases import EvalCase
 
@@ -41,7 +45,13 @@ GROUNDING_CHECKS = (
     "greeting_grounded",
     "no_invented_times",
 )
-VOICE_CHECKS = ("word_limit", "no_banned_phrases", "subject_rules", "signature_present")
+VOICE_CHECKS = (
+    "word_limit",
+    "no_banned_phrases",
+    "subject_rules",
+    "signature_present",
+    "no_chaser_phrases",
+)
 ALL_CHECKS = GROUNDING_CHECKS + VOICE_CHECKS
 
 
@@ -84,8 +94,62 @@ _MONEY = re.compile(
     re.IGNORECASE,
 )
 _NUMBER = re.compile(r"(?<![\w.$,])(\d+(?:\.\d+)?)(%?)")
+# A duration, optionally as a range: "30-minute", "2 weeks", "2 to 6 months".
 _UNIT_AFTER = re.compile(
+    r"(?:\s*(?:-|\u2013|to)\s*\d+(?:\.\d+)?)?"
     r"\s*-?\s*(?:min|mins|minutes?|hours?|hrs?|days?|weeks?|months?|quarters?|years?)\b",
+    re.IGNORECASE,
+)
+
+# Number words, so "fifteen roles" is checked like "15 roles". "one" is left
+# out on purpose: "one quick question" is not a factual claim.
+_UNITS = ["two", "three", "four", "five", "six", "seven", "eight", "nine"]
+_TEENS = [
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+    "fourteen",
+    "fifteen",
+    "sixteen",
+    "seventeen",
+    "eighteen",
+    "nineteen",
+]
+_TENS = ["twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+_WORD_VALUES = {
+    **{w: i + 2 for i, w in enumerate(_UNITS)},
+    **{w: i + 10 for i, w in enumerate(_TEENS)},
+    **{w: (i + 2) * 10 for i, w in enumerate(_TENS)},
+    "dozen": 12,
+}
+_NUMBER_WORDS = re.compile(
+    rf"\b(?:a\s+)?(?:({'|'.join(_TENS)})(?:[-\s]({'|'.join(['one', *_UNITS])}))?"
+    rf"|({'|'.join(_TEENS + _UNITS + ['dozen'])}))\b",
+    re.IGNORECASE,
+)
+
+
+def _words_to_digits(text: str) -> str:
+    def replace(match: re.Match) -> str:
+        if match.group(1):
+            unit = (match.group(2) or "").lower()
+            value = _WORD_VALUES[match.group(1).lower()] + (
+                1 if unit == "one" else _WORD_VALUES.get(unit, 0)
+            )
+        else:
+            value = _WORD_VALUES[match.group(3).lower()]
+        return str(value)
+
+    return _NUMBER_WORDS.sub(replace, text)
+
+
+_CHASER = re.compile(
+    r"\b(?:just (?:following|checking|circling|bumping|wanted to follow)\w*|"
+    r"following up on my (?:last|previous) (?:email|note|message)|circling back|"
+    r"bumping (?:this|my)|touching base|did you (?:get|have) a chance|"
+    r"(?:haven't|have not|didn't|did not) hear(?:d)? back|in case you missed|"
+    r"floating this|resurfacing)\b",
     re.IGNORECASE,
 )
 _ORDINAL_AFTER = re.compile(r"(?:st|nd|rd|th)\b", re.IGNORECASE)
@@ -122,19 +186,23 @@ def _word_regex(text: str) -> re.Pattern:
     return re.compile(r"\b" + re.escape(text) + r"\b", re.IGNORECASE)
 
 
-def derive_facts(case: EvalCase, playbook: Playbook) -> Facts:
+def derive_facts(
+    case: EvalCase, playbook: Playbook, email_type: EmailType = EmailType.COLD
+) -> Facts:
     original = case.brief
     scap = apply_scap(case.brief, case.gap_brief)
     brief, gaps = scap.brief, scap.gap_brief
+    if email_type != EmailType.COLD:
+        gaps = None  # the drafter only shows competitor gaps in cold email
     facts = Facts()
 
     # Facts about the sender (services, capacity) come from the playbook
-    # material the drafter is given for cold email.
+    # material the drafter is given for this email type.
     sender_texts = [playbook.read_text(playbook.capacity)]
     sender_texts += [
         playbook.read_text(item.path, max_chars=item.max_chars)
         for item in playbook.knowledge
-        if "cold" in item.use_for
+        if email_type.value in item.use_for
     ]
     for text in sender_texts:
         facts.sender_numbers.update(
@@ -169,7 +237,7 @@ def derive_facts(case: EvalCase, playbook: Playbook) -> Facts:
                 ),
             )
         )
-    if case.gap_brief:
+    if case.gap_brief and email_type == EmailType.COLD:
         kept = {g.practice for g in (gaps.gaps if gaps else [])}
         for gap in case.gap_brief.gaps:
             if gap.practice not in kept:
@@ -251,13 +319,22 @@ def _ungrounded_in(text: str, money: set[float], numbers: set[float]) -> list[st
     return problems
 
 
-def check_draft(case: EvalCase, draft: Draft, playbook: Playbook) -> list[CheckResult]:
-    facts = derive_facts(case, playbook)
+def check_draft(
+    case: EvalCase,
+    draft: Draft,
+    playbook: Playbook,
+    email_type: EmailType = EmailType.COLD,
+) -> list[CheckResult]:
+    facts = derive_facts(case, playbook, email_type)
+    if draft.proposed_times:
+        # "I've proposed two times below" refers to the email itself.
+        facts.numbers.add(float(len(draft.proposed_times)))
     voice = playbook.voice
     signature = playbook.company.signature
     message = _strip_signature(draft.body, signature)
     full_text = f"{draft.subject}\n{message}"
-    sentences = [s for s in _SENTENCE.findall(full_text) if s.strip()]
+    # Number and hedging checks read "fifteen" as 15.
+    sentences = [s for s in _SENTENCE.findall(_words_to_digits(full_text)) if s.strip()]
     results: list[CheckResult] = []
 
     def add(name: str, problems: list[str]) -> None:
@@ -304,10 +381,8 @@ def check_draft(case: EvalCase, draft: Draft, playbook: Playbook) -> list[CheckR
     )
 
     words = len(message.split())
-    add(
-        "word_limit",
-        [f"{words} words > {voice.max_words.cold}"] if words > voice.max_words.cold else [],
-    )
+    limit = getattr(voice.max_words, email_type.value)
+    add("word_limit", [f"{words} words > {limit}"] if words > limit else [])
     add(
         "no_banned_phrases",
         [repr(p) for p in voice.banned_phrases if _word_regex(p).search(full_text)],
@@ -322,4 +397,10 @@ def check_draft(case: EvalCase, draft: Draft, playbook: Playbook) -> list[CheckR
     add("subject_rules", subject_problems)
     missing = [line for line in signature.splitlines() if line.strip() and line not in draft.body]
     add("signature_present", [f"missing {line!r}" for line in missing])
+    add(
+        "no_chaser_phrases",
+        [repr(m.group(0)) for m in _CHASER.finditer(full_text)]
+        if email_type == EmailType.RE_ENGAGEMENT
+        else [],
+    )
     return results

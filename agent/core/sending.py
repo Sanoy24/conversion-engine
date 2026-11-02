@@ -69,9 +69,11 @@ class SendingGuard:
             self._check_health()
 
     def _count(self, kind: str, since: datetime) -> int:
+        # Strictly after `since`: an event in the same clock tick as a resume
+        # belongs to the period before it.
         with self._lock:
             row = self._db.execute(
-                "SELECT COUNT(*) FROM send_events WHERE kind = ? AND at >= ?",
+                "SELECT COUNT(*) FROM send_events WHERE kind = ? AND at > ?",
                 (kind, since.isoformat()),
             ).fetchone()
         return row[0]

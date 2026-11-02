@@ -10,6 +10,11 @@ Run the quality evaluations.
     uv run python -m evals.run import --model NAME DRAFTS.json [...]
                                                   # record drafts made outside the app
 
+Every case is evaluated as a cold email and as a follow-up (re_engagement,
+replying to a fixed neutral first email). `--type cold|re_engagement` limits
+record/prompts/score to one of them. Recordings key cold drafts by case id and
+follow-ups by `<case id>@re_engagement`.
+
 `record` calls the drafter exactly as production does (SCAP on, tone check,
 example playbook) and saves the drafts to evals/recordings/<model>.json, so
 scoring is free and repeatable. `prompts` + `import` do the same for a model
@@ -33,27 +38,54 @@ from pathlib import Path
 
 from agent.config import settings
 from agent.core.icp_classifier import classify_prospect
+from agent.models import EmailType
 from agent.playbook import get_playbook
-from evals.cases import EvalCase, load_cases
+from evals.cases import EvalCase, load_cases, previous_email
 from evals.checks import ALL_CHECKS, GROUNDING_CHECKS, Draft, check_draft
 
 RECORDINGS_DIR = Path(__file__).with_name("recordings")
+EMAIL_TYPES = (EmailType.COLD, EmailType.RE_ENGAGEMENT)
 
 
-def prompt_hash(case: EvalCase) -> str:
-    """Hash of the drafter prompts for a case: changes when the drafter's prompt does."""
+def draft_key(case: EvalCase, email_type: EmailType) -> str:
+    return case.id if email_type == EmailType.COLD else f"{case.id}@{email_type.value}"
+
+
+def draft_inputs(case: EvalCase, email_type: EmailType) -> dict:
+    """The drafter's inputs for a case, mirroring production for each email type."""
+    inputs: dict = {
+        "signal_brief": case.brief,
+        "classification": classify_prospect(case.brief),
+        "email_type": email_type,
+    }
+    if email_type == EmailType.COLD:
+        inputs["gap_brief"] = case.gap_brief
+    else:
+        signature = get_playbook().company.signature
+        inputs["thread_history"] = [
+            {
+                "role": "agent",
+                "content": previous_email(case, signature),
+                "timestamp": "2026-10-01T09:00:00",
+            }
+        ]
+    return inputs
+
+
+def prompt_hash(case: EvalCase, email_type: EmailType = EmailType.COLD) -> str:
+    """Hash of the drafter prompts: changes when the drafter's prompt does."""
     from agent.core.email_drafter import build_draft_prompts
 
-    prompts = build_draft_prompts(
-        case.brief, classify_prospect(case.brief), gap_brief=case.gap_brief
-    )
+    prompts = build_draft_prompts(**draft_inputs(case, email_type))
     return hashlib.sha256((prompts.system + prompts.user).encode()).hexdigest()[:12]
 
 
-def fingerprint(case: EvalCase) -> str:
+def fingerprint(case: EvalCase, email_type: EmailType = EmailType.COLD) -> str:
     payload = case.brief.model_dump_json() + (
         case.gap_brief.model_dump_json() if case.gap_brief else ""
     )
+    if email_type != EmailType.COLD:
+        payload += email_type.value + previous_email(case, get_playbook().company.signature)
     return hashlib.sha256(payload.encode()).hexdigest()[:12]
 
 
@@ -81,10 +113,11 @@ def print_classification(result: dict) -> None:
 # ── Recording ─────────────────────────────────────────────────────────
 
 
-async def record(cases: list[EvalCase], model: str | None) -> Path:
+async def record(
+    cases: list[EvalCase], model: str | None, email_types: tuple[EmailType, ...] = EMAIL_TYPES
+) -> Path:
     from agent import llm
     from agent.core.email_drafter import draft_email
-    from agent.models import EmailType
 
     if not settings.openrouter_api_key:
         sys.exit("OPENROUTER_API_KEY is not set: recording needs a real model.")
@@ -93,21 +126,16 @@ async def record(cases: list[EvalCase], model: str | None) -> Path:
         llm._default_client = None
     entries = {}
     for case in cases:
-        classification = classify_prospect(case.brief)
-        print(f"drafting {case.id} ({classification.segment}) ...", file=sys.stderr)
-        draft, _ = await draft_email(
-            signal_brief=case.brief,
-            classification=classification,
-            email_type=EmailType.COLD,
-            gap_brief=case.gap_brief,
-            thread_id=f"eval_{case.id}",
-        )
-        entries[case.id] = {
-            "subject": draft.subject,
-            "body": draft.body,
-            "proposed_times": [t.model_dump() for t in draft.proposed_times],
-            "tone_score": draft.tone_check_score,
-        }
+        for email_type in email_types:
+            key = draft_key(case, email_type)
+            print(f"drafting {key} ...", file=sys.stderr)
+            draft, _ = await draft_email(**draft_inputs(case, email_type), thread_id=f"eval_{key}")
+            entries[key] = {
+                "subject": draft.subject,
+                "body": draft.body,
+                "proposed_times": [t.model_dump() for t in draft.proposed_times],
+                "tone_score": draft.tone_check_score,
+            }
     return save_recording(settings.active_model, cases, entries)
 
 
@@ -117,15 +145,17 @@ def save_recording(model_name: str, cases: list[EvalCase], entries: dict[str, di
     existing = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"drafts": {}}
     drafts = existing["drafts"]
     for case in cases:
-        if case.id not in entries:
-            continue
-        drafts[case.id] = {
-            "fingerprint": fingerprint(case),
-            "prompt_hash": prompt_hash(case),
-            "segment": classify_prospect(case.brief).segment,
-            **entries[case.id],
-            "recorded_at": datetime.now(UTC).isoformat(timespec="seconds"),
-        }
+        for email_type in EMAIL_TYPES:
+            key = draft_key(case, email_type)
+            if key not in entries:
+                continue
+            drafts[key] = {
+                "fingerprint": fingerprint(case, email_type),
+                "prompt_hash": prompt_hash(case, email_type),
+                "segment": classify_prospect(case.brief).segment,
+                **entries[key],
+                "recorded_at": datetime.now(UTC).isoformat(timespec="seconds"),
+            }
     RECORDINGS_DIR.mkdir(exist_ok=True)
     path.write_text(
         json.dumps({"model": model_name, "drafts": drafts}, indent=2, ensure_ascii=False) + "\n",
@@ -135,16 +165,17 @@ def save_recording(model_name: str, cases: list[EvalCase], entries: dict[str, di
     return path
 
 
-def export_prompts(cases: list[EvalCase], path: Path) -> None:
-    """Write the exact drafter prompts per case, for drafting outside the app."""
+def export_prompts(
+    cases: list[EvalCase], path: Path, email_types: tuple[EmailType, ...] = EMAIL_TYPES
+) -> None:
+    """Write the exact drafter prompts per draft key, for drafting outside the app."""
     from agent.core.email_drafter import build_draft_prompts
 
     payload = {}
     for case in cases:
-        prompts = build_draft_prompts(
-            case.brief, classify_prospect(case.brief), gap_brief=case.gap_brief
-        )
-        payload[case.id] = {"system": prompts.system, "user": prompts.user}
+        for email_type in email_types:
+            prompts = build_draft_prompts(**draft_inputs(case, email_type))
+            payload[draft_key(case, email_type)] = {"system": prompts.system, "user": prompts.user}
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"wrote prompts for {len(payload)} case(s) to {path}", file=sys.stderr)
 
@@ -163,7 +194,7 @@ def import_drafts(cases: list[EvalCase], model_name: str, paths: list[Path]) -> 
                 "proposed_times": output.get("proposed_times", []),
                 "tone_score": None,
             }
-    unknown = set(entries) - {c.id for c in cases}
+    unknown = set(entries) - {draft_key(c, t) for c in cases for t in EMAIL_TYPES}
     if unknown:
         sys.exit(f"unknown case ids in import: {sorted(unknown)}")
     return save_recording(model_name, cases, entries)
@@ -172,26 +203,28 @@ def import_drafts(cases: list[EvalCase], model_name: str, paths: list[Path]) -> 
 # ── Scoring ───────────────────────────────────────────────────────────
 
 
-def score_recording(path: Path, cases: list[EvalCase]) -> dict:
+def score_recording(
+    path: Path, cases: list[EvalCase], email_type: EmailType = EmailType.COLD
+) -> dict:
     data = json.loads(path.read_text(encoding="utf-8"))
     playbook = get_playbook()
-    by_id = {c.id: c for c in cases}
     rows, stale, missing, old_prompt = [], [], [], []
-    for case_id, case in by_id.items():
-        entry = data["drafts"].get(case_id)
+    for case in cases:
+        key = draft_key(case, email_type)
+        entry = data["drafts"].get(key)
         if entry is None:
-            missing.append(case_id)
+            missing.append(key)
             continue
-        if entry.get("fingerprint") != fingerprint(case):
-            stale.append(case_id)
+        if entry.get("fingerprint") != fingerprint(case, email_type):
+            stale.append(key)
             continue
-        if entry.get("prompt_hash") != prompt_hash(case):
-            old_prompt.append(case_id)
+        if entry.get("prompt_hash") != prompt_hash(case, email_type):
+            old_prompt.append(key)
         draft = Draft(entry["subject"], entry["body"], entry.get("proposed_times", []))
-        results = check_draft(case, draft, playbook)
+        results = check_draft(case, draft, playbook, email_type)
         rows.append(
             {
-                "case": case_id,
+                "case": key,
                 "failed": {r.name: r.detail for r in results if not r.passed},
             }
         )
@@ -199,6 +232,7 @@ def score_recording(path: Path, cases: list[EvalCase]) -> dict:
     return {
         "recording": path.name,
         "model": data.get("model"),
+        "email_type": email_type.value,
         "scored": len(rows),
         "clean": sum(not row["failed"] for row in rows),
         "grounded": sum(not set(row["failed"]) & set(GROUNDING_CHECKS) for row in rows),
@@ -212,7 +246,9 @@ def score_recording(path: Path, cases: list[EvalCase]) -> dict:
 
 def print_score(result: dict) -> None:
     n = result["scored"]
-    print(f"\n## Drafts: {result['model']} ({result['recording']})\n")
+    if not n and not result["stale"]:
+        return  # nothing recorded for this email type
+    print(f"\n## {result['email_type']} drafts: {result['model']} ({result['recording']})\n")
     if n:
         print(f"- fully clean: {result['clean']}/{n}")
         print(f"- no grounding violations: {result['grounded']}/{n}\n")
@@ -257,6 +293,11 @@ def main(argv: list[str] | None = None) -> int:
         "--model", help="record: model id (default: configured); import: name for the recording"
     )
     parser.add_argument("--cases", help="comma-separated case ids (default: all)")
+    parser.add_argument(
+        "--type",
+        choices=[t.value for t in EMAIL_TYPES],
+        help="record/prompts/score only this email type (default: both)",
+    )
     parser.add_argument("--json", type=Path, help="also write results to this JSON file")
     args = parser.parse_args(argv)
 
@@ -268,14 +309,15 @@ def main(argv: list[str] | None = None) -> int:
             parser.error(f"unknown case ids: {sorted(unknown)}")
         cases = [c for c in cases if c.id in wanted]
 
+    email_types = (EmailType(args.type),) if args.type else EMAIL_TYPES
     output: dict = {}
     if args.command == "record":
-        asyncio.run(record(cases, args.model))
+        asyncio.run(record(cases, args.model, email_types))
         return 0
     if args.command == "prompts":
         if len(args.paths) != 1:
             parser.error("prompts needs one output path")
-        export_prompts(cases, args.paths[0])
+        export_prompts(cases, args.paths[0], email_types)
         return 0
     if args.command == "import":
         if not (args.model and args.paths):
@@ -289,7 +331,7 @@ def main(argv: list[str] | None = None) -> int:
         paths = args.paths or sorted(RECORDINGS_DIR.glob("*.json"))
         if not paths:
             print("\nNo recordings yet. Run `python -m evals.run record` first.")
-        output["drafts"] = [score_recording(p, cases) for p in paths]
+        output["drafts"] = [score_recording(p, cases, t) for p in paths for t in email_types]
         for result in output["drafts"]:
             print_score(result)
     if args.json:

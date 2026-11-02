@@ -40,6 +40,7 @@ from agent.models import (
     Confidence,
     ConversationState,
     ConversationStatus,
+    EmailDraft,
     EmailType,
     TraceRecord,
 )
@@ -530,6 +531,20 @@ async def _book_discovery_call(
         + (f"Our team lead ({sdr_email}) will also be on the invite. " if sdr_email else "")
         + f"Booking reference: {booking_id or 'pending'}."
     )
+    # A fixed template, not LLM text, so it skips the review queue (like the SMS
+    # HELP reply); send_email still applies suppression, limits and the kill switch.
+    confirmation_delivery = {"status": "skipped", "reason": "missing_contact_email"}
+    if conversation.prospect.contact_email:
+        confirmation_draft = EmailDraft(
+            thread_id=conversation.thread_id,
+            email_type=EmailType.BOOKING_CONFIRMATION,
+            subject=f"Confirmed: discovery call on {human_time}",
+            body=f"{confirmation}\n\n{get_playbook().company.signature}",
+            draft_metadata={"prospect_company": conversation.prospect.company},
+        )
+        confirmation_delivery, _ = await send_email(
+            to_email=conversation.prospect.contact_email, draft=confirmation_draft
+        )
     add_message(
         thread_id=conversation.thread_id,
         role="agent",
@@ -540,6 +555,8 @@ async def _book_discovery_call(
             "booking": booking_data,
             "trace_id": booking_trace.trace_id,
             "sdr_guest": sdr_email,
+            "delivery": confirmation_delivery,
+            **_sent_at(confirmation_delivery),
         },
     )
 
@@ -568,7 +585,8 @@ async def _book_discovery_call(
         "booked_time": start_time,
         "human_time": human_time,
         "sdr_guest": sdr_email,
-        "confirmation_sent": confirmation,
+        "confirmation": confirmation,
+        "confirmation_delivery": confirmation_delivery,
     }
 
 

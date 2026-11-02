@@ -403,6 +403,18 @@ def _build_user_prompt(
         for msg in thread_history[-5:]:  # Last 5 messages
             prompt_parts.append(f"[{msg.get('role', 'unknown')}]: {msg.get('content', '')[:200]}")
 
+    if email_type == EmailType.RE_ENGAGEMENT:
+        prompt_parts.append(
+            "\n## Follow-up rules\n"
+            "This is a follow-up to an email that got no reply.\n"
+            "- Bring one new, grounded angle or a different question. Do not repeat the "
+            "previous email.\n"
+            "- Never use chaser phrases: 'just following up', 'circling back', 'bumping this', "
+            "'touching base', 'did you get a chance', 'haven't heard back'.\n"
+            "- No guilt or pressure. Make it easy to say no.\n"
+            "- Keep it shorter than the first email."
+        )
+
     return "\n".join(prompt_parts)
 
 
