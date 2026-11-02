@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime
 
 from agent.config import settings
+from agent.core.suppression import get_suppression_list
 from agent.integrations.calcom import get_calcom_client
 from agent.models import TraceRecord
 
@@ -64,6 +65,19 @@ async def send_sms(
         )
 
     trace_id = f"tr_{uuid.uuid4().hex[:8]}"
+
+    suppression = get_suppression_list().get(to_phone)
+    if suppression:
+        logger.info("SMS NOT sent: %s is suppressed (%s)", to_phone, suppression["reason"])
+        trace = TraceRecord(
+            trace_id=trace_id,
+            event_type="sms_suppressed",
+            thread_id=thread_id,
+            input_data={"to": to_phone},
+            output_data={"status": "suppressed", "reason": suppression["reason"]},
+            success=True,
+        )
+        return {"status": "suppressed", "reason": suppression["reason"]}, trace
 
     if not settings.live_outbound_enabled:
         logger.info(

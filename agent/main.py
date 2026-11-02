@@ -6,17 +6,24 @@ for prospect processing and system health.
 
 from __future__ import annotations
 
+import html
 import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
 from agent.channels.email_handler import process_reply_webhook
 from agent.config import settings
 from agent.core.conversation import get_active_conversations, get_stalled_conversations
-from agent.core.orchestrator import handle_calcom_event, handle_prospect_reply, process_new_prospect
+from agent.core.orchestrator import (
+    handle_calcom_event,
+    handle_prospect_reply,
+    handle_unsubscribe,
+    process_new_prospect,
+)
+from agent.core.suppression import MANUAL, get_suppression_list, verify_unsubscribe_token
 from agent.models import ChannelType, ConversationStatus
 from agent.observability.trace_logger import compute_metrics, init_trace_logger
 
@@ -35,6 +42,13 @@ async def lifespan(_app: FastAPI):
         "Conversion Engine starting (env=%s, model=%s)", settings.app_env, settings.active_model
     )
     logger.info("Kill switch: live_outbound=%s", settings.live_outbound_enabled)
+    if settings.live_outbound_enabled and not (
+        settings.public_base_url and settings.unsubscribe_secret
+    ):
+        logger.error(
+            "Live outbound is on but PUBLIC_BASE_URL / UNSUBSCRIBE_SECRET are unset: "
+            "every email will be refused until both are configured."
+        )
     yield
     logger.info("Conversion Engine shutting down.")
 
@@ -63,6 +77,12 @@ class ReplyRequest(BaseModel):
     thread_id: str
     reply_content: str
     channel: str = "email"
+
+
+class SuppressionRequest(BaseModel):
+    address: str
+    channel: str = "email"
+    reason: str = MANUAL
 
 
 # ── API Routes ─────────────────────────────────────────────────────────
@@ -187,15 +207,14 @@ async def email_reply_webhook(request: Request):
 
     parsed = process_reply_webhook(payload)
 
-    # Suppression signal — bounced/complained addresses should not get
-    # further sends. Surfaced to the caller so observability layers can see
-    # the event; a real deployment would mark the prospect as undeliverable.
+    # Bounced/complained recipients were added to the suppression list
+    # while parsing; nothing further is sent to them.
     if parsed.get("is_bounce"):
         return {
             "status": "received",
             "event_type": parsed["event_type"],
             "action": "suppressed",
-            "from_email": parsed.get("from_email"),
+            "suppressed": parsed.get("recipients", []),
         }
 
     if parsed.get("event_type") == "malformed":
@@ -303,6 +322,74 @@ async def calcom_webhook(request: Request):
     trigger = payload.get("triggerEvent", "UNKNOWN")
     booking = payload.get("payload", {})
     return await handle_calcom_event(trigger=trigger, booking_payload=booking)
+
+
+# ── Unsubscribe & suppression ──────────────────────────────────────────
+
+
+def _page(title: str, body: str, status_code: int = 200) -> HTMLResponse:
+    return HTMLResponse(
+        status_code=status_code,
+        content=(
+            "<!doctype html><html><head><meta charset='utf-8'>"
+            "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+            f"<title>{html.escape(title)}</title>"
+            "<style>body{font-family:system-ui,sans-serif;max-width:32rem;margin:4rem auto;"
+            "padding:0 1rem;line-height:1.5}button{font:inherit;padding:.5rem 1rem}</style>"
+            f"</head><body><h1>{html.escape(title)}</h1>{body}</body></html>"
+        ),
+    )
+
+
+@app.get("/unsubscribe")
+async def unsubscribe_page(t: str = ""):
+    """
+    Landing page for the unsubscribe link in every email.
+
+    Asks for a click instead of unsubscribing on GET, because mail scanners
+    fetch links automatically. Mail clients' one-click unsubscribe uses the
+    POST endpoint directly (RFC 8058).
+    """
+    email = verify_unsubscribe_token(t)
+    if not email:
+        return _page("Link not valid", "<p>This unsubscribe link is not valid.</p>", 400)
+    return _page(
+        "Unsubscribe",
+        f"<p>Stop all emails to <strong>{html.escape(email)}</strong>?</p>"
+        f"<form method='post' action='/unsubscribe?t={html.escape(t)}'>"
+        "<button type='submit'>Unsubscribe</button></form>",
+    )
+
+
+@app.post("/unsubscribe")
+async def unsubscribe(t: str = ""):
+    """Unsubscribe: the confirm button and RFC 8058 one-click both land here."""
+    email = verify_unsubscribe_token(t)
+    if not email:
+        return _page("Link not valid", "<p>This unsubscribe link is not valid.</p>", 400)
+    await handle_unsubscribe(email)
+    return _page(
+        "You're unsubscribed",
+        f"<p>We won't email <strong>{html.escape(email)}</strong> again.</p>",
+    )
+
+
+@app.get("/api/suppressions")
+async def list_suppressions():
+    """Every suppressed email address and phone number, oldest first."""
+    entries = get_suppression_list().all()
+    return {"count": len(entries), "suppressions": entries}
+
+
+@app.post("/api/suppressions")
+async def add_suppression(request: SuppressionRequest):
+    """Suppress an address by hand (e.g. a do-not-contact request received elsewhere)."""
+    if not request.address.strip():
+        raise HTTPException(status_code=400, detail="address is required")
+    added = get_suppression_list().add(
+        request.address, channel=request.channel, reason=request.reason
+    )
+    return {"status": "suppressed", "newly_added": added}
 
 
 # ── Entry point ────────────────────────────────────────────────────────

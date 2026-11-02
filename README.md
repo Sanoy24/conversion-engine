@@ -158,6 +158,8 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 | `DEV_MODEL` / `EVAL_MODEL` | Model used when `APP_ENV` is `development` / `production` |
 | `PLAYBOOK_DIR` | Active playbook. Default `./playbooks/example` |
 | **`LIVE_OUTBOUND_ENABLED`** | **Kill switch.** Default `false`: nothing is delivered |
+| `PUBLIC_BASE_URL`, `UNSUBSCRIBE_SECRET` | Unsubscribe links. **Required for live email**: without them every send is refused |
+| `CONVERSATION_DB_PATH` | SQLite file for threads and the suppression list. Default `./data/conversations.db`; empty = in memory |
 | `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_WEBHOOK_SECRET` | Email |
 | `AT_USERNAME`, `AT_API_KEY`, `AT_SHORTCODE` | SMS (Africa's Talking) |
 | `HUBSPOT_ACCESS_TOKEN`, `USE_HUBSPOT_MCP` | CRM; MCP mode needs Node 18+ for `npx @hubspot/mcp-server` |
@@ -174,6 +176,17 @@ Integrations without credentials degrade gracefully: the stage records an error 
 | `POST /webhooks/email/reply` | Resend inbound / bounce events |
 | `POST /webhooks/sms/inbound` | Africa's Talking (handles STOP / HELP) |
 | `POST /webhooks/calcom` | Cal.com booking created / cancelled / rescheduled |
+
+### Unsubscribe and suppression
+
+Once an address is on the suppression list, the engine never contacts it again. The email and SMS senders check the list before every send, including in sink mode, and new prospects with a suppressed email are skipped before enrichment. An address is added when:
+
+- the recipient clicks the unsubscribe link (or uses their mail client's one-click unsubscribe)
+- they reply with an opt-out ("unsubscribe", "remove me", ...) or text STOP
+- an email bounces or is marked as spam (Resend webhook)
+- you add it by hand: `POST /api/suppressions {"address": "..."}`
+
+Every email gets a footer with the playbook's `postal_address` and a signed unsubscribe link, plus `List-Unsubscribe` / `List-Unsubscribe-Post` headers. `GET /unsubscribe` shows a confirm button rather than unsubscribing outright, because mail scanners open links automatically. `GET /api/suppressions` lists the suppression list.
 
 ---
 
@@ -197,7 +210,7 @@ tests/
 ## Known limitations
 
 - Conversations are kept in a local SQLite file (`CONVERSATION_DB_PATH`, default `./data/conversations.db`), so they survive restarts. It assumes a **single process**: run one uvicorn worker, and on hosts with an ephemeral filesystem (e.g. Render free plan) mount a persistent disk or threads are lost on redeploy. A shared Postgres store is planned.
-- Email has no unsubscribe link or suppression list yet. Add them before any real sending.
+- The HTTP API has **no authentication** and webhook signatures are not verified yet. Don't expose `/api/*` on a public URL: it returns prospect data and the suppression list. Only `/unsubscribe` and `/webhooks/*` need to be public.
 - Providers are hardwired (Resend, Africa's Talking, HubSpot, Cal.com). Pluggable provider interfaces are planned.
 - Enrichment is tuned for selling to software companies (it counts engineering roles).
 

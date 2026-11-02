@@ -25,6 +25,12 @@ from agent.core.conversation import (
 )
 from agent.core.email_drafter import draft_email
 from agent.core.icp_classifier import classify_prospect
+from agent.core.suppression import (
+    REPLY_OPT_OUT,
+    SMS_STOP,
+    UNSUBSCRIBE_LINK,
+    get_suppression_list,
+)
 from agent.enrichment.signal_brief import generate_signal_brief
 from agent.integrations.calcom import get_calcom_client
 from agent.integrations.hubspot import get_hubspot_client
@@ -58,6 +64,16 @@ async def process_new_prospect(
     5. Send outbound email
     6. Return the execution result
     """
+    if contact_email and get_suppression_list().is_suppressed(contact_email):
+        # Checked before enrichment so a suppressed person costs no LLM calls
+        # and never gets a new CRM record.
+        logger.info("Skipping prospect %s: contact is suppressed", company_name or domain)
+        return {
+            "status": "suppressed",
+            "contact_email": contact_email,
+            "suppression": get_suppression_list().get(contact_email),
+        }
+
     all_traces: list[TraceRecord] = []
     pipeline_start = datetime.now(UTC)
 
@@ -178,6 +194,16 @@ async def handle_prospect_reply(
     await _log_reply_to_hubspot(conversation, reply_content, channel)
 
     if conversation.status == ConversationStatus.OPTED_OUT:
+        # Opting out in one thread opts the address out everywhere.
+        address = (
+            conversation.prospect.contact_phone
+            if channel == ChannelType.SMS
+            else conversation.prospect.contact_email
+        )
+        if address:
+            get_suppression_list().add(
+                address, channel=channel.value, reason=REPLY_OPT_OUT, thread_id=thread_id
+            )
         return {
             "thread_id": thread_id,
             "action": "opted_out",
@@ -580,6 +606,14 @@ async def handle_sms_opt_out(from_phone: str) -> dict:
     from agent.core.conversation import get_conversation_by_phone
 
     conversation = get_conversation_by_phone(from_phone) if from_phone else None
+    if from_phone:
+        # Suppress even without a matching thread: STOP must always stick.
+        get_suppression_list().add(
+            from_phone,
+            channel="sms",
+            reason=SMS_STOP,
+            thread_id=conversation.thread_id if conversation else None,
+        )
     if conversation:
         update_status(conversation.thread_id, ConversationStatus.OPTED_OUT)
         add_message(
@@ -603,6 +637,33 @@ async def handle_sms_opt_out(from_phone: str) -> dict:
         "from_phone": from_phone,
         "thread_id": conversation.thread_id if conversation else None,
     }
+
+
+async def handle_unsubscribe(email: str, reason: str = UNSUBSCRIBE_LINK) -> dict:
+    """
+    Suppress an email address and close every thread addressed to it.
+    Called from the unsubscribe link; CRM update is best-effort.
+    """
+    from agent.core.conversation import get_active_conversations
+
+    newly_added = get_suppression_list().add(email, channel="email", reason=reason)
+    closed = []
+    for conversation in get_active_conversations():
+        if (conversation.prospect.contact_email or "").lower() != email.lower():
+            continue
+        if conversation.status != ConversationStatus.OPTED_OUT:
+            update_status(conversation.thread_id, ConversationStatus.OPTED_OUT)
+            closed.append(conversation.thread_id)
+        if conversation.hubspot_contact_id:
+            try:
+                await get_hubspot_client().update_contact_status(
+                    conversation.hubspot_contact_id,
+                    "UNQUALIFIED",
+                    properties={"hs_lead_status": "UNQUALIFIED"},
+                )
+            except Exception as e:
+                logger.warning("HubSpot unsubscribe update failed: %s", e)
+    return {"action": "unsubscribed", "newly_suppressed": newly_added, "threads_closed": closed}
 
 
 async def handle_sms_help(from_phone: str) -> dict:

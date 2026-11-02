@@ -14,6 +14,8 @@ company:
   sender_name: Sam
   sender_title: Research Partner
   support_email: hello@acme.example
+  # Shown in every email footer. Commercial email laws (e.g. CAN-SPAM) require it.
+  postal_address: 100 Example Street, Springfield, USA
 
 voice:
   style_guide: style_guide.md

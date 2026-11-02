@@ -79,6 +79,9 @@ async def run(
         contact_email=contact_email,
         contact_title=contact_title,
     )
+    if pipeline.get("status") == "suppressed":
+        print(f"{contact_email} is on the suppression list; nothing to demo.")
+        return {"status": "suppressed", "contact_email": contact_email}
     thread_id = pipeline["thread_id"]
     _emit(
         _stage_record(

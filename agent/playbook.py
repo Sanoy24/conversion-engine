@@ -45,6 +45,8 @@ class CompanyProfile(BaseModel):
     sender_name: str = "The team"
     sender_title: str | None = None
     support_email: str | None = None
+    # Physical mailing address, shown in every email footer (CAN-SPAM).
+    postal_address: str | None = None
 
     @property
     def signature(self) -> str:

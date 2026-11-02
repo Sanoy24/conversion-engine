@@ -65,5 +65,9 @@ services:
         value: production
       - key: LOG_LEVEL
         value: INFO
+      - key: PUBLIC_BASE_URL
+        sync: false          # e.g. https://conversion-engine.onrender.com
+      - key: UNSUBSCRIBE_SECRET
+        generateValue: true  # signs unsubscribe links; keep it stable
       - key: LIVE_OUTBOUND_ENABLED
         value: "false"       # flip to "true" only when ready for live sends

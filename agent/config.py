@@ -75,9 +75,17 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     # --- Conversation storage ---
-    # SQLite file that keeps conversation threads across restarts. Set to an
-    # empty string to keep threads in memory only (lost on restart).
+    # SQLite file that keeps conversation threads and the suppression list
+    # across restarts. Set to an empty string to keep both in memory only.
     conversation_db_path: str = "./data/conversations.db"
+
+    # --- Unsubscribe ---
+    # Public URL this app is reachable at; unsubscribe links point here.
+    # Both values are required before live email is allowed.
+    public_base_url: str = ""
+    # Secret used to sign unsubscribe links. Keep it stable: changing it
+    # invalidates every link already sent.
+    unsubscribe_secret: str = ""
 
     # --- Kill Switch ---
     live_outbound_enabled: bool = False
