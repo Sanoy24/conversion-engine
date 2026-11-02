@@ -161,6 +161,7 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 | `PLAYBOOK_DIR` | Active playbook. Default `./playbooks/example` |
 | **`LIVE_OUTBOUND_ENABLED`** | **Kill switch.** Default `false`: nothing is delivered |
 | `REQUIRE_APPROVAL` | Default `true`: drafted emails wait in the [review queue](#review-queue) |
+| `FOLLOW_UP_DAYS` | Follow-up schedule for silent threads (default `3,7`; empty disables). See [Follow-ups](#follow-ups) |
 | `DAILY_SEND_LIMIT`, `EMAIL_WARMUP_START` | Live emails per day (default 50), and a warm-up ramp for a new sending domain. See [Sending limits](#sending-limits) |
 | `API_KEY` | Required on `/api/*`. Unset = open in development, closed in production |
 | `PUBLIC_BASE_URL`, `UNSUBSCRIBE_SECRET` | Unsubscribe links. **Required for live email**: without them every send is refused |
@@ -241,6 +242,15 @@ With `REQUIRE_APPROVAL=true` (the default), every LLM-drafted email (cold outrea
 - API: `GET /api/review?status=pending|sent|failed|rejected|all`, `POST /api/review/{id}/approve {"subject"?, "body"?}`, `POST /api/review/{id}/reject {"reason"?}`.
 
 Set `REQUIRE_APPROVAL=false` to send drafts immediately (the full-thread demo script does this).
+
+### Follow-ups
+
+Cold threads that get no reply are followed up on a schedule: `FOLLOW_UP_DAYS=3,7` sends the first follow-up 3 days after the last email, the second 7 days after that, then marks the thread `stalled` and stops.
+
+- Any reply or opt-out stops the sequence (the thread is no longer `outbound_sent`); suppressed contacts are skipped before anything is drafted.
+- Timing counts from when an email was actually sent, so time spent in the review queue never shortens the gap; a follow-up waiting for review blocks the next one.
+- Follow-ups are drafted like any email (`re_engagement`, with the thread history) and go through the review queue and sending limits.
+- The app checks every `FOLLOW_UP_INTERVAL_MINUTES` (default 60). Set it to `0` and call `POST /api/follow-ups/run` from a cron instead if you prefer.
 
 ### Sending limits
 

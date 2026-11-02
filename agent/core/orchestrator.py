@@ -128,7 +128,7 @@ async def process_new_prospect(
     if note_trace is not None:
         all_traces.append(note_trace)
 
-    email_result, email_trace = await _send_or_queue(conversation, email_draft)
+    email_result, email_trace = await send_or_queue(conversation, email_draft)
     if email_trace is not None:
         all_traces.append(email_trace)
 
@@ -143,6 +143,7 @@ async def process_new_prospect(
             "grounded_claims": [claim.model_dump() for claim in email_draft.grounded_claims],
             "delivery": email_result,
             "review_id": email_result.get("review_id"),
+            **_sent_at(email_result),
         },
     )
     update_status(
@@ -247,7 +248,7 @@ async def handle_prospect_reply(
             thread_id=thread_id,
         )
 
-        email_result, _email_trace = await _send_or_queue(conversation, email_draft)
+        email_result, _email_trace = await send_or_queue(conversation, email_draft)
 
         add_message(
             thread_id=thread_id,
@@ -259,6 +260,7 @@ async def handle_prospect_reply(
                 "email_type": "warm_reply",
                 "delivery": email_result,
                 "review_id": email_result.get("review_id"),
+                **_sent_at(email_result),
             },
         )
         update_status(thread_id, ConversationStatus.QUALIFIED)
@@ -284,7 +286,17 @@ async def handle_prospect_reply(
     }
 
 
-async def _send_or_queue(conversation: ConversationState, draft) -> tuple[dict, TraceRecord | None]:
+def delivered(result: dict) -> bool:
+    """Whether a send_email result means the email went out (or to the sink)."""
+    return result.get("status") in ("sent", "sink")
+
+
+def _sent_at(result: dict) -> dict:
+    """`sent_at` metadata for a delivered email; follow-up timing counts from it."""
+    return {"sent_at": datetime.now(UTC).isoformat()} if delivered(result) else {}
+
+
+async def send_or_queue(conversation: ConversationState, draft) -> tuple[dict, TraceRecord | None]:
     """Send a drafted email now, or queue it for review when REQUIRE_APPROVAL is on."""
     to_email = conversation.prospect.contact_email
     if not to_email:
@@ -328,6 +340,8 @@ def _record_review_outcome(item: ReviewItem, sent: bool) -> None:
             message.metadata["subject"] = item.subject
             message.metadata["delivery"] = item.delivery or {"status": item.status}
             message.metadata["edited"] = item.edited
+            if sent:
+                message.metadata["sent_at"] = item.decided_at
     save_conversation(conversation)
     if conversation.status == ConversationStatus.PENDING_REVIEW:
         update_status(
@@ -357,7 +371,7 @@ async def approve_review(
         queue.save(item)
         raise ReviewError(f"Not sent, still pending: {result['reason']}")
     item.delivery = result
-    item.status = "sent" if result.get("status") in ("sent", "sink") else "failed"
+    item.status = "sent" if delivered(result) else "failed"
     item.decided_at = datetime.now(UTC).isoformat(timespec="seconds")
     queue.save(item)
     _record_review_outcome(item, sent=item.status == "sent")

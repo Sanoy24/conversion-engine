@@ -172,6 +172,19 @@ class Settings(BaseSettings):
     bounce_pause_rate: float = 0.05
     complaint_pause_rate: float = 0.003
 
+    # --- Follow-ups ---
+    # Days of silence before each follow-up, counted from the previous email.
+    # "3,7" = first follow-up after 3 days, second 7 days later, then stop.
+    # Empty disables follow-ups.
+    follow_up_days: str = "3,7"
+    # How often the app checks for due follow-ups. 0 = never (use
+    # POST /api/follow-ups/run from a cron instead).
+    follow_up_interval_minutes: int = 60
+
+    @property
+    def follow_up_schedule(self) -> list[int]:
+        return [int(d) for d in self.follow_up_days.split(",") if d.strip()]
+
     # --- Review ---
     # When true, every LLM-drafted email waits in the review queue
     # (/review, /api/review) until a person approves it.
