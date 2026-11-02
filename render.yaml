@@ -85,5 +85,7 @@ services:
         sync: false          # e.g. https://conversion-engine.onrender.com
       - key: UNSUBSCRIBE_SECRET
         generateValue: true  # signs unsubscribe links; keep it stable
+      - key: REQUIRE_APPROVAL
+        value: "true"        # drafts wait for approval at /review
       - key: LIVE_OUTBOUND_ENABLED
         value: "false"       # flip to "true" only when ready for live sends

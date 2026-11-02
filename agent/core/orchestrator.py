@@ -25,6 +25,7 @@ from agent.core.conversation import (
 )
 from agent.core.email_drafter import draft_email
 from agent.core.icp_classifier import classify_prospect
+from agent.core.review import ReviewItem, get_review_queue, new_review_item
 from agent.core.suppression import (
     REPLY_OPT_OUT,
     SMS_STOP,
@@ -127,12 +128,8 @@ async def process_new_prospect(
     if note_trace is not None:
         all_traces.append(note_trace)
 
-    email_result = {"status": "skipped", "reason": "missing_contact_email"}
-    if signal_brief.prospect.contact_email:
-        email_result, email_trace = await send_email(
-            to_email=signal_brief.prospect.contact_email,
-            draft=email_draft,
-        )
+    email_result, email_trace = await _send_or_queue(conversation, email_draft)
+    if email_trace is not None:
         all_traces.append(email_trace)
 
     add_message(
@@ -145,9 +142,15 @@ async def process_new_prospect(
             "email_type": email_draft.email_type.value,
             "grounded_claims": [claim.model_dump() for claim in email_draft.grounded_claims],
             "delivery": email_result,
+            "review_id": email_result.get("review_id"),
         },
     )
-    update_status(conversation.thread_id, ConversationStatus.OUTBOUND_SENT)
+    update_status(
+        conversation.thread_id,
+        ConversationStatus.PENDING_REVIEW
+        if email_result["status"] == "pending_review"
+        else ConversationStatus.OUTBOUND_SENT,
+    )
 
     pipeline_latency_ms = (datetime.now(UTC) - pipeline_start).total_seconds() * 1000
     total_cost = sum(trace.cost_usd or 0 for trace in all_traces)
@@ -244,19 +247,19 @@ async def handle_prospect_reply(
             thread_id=thread_id,
         )
 
-        email_result = {"status": "skipped", "reason": "missing_contact_email"}
-        if conversation.prospect.contact_email:
-            email_result, _email_trace = await send_email(
-                to_email=conversation.prospect.contact_email,
-                draft=email_draft,
-            )
+        email_result, _email_trace = await _send_or_queue(conversation, email_draft)
 
         add_message(
             thread_id=thread_id,
             role="agent",
             content=email_draft.body,
             channel=ChannelType.EMAIL,
-            metadata={"email_type": "warm_reply", "delivery": email_result},
+            metadata={
+                "subject": email_draft.subject,
+                "email_type": "warm_reply",
+                "delivery": email_result,
+                "review_id": email_result.get("review_id"),
+            },
         )
         update_status(thread_id, ConversationStatus.QUALIFIED)
 
@@ -279,6 +282,94 @@ async def handle_prospect_reply(
         "action": "no_context",
         "message": "No signal brief available for this thread.",
     }
+
+
+async def _send_or_queue(conversation: ConversationState, draft) -> tuple[dict, TraceRecord | None]:
+    """Send a drafted email now, or queue it for review when REQUIRE_APPROVAL is on."""
+    to_email = conversation.prospect.contact_email
+    if not to_email:
+        return {"status": "skipped", "reason": "missing_contact_email"}, None
+    if settings.require_approval:
+        item = new_review_item(
+            thread_id=conversation.thread_id,
+            to=to_email,
+            draft=draft,
+            prospect_company=conversation.prospect.company,
+            needs_attention=draft.handoff_reason if draft.handoff_to_human else None,
+        )
+        get_review_queue().save(item)
+        logger.info("Draft for %s queued for review (%s)", conversation.prospect.company, item.id)
+        return {"status": "pending_review", "review_id": item.id}, None
+    return await send_email(to_email=to_email, draft=draft)
+
+
+class ReviewError(ValueError):
+    """The review item is missing or no longer pending."""
+
+
+def _claim_pending(review_id: str) -> ReviewItem:
+    queue = get_review_queue()
+    item = queue.get(review_id)
+    if item is None:
+        raise ReviewError(f"Review item {review_id} not found")
+    if item.status != "pending":
+        raise ReviewError(f"Review item {review_id} is already {item.status}")
+    return item
+
+
+def _record_review_outcome(item: ReviewItem, sent: bool) -> None:
+    """Reflect an approval or rejection on the conversation thread."""
+    conversation = get_conversation(item.thread_id)
+    if conversation is None:
+        return
+    for message in conversation.messages:
+        if message.metadata.get("review_id") == item.id:
+            message.content = item.body
+            message.metadata["subject"] = item.subject
+            message.metadata["delivery"] = item.delivery or {"status": item.status}
+            message.metadata["edited"] = item.edited
+    save_conversation(conversation)
+    if conversation.status == ConversationStatus.PENDING_REVIEW:
+        update_status(
+            item.thread_id, ConversationStatus.OUTBOUND_SENT if sent else ConversationStatus.NEW
+        )
+
+
+async def approve_review(
+    review_id: str, subject: str | None = None, body: str | None = None
+) -> ReviewItem:
+    """Approve a queued draft (optionally edited) and send it."""
+    queue = get_review_queue()
+    item = _claim_pending(review_id)
+    item.status = "sending"  # claimed before the await, so a second approve can't double-send
+    queue.save(item)
+
+    if subject is not None and subject.strip() and subject != item.subject:
+        item.subject, item.edited = subject, True
+    if body is not None and body.strip() and body != item.body:
+        item.body, item.edited = body, True
+    draft = item.draft.model_copy(update={"subject": item.subject, "body": item.body})
+
+    result, _trace = await send_email(to_email=item.to, draft=draft)
+    item.delivery = result
+    item.status = "sent" if result.get("status") in ("sent", "sink") else "failed"
+    item.decided_at = datetime.now(UTC).isoformat(timespec="seconds")
+    queue.save(item)
+    _record_review_outcome(item, sent=item.status == "sent")
+    logger.info("Review %s approved (edited=%s): %s", review_id, item.edited, item.status)
+    return item
+
+
+def reject_review(review_id: str, reason: str | None = None) -> ReviewItem:
+    """Reject a queued draft; nothing is sent."""
+    item = _claim_pending(review_id)
+    item.status = "rejected"
+    item.reject_reason = reason
+    item.decided_at = datetime.now(UTC).isoformat(timespec="seconds")
+    get_review_queue().save(item)
+    _record_review_outcome(item, sent=False)
+    logger.info("Review %s rejected: %s", review_id, reason or "no reason given")
+    return item
 
 
 async def _log_new_prospect_to_crm(

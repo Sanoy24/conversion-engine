@@ -6,6 +6,7 @@ import pytest
 
 from agent.core import conversation as conversation_module
 from agent.core.conversation_store import InMemoryConversationStore
+from agent.core.review import ReviewQueue, set_review_queue
 from agent.core.suppression import SuppressionList, set_suppression_list
 from agent.models import (
     AIMaturitySignal,
@@ -20,12 +21,14 @@ from agent.models import (
 
 @pytest.fixture(autouse=True)
 def fresh_conversation_store():
-    """Give every test an empty in-memory store and suppression list, never the on-disk database."""
+    """Give every test empty in-memory stores, never the on-disk database."""
     conversation_module.set_store(InMemoryConversationStore())
     set_suppression_list(SuppressionList())
+    set_review_queue(ReviewQueue())
     yield
     conversation_module.set_store(InMemoryConversationStore())
     set_suppression_list(SuppressionList())
+    set_review_queue(ReviewQueue())
 
 
 @pytest.fixture

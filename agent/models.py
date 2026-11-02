@@ -40,6 +40,7 @@ class ChannelType(StrEnum):
 
 class ConversationStatus(StrEnum):
     NEW = "new"
+    PENDING_REVIEW = "pending_review"  # first email drafted, waiting for approval
     OUTBOUND_SENT = "outbound_sent"
     REPLIED = "replied"
     QUALIFIED = "qualified"
