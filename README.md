@@ -259,6 +259,35 @@ tests/
 
 ---
 
+## Quality evaluations
+
+`evals/` measures whether the engine picks the right pitch and writes honest emails. It runs on 30 fictional companies (`evals/cases.yaml`), each with a known signal brief and the segment the classifier should pick.
+
+- **Classification:** does the classifier pick the expected segment, or abstain when nothing is justified? No LLM involved, so CI runs it on every change.
+- **Drafts:** deterministic checks on every drafted cold email, worked out from the case's own brief after SCAP, with no second LLM grading the first:
+  - **Grounding:** every number and amount traces to the brief (or, in sentences about the sender, to the playbook), withheld low-confidence signals stay out, layoffs are never mentioned, medium-confidence facts are hedged, no internal scoring terms, no invented names or meeting times.
+  - **Voice:** word limit, banned phrases, subject rules, signature.
+
+```bash
+uv run python -m evals.run                         # classification + score every recording
+uv run python -m evals.run record --model <id>     # draft every case with a real model (needs OPENROUTER_API_KEY)
+uv run python -m evals.run prompts out.json        # or export the exact prompts...
+uv run python -m evals.run import --model <name> drafts.json   # ...and import drafts made elsewhere
+```
+
+Recordings live in `evals/recordings/`, so scoring is free and repeatable; CI fails if a case changes without re-recording.
+
+**Current results** (drafts by Claude Haiku and Claude Sonnet given the exact drafter prompts, without the tone-check regeneration step):
+
+| | Classification | Haiku drafts clean | Sonnet drafts clean |
+| --- | --- | --- | --- |
+| Before this suite | 22/30 | 26/30 (2 failures were check false positives) | 30/30 |
+| Now | 30/30 | 30/30 | 30/30 |
+
+What changed: segments now require their core signal, low-confidence evidence can rule a segment out but never qualify it, and the drafter prompt forbids medium-confidence facts in subject lines and internal scoring terms in the email.
+
+Limits: the checks are regex-based, so numbers written as words ("six roles") aren't checked yet, and passing them means an email is honest and on-voice, not that it's persuasive. The cases cover the example playbook only.
+
 ## Known limitations
 
 - Conversations are kept in a local SQLite file (`CONVERSATION_DB_PATH`, default `./data/conversations.db`), so they survive restarts. It assumes a **single process**: run one uvicorn worker, and on hosts with an ephemeral filesystem (e.g. Render free plan) mount a persistent disk or threads are lost on redeploy. A shared Postgres store is planned.

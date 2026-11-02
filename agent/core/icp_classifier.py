@@ -9,6 +9,13 @@ Each segment is a list of weighted criteria plus optional exclusions:
   - any unmatched `required` criterion disqualifies the segment
   - otherwise the score is the sum of the weights of matched criteria
 
+Weak evidence may rule a segment out but never qualify it: an exclusion
+matches on a signal at any confidence, while a criterion that asserts a
+signal is present (a funding round, a layoff, a leadership change, AI
+maturity, open roles) only matches when that signal is at least MEDIUM
+confidence. Otherwise a low-confidence guess would pick the pitch, and the
+pitch would restate the guess the drafter was told not to make.
+
 The highest score wins; ties go to the segment listed first in the playbook.
 If no segment scores above zero, or confidence in the underlying signals is
 low, the classifier abstains so the drafter sends a generic exploratory email
@@ -113,6 +120,7 @@ def _score_segment(
     evidence: list[EvidenceItem] = []
     for criterion in segment.criteria:
         matched, value = _evaluate(criterion.when, brief)
+        matched = matched and _confident_enough(criterion.when, brief)
         if not matched:
             if criterion.required:
                 return 0, [], [f"{segment.id}: missing required {criterion.when.kind}"]
@@ -182,6 +190,20 @@ def _evaluate(condition: Condition, brief: HiringSignalBrief) -> tuple[bool, str
             roles = hiring.open_eng_roles or 0
             return roles >= (condition.open_roles_min or 0), f"{roles} open engineering roles"
     raise ValueError(f"Unknown condition kind: {condition.kind}")
+
+
+def _confident_enough(condition: Condition, brief: HiringSignalBrief) -> bool:
+    """Whether the signal behind a positive criterion is solid enough to qualify a segment."""
+    signal_confidence = {
+        "funding_rounds": brief.funding.confidence,
+        "layoffs": brief.layoffs.confidence if condition.layoffs else None,
+        "leadership_change": brief.leadership.confidence if condition.leadership_change else None,
+        "ai_maturity_min": brief.ai_maturity.confidence,
+        "ai_roles_min": brief.hiring.confidence,
+        "open_roles_min": brief.hiring.confidence,
+    }.get(condition.kind)
+    # Headcount, and "no layoff" / "no leadership change" criteria, carry no confidence.
+    return signal_confidence is None or signal_confidence != Confidence.LOW
 
 
 def _calibrate_confidence(brief: HiringSignalBrief) -> Confidence:
