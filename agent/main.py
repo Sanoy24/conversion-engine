@@ -28,6 +28,7 @@ from agent.core.orchestrator import (
     reject_review,
 )
 from agent.core.review import get_review_queue
+from agent.core.sending import get_sending_guard
 from agent.core.suppression import MANUAL, get_suppression_list, verify_unsubscribe_token
 from agent.models import ChannelType, ConversationStatus
 from agent.observability.trace_logger import compute_metrics, init_trace_logger
@@ -122,6 +123,10 @@ class SuppressionRequest(BaseModel):
     address: str
     channel: str = "email"
     reason: str = MANUAL
+
+
+class PauseRequest(BaseModel):
+    reason: str = "paused by an operator"
 
 
 class ApproveRequest(BaseModel):
@@ -522,6 +527,28 @@ async def reject_review_item(review_id: str, request: RejectRequest):
     except ReviewError as e:
         raise HTTPException(status_code=409, detail=str(e)) from e
     return item.model_dump(exclude={"draft"})
+
+
+# ── Sending limits ─────────────────────────────────────────────────────
+
+
+@app.get("/api/sending")
+async def sending_status():
+    """Daily limit, sends today, 7-day bounce/complaint rates, and whether sending is paused."""
+    return get_sending_guard().status()
+
+
+@app.post("/api/sending/pause")
+async def pause_sending(request: PauseRequest):
+    get_sending_guard().pause(request.reason)
+    return get_sending_guard().status()
+
+
+@app.post("/api/sending/resume")
+async def resume_sending():
+    """Resume after a pause. Rates are measured afresh from this moment."""
+    get_sending_guard().resume()
+    return get_sending_guard().status()
 
 
 # ── Entry point ────────────────────────────────────────────────────────

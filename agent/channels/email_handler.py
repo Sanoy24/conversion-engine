@@ -12,6 +12,7 @@ from datetime import datetime
 
 from agent.channels.email_providers import deliver
 from agent.config import settings
+from agent.core.sending import get_sending_guard
 from agent.core.suppression import (
     BOUNCE,
     COMPLAINT,
@@ -110,9 +111,26 @@ async def send_email(
         )
         return {"status": "error", "error": error}, trace
 
+    guard = get_sending_guard()
+    allowed, held_reason = guard.check()
+    if not allowed:
+        logger.warning("Email to %s held: %s", to_email, held_reason)
+        trace = TraceRecord(
+            trace_id=trace_id,
+            event_type="email_held",
+            prospect_company=company,
+            thread_id=draft.thread_id,
+            input_data={"to": to_email, "subject": draft.subject},
+            output_data={"status": "held", "reason": held_reason},
+            success=False,
+            error=held_reason,
+        )
+        return {"status": "held", "reason": held_reason}, trace
+
     provider = settings.email_provider
     try:
         message_id = await deliver(email_data)
+        guard.record("sent", to_email)
 
         trace = TraceRecord(
             trace_id=trace_id,
@@ -239,6 +257,7 @@ def process_reply_webhook(payload: dict) -> dict:
         reason = COMPLAINT if is_complaint else BOUNCE
         for address in record["recipients"]:
             get_suppression_list().add(address, channel="email", reason=reason)
+            get_sending_guard().record(reason, address)
         logger.warning(
             "Resend webhook: %s for %s (resend_id=%s)",
             reason,
