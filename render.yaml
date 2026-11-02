@@ -20,7 +20,11 @@ services:
       - key: EVAL_MODEL
         value: anthropic/claude-sonnet-4-20250514
 
-      # ── Email (Resend) ───────────────────────────────────────────────
+      # ── Email ────────────────────────────────────────────────────────
+      - key: EMAIL_PROVIDER
+        value: resend        # or sendgrid / smtp (add that provider's keys)
+      - key: EMAIL_FROM
+        sync: false          # e.g. Sam at Acme <sam@acme.example>
       - key: RESEND_API_KEY
         sync: false
       - key: RESEND_FROM_EMAIL
