@@ -175,6 +175,22 @@ Settings come from environment variables (or `.env`). See [.env.example](.env.ex
 
 Integrations without credentials degrade gracefully: the stage records an error in its trace and the pipeline continues.
 
+### Running on free models
+
+A free OpenRouter key is enough to run the engine with nothing being sent (`LIVE_OUTBOUND_ENABLED=false`):
+
+```
+OPENROUTER_API_KEY=<free key>
+DEV_MODEL=nvidia/nemotron-3.5-super-vl:free
+EVAL_MODEL=nvidia/nemotron-3.5-super-vl:free
+FREE_MODELS_ONLY=true
+```
+
+- `FREE_MODELS_ONLY=true` refuses any model that isn't free (id ending `:free`, or `openrouter/free`) before a request is made.
+- Free accounts get 50 requests a day. Each prospect takes 2-3 (draft, tone check, sometimes a regeneration), so plan on 15-20 prospects a day. Reaching the daily limit stops the run with a clear error (HTTP 429) instead of retrying.
+- Free models come and go and are often rate-limited upstream, so check the [current list](https://openrouter.ai/models?max_price=0). Pin one model rather than using `openrouter/free`, which picks at random and makes results hard to compare.
+- Reasoning is turned off by default (`LLM_DISABLE_REASONING`), because reasoning models can otherwise spend the whole token budget thinking and return nothing.
+
 ### Email providers
 
 Set `EMAIL_PROVIDER` and `EMAIL_FROM` (e.g. `Sam at Acme <sam@acme.example>`). Every provider sends the same message: plain text, the unsubscribe footer, and `List-Unsubscribe` / `List-Unsubscribe-Post` headers.
@@ -316,6 +332,8 @@ Recordings live in `evals/recordings/`, so scoring is free and repeatable; CI fa
 | --- | --- | --- | --- | --- |
 | Before this suite | 22/30 | 26/30 (2 were check false positives) | 30/30 | not measured | not measured |
 | Now | 30/30 | 30/30 | 30/30 | 30/30 | 30/30 |
+
+On a free model, run through the full production path with the tone check, `nvidia/nemotron-3.5-super-vl:free` scored 6/8 clean on eight of the hardest cold cases. It still put a medium-confidence round in a subject line and mentioned "AI maturity" in one email, so review its drafts closely.
 
 What changed: segments now require their core signal, low-confidence evidence can rule a segment out but never qualify it, and the drafter prompt forbids medium-confidence facts in subject lines and internal scoring terms in the email.
 

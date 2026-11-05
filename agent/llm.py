@@ -6,13 +6,14 @@ Tracks cost and latency per call for the evidence graph.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import time
 import uuid
 from typing import Any
 
-from openai import AsyncOpenAI
+from openai import APIConnectionError, AsyncOpenAI, InternalServerError, RateLimitError
 
 from agent.config import settings
 from agent.models import TraceRecord
@@ -21,17 +22,73 @@ from agent.observability.langfuse_client import log_generation
 logger = logging.getLogger(__name__)
 
 
+# Transient failures are retried this many times. Free-model quotas can count
+# failed requests, so this stays small.
+MAX_RETRIES = 2
+MAX_RETRY_DELAY_SECONDS = 60
+
+
+class LLMDailyLimitError(RuntimeError):
+    """The provider's daily request limit is used up; retrying today won't help."""
+
+
+def is_free_model(model: str) -> bool:
+    """Whether an OpenRouter model id is free: `...:free`, or the free router."""
+    return model.endswith(":free") or model == "openrouter/free"
+
+
+def _is_daily_limit(error: RateLimitError) -> bool:
+    return "per-day" in str(error).lower() or "per day" in str(error).lower()
+
+
+def _retry_delay(error: Exception, attempt: int) -> float:
+    """Honour the provider's Retry-After when it sends one, else back off exponentially."""
+    response = getattr(error, "response", None)
+    retry_after = response.headers.get("retry-after") if response is not None else None
+    try:
+        delay = float(retry_after) if retry_after else 5.0 * 2**attempt
+    except ValueError:
+        delay = 5.0 * 2**attempt
+    return min(delay, MAX_RETRY_DELAY_SECONDS)
+
+
 class LLMClient:
     """Async LLM client via OpenRouter with cost tracking."""
 
     def __init__(self, model: str | None = None):
         self.model = model or settings.active_model
+        if settings.free_models_only and not is_free_model(self.model):
+            raise ValueError(
+                f"FREE_MODELS_ONLY is on, refusing non-free model {self.model!r}. "
+                "Use a model ending in ':free' or 'openrouter/free'."
+            )
+        # max_retries=0: the SDK would retry every 429, including the daily limit.
         self.client = AsyncOpenAI(
             api_key=settings.openrouter_api_key,
             base_url=settings.openrouter_base_url,
+            max_retries=0,
         )
         self._total_cost = 0.0
         self._call_count = 0
+
+    async def _create_with_retry(self, **kwargs: Any) -> Any:
+        """Create a completion, retrying transient failures but never the daily limit."""
+        for attempt in range(MAX_RETRIES + 1):
+            try:
+                return await self.client.chat.completions.create(**kwargs)
+            except RateLimitError as e:
+                if _is_daily_limit(e):
+                    raise LLMDailyLimitError(f"Daily LLM request limit reached: {e}") from e
+                if attempt == MAX_RETRIES:
+                    raise
+                delay = _retry_delay(e, attempt)
+            except (APIConnectionError, InternalServerError) as e:
+                if attempt == MAX_RETRIES:
+                    raise
+                delay = _retry_delay(e, attempt)
+            logger.warning("LLM call failed, retrying in %.0fs", delay)
+            await asyncio.sleep(delay)
+        raise RuntimeError("unreachable")
 
     async def chat(
         self,
@@ -60,21 +117,29 @@ class LLMClient:
             }
             if response_format:
                 kwargs["response_format"] = response_format
+            if settings.llm_disable_reasoning and "openrouter" in settings.openrouter_base_url:
+                kwargs["extra_body"] = {"reasoning": {"enabled": False}}
 
-            response = await self.client.chat.completions.create(**kwargs)
+            response = await self._create_with_retry(**kwargs)
 
             elapsed_ms = (time.monotonic() - start_time) * 1000
             content = response.choices[0].message.content or ""
+            finish_reason = response.choices[0].finish_reason
+            # A router such as openrouter/free reports which model really answered.
+            answered_by = response.model or self.model
 
-            # Extract cost from OpenRouter response headers if available
             usage = response.usage
             cost = 0.0
-            if usage:
-                # Estimate cost based on token counts (varies by model)
+            if usage and not is_free_model(self.model):
+                # OpenRouter reports the real cost; other endpoints get an estimate.
+                reported = getattr(usage, "cost", None)
                 prompt_tokens = usage.prompt_tokens or 0
                 completion_tokens = usage.completion_tokens or 0
-                # Conservative estimate — actual price from OpenRouter billing
-                cost = (prompt_tokens * 0.000001) + (completion_tokens * 0.000002)
+                cost = (
+                    float(reported)
+                    if reported is not None
+                    else (prompt_tokens * 0.000001) + (completion_tokens * 0.000002)
+                )
 
             self._total_cost += cost
             self._call_count += 1
@@ -94,17 +159,18 @@ class LLMClient:
                     "completion_tokens": usage.completion_tokens if usage else 0,
                     "total_tokens": usage.total_tokens if usage else 0,
                     "response_length": len(content),
+                    "finish_reason": finish_reason,
                 },
                 cost_usd=cost,
                 latency_ms=elapsed_ms,
-                model=self.model,
+                model=answered_by,
                 success=True,
             )
 
             logger.info(
                 "LLM call %s: model=%s, tokens=%s, cost=$%.4f, latency=%.0fms",
                 trace_id,
-                self.model,
+                answered_by,
                 usage.total_tokens if usage else "?",
                 cost,
                 elapsed_ms,
@@ -114,7 +180,7 @@ class LLMClient:
             log_generation(
                 trace_id=trace_id,
                 name=trace_event,
-                model=self.model,
+                model=answered_by,
                 input_messages=messages,
                 output=content,
                 usage={
@@ -174,6 +240,13 @@ class LLMClient:
             prospect_company=prospect_company,
             thread_id=thread_id,
         )
+
+        if not content.strip():
+            raise ValueError(
+                f"Model {trace.model} returned no content "
+                f"(finish_reason={trace.output_data.get('finish_reason')}). A reasoning model "
+                "may have spent its token budget thinking: see LLM_DISABLE_REASONING."
+            )
 
         def _try_parse(s: str) -> dict | None:
             try:

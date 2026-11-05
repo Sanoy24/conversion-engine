@@ -141,7 +141,7 @@ async def record(
 
 def save_recording(model_name: str, cases: list[EvalCase], entries: dict[str, dict]) -> Path:
     """Merge drafts for `cases` into evals/recordings/<model>.json."""
-    path = RECORDINGS_DIR / f"{model_name.replace('/', '__')}.json"
+    path = RECORDINGS_DIR / f"{model_name.replace('/', '__').replace(':', '_')}.json"
     existing = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"drafts": {}}
     drafts = existing["drafts"]
     for case in cases:
