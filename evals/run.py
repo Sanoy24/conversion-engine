@@ -81,7 +81,9 @@ def prompt_hash(case: EvalCase, email_type: EmailType = EmailType.COLD) -> str:
 
 
 def fingerprint(case: EvalCase, email_type: EmailType = EmailType.COLD) -> str:
-    payload = case.brief.model_dump_json() + (
+    # sample_titles is left out so adding that optional field didn't invalidate
+    # every recording. A case that sets it still changes prompt_hash.
+    payload = case.brief.model_dump_json(exclude={"hiring": {"sample_titles"}}) + (
         case.gap_brief.model_dump_json() if case.gap_brief else ""
     )
     if email_type != EmailType.COLD:

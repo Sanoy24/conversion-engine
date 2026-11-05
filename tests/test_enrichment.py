@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import json
+from datetime import UTC, datetime, timedelta
+
 import pytest
 
+from agent.enrichment import layoffs
 from agent.enrichment.crunchbase import (
     _extract_employee_count,
     _extract_industries,
@@ -13,6 +17,10 @@ from agent.enrichment.crunchbase import (
     search_company,
 )
 from agent.enrichment.layoffs import _parse_date, _parse_percentage, check_layoffs
+
+
+def _days_ago(days: int) -> str:
+    return (datetime.now(UTC) - timedelta(days=days)).strftime("%Y-%m-%d")
 
 
 class TestCrunchbaseSearch:
@@ -123,19 +131,42 @@ class TestFundingSignalExtraction:
     """Test funding signal from Crunchbase records."""
 
     def test_with_funding_rounds(self):
+        recent = _days_ago(30)
         record = {
             "id": "testco",
-            "funding_rounds_list": '[{"funding_type":"Series A","money_raised":"$5M","announced_on":"2026-01-15"}]',
+            "funding_rounds_list": json.dumps(
+                [{"funding_type": "Series A", "money_raised": "$5M", "announced_on": recent}]
+            ),
         }
         signal = extract_funding_signal(record)
         assert signal.event == "Series A"
         assert signal.amount_usd == 5_000_000
-        assert signal.closed_at == "2026-01-15"
+        assert signal.closed_at == recent
 
     def test_without_funding(self):
         record = {"id": "testco"}
         signal = extract_funding_signal(record)
         assert signal.event is None
+
+    def test_round_type_comes_from_the_title_in_real_records(self):
+        rounds = [{"title": "Series B - TestCo", "announced_on": _days_ago(30)}]
+        signal = extract_funding_signal({"id": "testco", "funding_rounds_list": rounds})
+        assert signal.event == "Series B"
+
+    def test_newest_round_is_used_whatever_the_order(self):
+        rounds = [
+            {"title": "Seed Round - TestCo", "announced_on": _days_ago(150)},
+            {"title": "Series A - TestCo", "announced_on": _days_ago(30)},
+        ]
+        signal = extract_funding_signal({"id": "testco", "funding_rounds_list": rounds})
+        assert signal.event == "Series A"
+
+    @pytest.mark.parametrize("announced_on", ["2019-03-01", None])
+    def test_old_or_undated_round_is_not_a_funding_event(self, announced_on):
+        rounds = [{"title": "Series B - TestCo", "announced_on": announced_on}]
+        signal = extract_funding_signal({"id": "testco", "funding_rounds_list": rounds})
+        assert signal.event is None
+        assert signal.confidence.value == "low"
 
 
 class TestLayoffsParser:
@@ -147,10 +178,31 @@ class TestLayoffsParser:
         # The CSV has Atlassian data from 2023 — may or may not be in lookback
         assert result is not None  # Should at least return a signal
 
-    def test_unknown_company_no_event(self):
-        result = check_layoffs("ThisCompanyDoesNotExist12345")
+    def test_no_event_is_confident_when_the_data_is_current(self, monkeypatch):
+        monkeypatch.setattr(layoffs, "_layoffs_cache", [{"company": "Other", "date": _days_ago(5)}])
+        result = check_layoffs("TestCo")
         assert result.event is False
-        assert result.confidence.value == "high"  # Confident it's NOT in the data
+        assert result.confidence.value == "high"
+
+    def test_no_event_is_unknown_when_the_data_is_stale(self, monkeypatch):
+        monkeypatch.setattr(layoffs, "_layoffs_cache", [{"company": "Other", "date": "2024-02-29"}])
+        result = check_layoffs("TestCo")
+        assert result.event is False
+        assert result.confidence.value == "low"
+        assert "2024-02-29" in result.sources[0].description
+
+    def test_similar_names_do_not_match(self, monkeypatch):
+        monkeypatch.setattr(layoffs, "_layoffs_cache", [{"company": "Meta", "date": _days_ago(5)}])
+        assert check_layoffs("Metaplex").event is False
+
+    def test_most_recent_event_is_reported(self, monkeypatch):
+        older, newer = _days_ago(100), _days_ago(5)
+        monkeypatch.setattr(
+            layoffs,
+            "_layoffs_cache",
+            [{"company": "TestCo", "date": older}, {"company": "TestCo", "date": newer}],
+        )
+        assert check_layoffs("TestCo").closed_at == newer
 
 
 class TestDateParsing:

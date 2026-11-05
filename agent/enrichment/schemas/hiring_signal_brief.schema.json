@@ -216,6 +216,13 @@
           "default": null,
           "title": "Delta 60D"
         },
+        "sample_titles": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sample Titles",
+          "type": "array"
+        },
         "observed_at": {
           "anyOf": [
             {

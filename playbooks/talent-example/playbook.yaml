@@ -1,0 +1,120 @@
+# Example playbook: a fictional engineering recruitment firm.
+#
+# For dry runs and test inboxes only. This company doesn't exist, so don't send
+# its emails to real prospects. Copy this directory and edit it for your own
+# firm, then point the engine at it:
+#     PLAYBOOK_DIR=./playbooks/my-company
+#
+# Every path below is relative to this directory.
+
+company:
+  name: Example Talent
+  website: talent.example
+  offering: >-
+    Example Talent recruits software and AI engineers for permanent roles at B2B
+    software companies. The client pays a fee only when someone is hired.
+  sender_name: Sam
+  sender_title: Talent Partner
+  support_email: hello@talent.example
+  # Shown in every email footer. Commercial email laws (e.g. CAN-SPAM) require it.
+  postal_address: 100 Example Street, Springfield, USA
+
+voice:
+  style_guide: style_guide.md
+  subject_prefixes: ['Question on', 'Note on', 'Context:', 'Congrats on']
+  banned_phrases:
+    - world-class
+    - top talent
+    - rockstar
+    - ninja
+    - A-players
+    - war for talent
+    - perfect candidate
+    - synergy
+  max_words:
+    cold: 120
+    warm_reply: 100
+    re_engagement: 70
+  extra_rules:
+    - We have no client results to cite. Never mention past clients, past placements, or success rates.
+    - Never say or imply that we already have a candidate for one of their roles.
+  # Drafts scoring below this on the LLM tone check are regenerated once.
+  tone_check_threshold: 0.7
+
+# No `capacity`: a recruitment firm finds people for each role, so it has no
+# bench of available people to check against.
+
+# Ideal-customer-profile segments, in priority order (earlier wins a score tie).
+# See playbooks/example/playbook.yaml for the available conditions.
+#
+# Every segment excludes a recent layoff: offering recruiting help straight after
+# job cuts is tone-deaf, and the company is unlikely to be buying.
+segments:
+  - id: actively_hiring
+    label: Actively hiring engineers
+    description: Five or more open engineering roles at a company of 15-500 people.
+    pitch: >-
+      Refer to the open roles specifically and ask how filling them is going. Offer
+      help with the hardest roles, not all of them.
+    criteria:
+      - when: { open_roles_min: 5 }
+        weight: 3
+        required: true
+      - when: { employees: { min: 15, max: 500 } }
+        weight: 1
+    exclude:
+      - layoffs: true
+
+  - id: funded_and_hiring
+    label: Recently funded and hiring
+    description: Series A/B in the last 6 months, 15-80 people, with at least one open engineering role.
+    pitch: >-
+      New funding usually means hiring targets, often before there is much of a
+      recruiting team. Ask who is handling engineering hiring today.
+    criteria:
+      - when: { funding_rounds: [series a, series b] }
+        weight: 3
+        required: true
+      - when: { open_roles_min: 1 }
+        weight: 1
+        required: true
+      - when: { employees: { min: 15, max: 80 } }
+        weight: 1
+    exclude:
+      - layoffs: true
+      - employees: { min: 201 }
+
+  - id: ai_hiring
+    label: Hiring for AI roles
+    description: At least two open AI or ML roles.
+    pitch: >-
+      These roles are specialised and slow to fill. Name the kind of role and offer
+      to help with those searches specifically.
+    criteria:
+      - when: { ai_roles_min: 2 }
+        weight: 3
+        required: true
+      - when: { ai_maturity_min: 2 }
+        weight: 1
+    exclude:
+      - layoffs: true
+
+  - id: new_technical_leader
+    label: New technical leader
+    description: A new CTO or VP Engineering appointed in the last 90 days.
+    pitch: >-
+      New technical leaders often rethink their team in the first months. Ask about
+      their hiring priorities, with no hard pitch.
+    criteria:
+      - when: { leadership_change: true }
+        weight: 4
+        required: true
+    exclude:
+      - layoffs: true
+
+# Extra material injected into the drafter prompt. There are deliberately no proof
+# points: a fictional firm has no results, and the drafter must not invent any.
+knowledge:
+  - path: knowledge/services.md
+    label: Services and pricing
+    use_for: [cold, warm_reply, re_engagement]

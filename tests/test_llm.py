@@ -214,3 +214,10 @@ async def test_drafter_ignores_invented_links_and_past_times(monkeypatch):
 
     assert draft.calcom_link == "https://cal.example/real-link"
     assert [t.utc for t in draft.proposed_times] == ["2099-01-05 15:00 UTC"]
+
+
+def test_signature_is_added_only_when_missing():
+    from agent.core.email_drafter import _with_signature
+
+    assert _with_signature("Hi Priya.\n", "Sam\nAcme") == "Hi Priya.\n\nSam\nAcme"
+    assert _with_signature("Hi Priya.\n\nSam\nAcme", "Sam\nAcme") == "Hi Priya.\n\nSam\nAcme"

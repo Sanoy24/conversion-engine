@@ -64,7 +64,7 @@ def check_layoffs(
     matching_events: list[dict] = []
     for record in data:
         rec_company = (record.get("company") or "").lower().strip()
-        if name_lower not in rec_company and rec_company not in name_lower:
+        if name_lower != rec_company:
             continue
 
         # Parse date — dataset uses M/D/YYYY format
@@ -83,14 +83,27 @@ def check_layoffs(
             )
 
     if not matching_events:
+        # "None found" only means something if the data reaches the lookback window.
+        dates = [d for d in (_parse_date(r.get("date")) for r in data) if d]
+        data_end = max(dates, default=None)
+        if data_end and data_end >= cutoff:
+            return LayoffSignal(
+                event=False,
+                observed_at=datetime.utcnow().isoformat(),
+                confidence=Confidence.HIGH,
+            )
+        ends = data_end.date().isoformat() if data_end else "no data"
         return LayoffSignal(
             event=False,
             observed_at=datetime.utcnow().isoformat(),
-            confidence=Confidence.HIGH,  # Confident that NO layoff was found in dataset
+            confidence=Confidence.LOW,
+            sources=[
+                SourceRef(description=f"Unknown: layoff data doesn't cover this period ({ends})")
+            ],
         )
 
     # Use the most recent event
-    latest = matching_events[0]
+    latest = max(matching_events, key=lambda e: _parse_date(e.get("date")))
     headcount_pct = _parse_percentage(latest.get("percentage"))
 
     return LayoffSignal(

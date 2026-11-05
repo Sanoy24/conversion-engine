@@ -15,6 +15,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from agent.config import settings
+from agent.enrichment.job_boards import JobBoard, find_job_board, host_of
 from agent.models import Confidence, HiringSignal, SourceRef
 
 logger = logging.getLogger(__name__)
@@ -63,6 +64,15 @@ ENG_KEYWORDS = {
     "engineering manager",
 }
 
+# Titles that mention engineering without being a role building the product, such
+# as "Sales Engineer" or "Recruiter, Engineering".
+NON_PRODUCT_ROLE = re.compile(
+    r"\b(sales|solutions?|support|customer|field|partner|implementation|marketing"
+    r"|devrel|developer success)\s+engineer|recruit"
+)
+
+MAX_SAMPLE_TITLES = 8
+
 
 async def scrape_job_posts(
     company_name: str,
@@ -70,15 +80,18 @@ async def scrape_job_posts(
     careers_url: str | None = None,
 ) -> HiringSignal:
     """
-    Scrape public job posts for a company.
-    Falls back to the frozen snapshot if live scraping fails or is disabled.
+    Find a company's open roles: a frozen snapshot, then its public job board, then
+    a live crawl of its careers pages.
     """
-    # Try the frozen snapshot first; fall back to a live crawl
     snapshot_signal = _check_snapshot(company_name)
     if snapshot_signal:
         return snapshot_signal
 
-    # Attempt live scraping if snapshot not available
+    board = await find_job_board(company_name, domain)
+    if board:
+        return _signal_from_board(board)
+
+    # The crawl is a last resort: it undercounts badly on script-heavy careers pages.
     if careers_url or domain:
         try:
             return await _scrape_live(company_name, domain, careers_url)
@@ -97,6 +110,35 @@ async def scrape_job_posts(
                     "No snapshot match and no compliant public-page source resolved "
                     "(BuiltIn/Wellfound/LinkedIn/careers)."
                 )
+            )
+        ],
+    )
+
+
+def _signal_from_board(board: JobBoard) -> HiringSignal:
+    """
+    Build the hiring signal from a job board's current listings.
+
+    No 60-day delta: filled roles disappear from a board, so comparing posting dates
+    among what's still open would make every company look like it's growing.
+    """
+    titles = [re.sub(r"\s+", " ", title).strip() for title in board.titles]
+    eng_titles = list(dict.fromkeys(t for t in titles if _is_engineering_role(t.lower())))
+    eng_count = sum(1 for t in titles if _is_engineering_role(t.lower()))
+    ai_count = sum(
+        1 for t in titles if _is_ai_adjacent(t.lower()) and not NON_PRODUCT_ROLE.search(t.lower())
+    )
+    verification = "listings name the company" if board.verified else "owner not confirmed"
+    return HiringSignal(
+        open_eng_roles=eng_count,
+        ai_adjacent_eng_roles=ai_count,
+        sample_titles=eng_titles[:MAX_SAMPLE_TITLES],
+        confidence=Confidence.HIGH if board.verified else Confidence.MEDIUM,
+        observed_at=datetime.now(UTC).isoformat(),
+        sources=[
+            SourceRef(
+                url=board.url,
+                description=f"{board.provider} public job board ({verification})",
             )
         ],
     )
@@ -289,7 +331,9 @@ async def _scrape_live(
             unique_titles = list(dict.fromkeys(scraped_titles))
             eng_count = sum(1 for t in unique_titles if _is_engineering_role(t.lower()))
             ai_count = sum(1 for t in unique_titles if _is_ai_adjacent(t.lower()))
-            confidence = Confidence.HIGH if unique_titles else Confidence.LOW
+            # Never high: page headings are a guess at the real listings, and a page
+            # that renders its jobs with JavaScript looks like it has none.
+            confidence = Confidence.MEDIUM if eng_count else Confidence.LOW
 
             baseline = _snapshot_baseline_eng_count(company_name)
             delta_60d = None
@@ -321,7 +365,7 @@ def _candidate_job_page_urls(domain: str | None, careers_url: str | None) -> lis
     if careers_url:
         urls.append(careers_url)
     if domain:
-        host = domain.replace("https://", "").replace("http://", "").strip("/")
+        host = host_of(domain)
         company_slug = host.split(".")[0]
         urls.extend(
             [
@@ -565,7 +609,9 @@ def _extract_job_titles_with_selectors(html_content: str, selectors: list[str]) 
 
 
 def _is_engineering_role(title: str) -> bool:
-    """Check if a job title is an engineering role."""
+    """Check if a job title is a role building the product."""
+    if NON_PRODUCT_ROLE.search(title):
+        return False
     return any(kw in title for kw in ENG_KEYWORDS) or "engineer" in title
 
 
