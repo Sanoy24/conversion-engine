@@ -53,7 +53,8 @@ async def _deliver_resend(message: dict) -> str | None:
     if not settings.resend_api_key:
         raise RuntimeError("RESEND_API_KEY must be set")
     resend.api_key = settings.resend_api_key
-    response = resend.Emails.send(message)
+    # The SDK call is blocking; run it off the event loop like SMTP.
+    response = await asyncio.to_thread(resend.Emails.send, message)
     return response.get("id") if isinstance(response, dict) else None
 
 
