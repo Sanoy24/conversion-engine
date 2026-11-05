@@ -92,6 +92,7 @@ class HiringSignal(BaseModel):
     open_eng_roles: int | None = None
     ai_adjacent_eng_roles: int | None = None
     delta_60d: str | None = None  # e.g. "+18"
+    sample_titles: list[str] = Field(default_factory=list)
     observed_at: str | None = None
     confidence: Confidence = Confidence.LOW
     sources: list[SourceRef] = Field(default_factory=list)

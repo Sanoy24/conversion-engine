@@ -38,6 +38,22 @@ def test_example_playbook_loads():
     assert playbook.load_capacity()["total_available"] > 0
 
 
+def test_talent_example_playbook_loads():
+    playbook = load_playbook("playbooks/talent-example")
+    assert [s.id for s in playbook.segments] == [
+        "actively_hiring",
+        "funded_and_hiring",
+        "ai_hiring",
+        "new_technical_leader",
+    ]
+    assert playbook.read_text(playbook.voice.style_guide)
+    assert playbook.read_text(playbook.knowledge[0].path)
+    assert playbook.load_capacity() is None
+    assert all(
+        any(condition.layoffs for condition in segment.exclude) for segment in playbook.segments
+    )
+
+
 def test_missing_playbook_dir_gives_actionable_error(tmp_path):
     with pytest.raises(FileNotFoundError, match="PLAYBOOK_DIR"):
         load_playbook(tmp_path)

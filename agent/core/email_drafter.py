@@ -116,7 +116,7 @@ async def draft_email(
         thread_id=thread_id,
         email_type=email_type,
         subject=result.get("subject", ""),
-        body=result.get("body", ""),
+        body=_with_signature(result.get("body", ""), playbook.company.signature),
         proposed_times=_future_times(result.get("proposed_times", [])),
         # Always the configured calendar: models invent plausible-looking links.
         calcom_link=get_calendar_client().get_booking_link(),
@@ -136,6 +136,13 @@ async def draft_email(
     )
 
     return draft, traces
+
+
+def _with_signature(body: str, signature: str) -> str:
+    """Add the signature if the model left it out, which it sometimes does."""
+    if signature in body:
+        return body
+    return f"{body.rstrip()}\n\n{signature}"
 
 
 def _future_times(raw_times: list[dict]) -> list[ProposedTime]:
@@ -369,10 +376,15 @@ def _build_user_prompt(
             prompt_parts.append(
                 f"Hiring: {roles} open eng roles — DO NOT claim 'aggressive hiring' or 'scaling aggressively'. Ask instead. (confidence: {conf})"
             )
-        else:
+        elif signal_brief.hiring.delta_60d:
             prompt_parts.append(
                 f"Hiring: {roles} open eng roles, delta 60d: {signal_brief.hiring.delta_60d} (confidence: {conf})"
             )
+        else:
+            prompt_parts.append(f"Hiring: {roles} open eng roles (confidence: {conf})")
+        if signal_brief.hiring.sample_titles:
+            titles = "; ".join(signal_brief.hiring.sample_titles)
+            prompt_parts.append(f"Example open roles: {titles}")
 
     if signal_brief.layoffs.event:
         prompt_parts.append(

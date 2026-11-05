@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -23,6 +23,9 @@ from agent.config import settings
 from agent.models import Confidence, FundingSignal, ProspectInfo, SourceRef
 
 logger = logging.getLogger(__name__)
+
+# A round older than this says nothing about a company's budget today.
+FUNDING_RECENT_DAYS = 180
 
 # In-memory cache of loaded Crunchbase data
 _crunchbase_cache: list[dict] | None = None
@@ -109,6 +112,14 @@ def extract_prospect_info(record: dict) -> ProspectInfo:
     )
 
 
+def _is_recent(closed_at: str | None) -> bool:
+    try:
+        closed = datetime.strptime(str(closed_at)[:10], "%Y-%m-%d").replace(tzinfo=UTC)
+    except ValueError:
+        return False
+    return datetime.now(UTC) - closed <= timedelta(days=FUNDING_RECENT_DAYS)
+
+
 def extract_funding_signal(record: dict) -> FundingSignal:
     """Extract funding signal from a Crunchbase record."""
     funding_rounds = _parse_json_field(record.get("funding_rounds_list"))
@@ -120,12 +131,34 @@ def extract_funding_signal(record: dict) -> FundingSignal:
     closed_at = None
 
     if isinstance(funding_rounds, list) and funding_rounds:
-        latest = funding_rounds[0]  # Usually most recent first
-        event = latest.get("funding_type") or latest.get("investment_type")
+        latest = max(funding_rounds, key=lambda r: r.get("announced_on") or r.get("date") or "")
+        closed_at = latest.get("announced_on") or latest.get("date")
+        if not _is_recent(closed_at):
+            # An old or undated round says nothing about budget today, so it must
+            # neither qualify the company nor reach the email.
+            return FundingSignal(
+                closed_at=closed_at,
+                observed_at=datetime.now(UTC).isoformat(),
+                confidence=Confidence.LOW,
+                sources=[
+                    SourceRef(
+                        description=(
+                            f"No funding round in the last {FUNDING_RECENT_DAYS} days "
+                            f"(latest: {closed_at or 'undated'})"
+                        )
+                    )
+                ],
+            )
+        # Real records give the type only in the title: "Series A - Acme".
+        event = (
+            latest.get("funding_type")
+            or latest.get("investment_type")
+            or (latest.get("title") or "").split(" - ")[0].strip()
+            or None
+        )
         amount_raw = latest.get("money_raised") or latest.get("amount")
         if amount_raw:
             amount = _parse_money(amount_raw)
-        closed_at = latest.get("announced_on") or latest.get("date")
     elif highlights:
         # Fall back to highlights
         if isinstance(highlights, dict):

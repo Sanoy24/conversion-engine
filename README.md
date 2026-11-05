@@ -61,7 +61,7 @@ cd conversion-engine
 uv sync                                   # install dependencies
 cp .env.example .env                      # then add at least OPENROUTER_API_KEY
 uv run python -m scripts.fetch_data       # download public datasets into data/
-uv run playwright install chromium        # only needed for live job-post crawling
+uv run playwright install chromium        # only needed for the careers-page crawl fallback
 uv run pytest -m "not slow and not live"  # sanity check
 ```
 
@@ -94,7 +94,7 @@ cp -r playbooks/example playbooks/my-company
 PLAYBOOK_DIR=./playbooks/my-company uv run uvicorn agent.main:app
 ```
 
-Everything except `playbooks/example/` is gitignored, so your real sales material stays out of the repo.
+Everything except the two examples is gitignored, so your real sales material stays out of the repo. `playbooks/example/` is an engineering-services firm and `playbooks/talent-example/` is a recruitment firm. Both companies are fictional, so use them for dry runs and test inboxes only.
 
 ```yaml
 company:
@@ -299,7 +299,7 @@ agent/
   channels/          email (Resend, SendGrid, SMTP), SMS (Africa's Talking, Twilio), handoff policy
   integrations/      CRMs (HubSpot REST + MCP, Pipedrive, Salesforce, Attio), calendars (Cal.com, Calendly)
   observability/     Langfuse + JSONL traces
-playbooks/example/   fictional company playbook: copy this to start
+playbooks/           fictional example playbooks: copy one to start
 scripts/             fetch_data, run_full_thread_demo, list_hubspot_mcp_tools
 tests/
 ```
@@ -363,6 +363,10 @@ uv run ruff check . && uv run ruff format .
 
 - Crunchbase ODM sample: Apache 2.0, [luminati-io/Crunchbase-dataset-samples](https://github.com/luminati-io/Crunchbase-dataset-samples)
 - layoffs.fyi data: CC-BY, via a public mirror (see `scripts/fetch_data.py`)
+- Open roles: the public Greenhouse, Lever and Ashby job-board APIs, with a careers-page crawl as a fallback
+
+The downloaded samples are old: the funding and layoff data stop in 2024. Old funding rounds don't count as recent, and "no layoffs" is reported as unknown when the data doesn't cover the period. A recent layoff or funding round therefore won't be detected unless you supply current data, so check those yourself before sending.
+
 - Datasets are downloaded on demand, not redistributed in this repo. Third-party services are governed by their own terms.
 
 Job-post collection uses public pages only: no logins, no captcha bypassing, robots.txt respected.
