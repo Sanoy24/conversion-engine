@@ -38,7 +38,14 @@ async def check_leadership_change(
         if press_signal.change:
             return press_signal, traces
 
-    # Use LLM to analyze available information
+    # Without a list of people, the LLM would have only a company name and could
+    # only guess from memory, so don't spend a request on it.
+    if not (crunchbase_record and crunchbase_record.get("people")):
+        return LeadershipSignal(
+            observed_at=datetime.now(UTC).isoformat(),
+            confidence=Confidence.LOW,
+        ), traces
+
     llm = get_llm_client()
     prompt = _build_leadership_prompt(company_name, crunchbase_record)
 

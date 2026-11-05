@@ -216,6 +216,59 @@ async def test_drafter_ignores_invented_links_and_past_times(monkeypatch):
     assert [t.utc for t in draft.proposed_times] == ["2099-01-05 15:00 UTC"]
 
 
+async def _draft_with_tone_scores(monkeypatch, scores: list[float]):
+    """Draft with a fake LLM whose tone checks return `scores` in order."""
+    from agent.core.email_drafter import draft_email
+    from agent.core.icp_classifier import classify_prospect
+    from agent.models import EmailType, TraceRecord
+    from evals.cases import load_cases
+
+    calls: list[str] = []
+    remaining = list(scores)
+
+    class FakeLLM:
+        async def chat_json(self, **kwargs):
+            event = kwargs["trace_event"]
+            calls.append(event)
+            trace = TraceRecord(trace_id="t", event_type=event)
+            if event == "tone_check":
+                return {"score": remaining.pop(0)}, trace
+            body = "Regenerated draft." if event == "email_draft_regen" else "First draft."
+            return {"subject": "Question on hiring", "body": body}, trace
+
+    monkeypatch.setattr("agent.core.email_drafter.get_llm_client", FakeLLM)
+    case = next(c for c in load_cases() if c.id == "funded_clean")
+    draft, _ = await draft_email(
+        signal_brief=case.brief,
+        classification=classify_prospect(case.brief),
+        email_type=EmailType.COLD,
+    )
+    return draft, calls
+
+
+@pytest.mark.asyncio
+async def test_good_draft_is_not_regenerated(monkeypatch):
+    draft, calls = await _draft_with_tone_scores(monkeypatch, [0.9])
+    assert calls == ["email_draft", "tone_check"]
+    assert draft.body.startswith("First draft.")
+    assert draft.tone_check_score == 0.9
+
+
+@pytest.mark.asyncio
+async def test_regenerated_draft_is_scored_and_kept_when_better(monkeypatch):
+    draft, calls = await _draft_with_tone_scores(monkeypatch, [0.5, 0.8])
+    assert calls == ["email_draft", "tone_check", "email_draft_regen", "tone_check"]
+    assert draft.body.startswith("Regenerated draft.")
+    assert draft.tone_check_score == 0.8
+
+
+@pytest.mark.asyncio
+async def test_original_draft_is_kept_when_regeneration_is_worse(monkeypatch):
+    draft, _ = await _draft_with_tone_scores(monkeypatch, [0.6, 0.3])
+    assert draft.body.startswith("First draft.")
+    assert draft.tone_check_score == 0.6
+
+
 def test_signature_is_added_only_when_missing():
     from agent.core.email_drafter import _with_signature
 
