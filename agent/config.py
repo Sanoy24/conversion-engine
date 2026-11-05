@@ -22,8 +22,6 @@ class Settings(BaseSettings):
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
     dev_model: str = "deepseek/deepseek-chat-v3-0324"
     eval_model: str = "anthropic/claude-sonnet-4-20250514"
-    # Refuse any model that isn't free (id ending ':free', or 'openrouter/free').
-    free_models_only: bool = False
     # Ask OpenRouter to turn reasoning off. Reasoning models can otherwise spend
     # the whole token budget thinking and return no content; short structured
     # emails don't need it.

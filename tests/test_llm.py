@@ -1,4 +1,4 @@
-"""LLM client: the free-models guard, retries, daily limit, and what traces record."""
+"""LLM client: retries, daily limit, and what traces record."""
 
 from __future__ import annotations
 
@@ -81,18 +81,6 @@ def test_is_free_model(model, free):
     assert is_free_model(model) is free
 
 
-def test_free_models_only_refuses_paid_models(monkeypatch):
-    monkeypatch.setattr(settings, "free_models_only", True)
-    with pytest.raises(ValueError, match="FREE_MODELS_ONLY"):
-        LLMClient(model="anthropic/claude-sonnet-4-20250514")
-    assert LLMClient(model="openrouter/free").model == "openrouter/free"
-
-
-def test_paid_models_allowed_when_guard_is_off(monkeypatch):
-    monkeypatch.setattr(settings, "free_models_only", False)
-    assert LLMClient(model="anthropic/claude-sonnet-4-20250514").model.startswith("anthropic/")
-
-
 @pytest.mark.asyncio
 async def test_trace_records_the_model_that_answered(client_for):
     client, _, _ = client_for(
@@ -112,8 +100,7 @@ async def test_free_models_cost_nothing(client_for):
 
 
 @pytest.mark.asyncio
-async def test_paid_models_use_the_reported_cost(client_for, monkeypatch):
-    monkeypatch.setattr(settings, "free_models_only", False)
+async def test_paid_models_use_the_reported_cost(client_for):
     usage = {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15, "cost": 0.0123}
     client, _, _ = client_for(
         [httpx.Response(200, json=_completion("anthropic/x", usage))], model="anthropic/x"
