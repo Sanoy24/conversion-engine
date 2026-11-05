@@ -1,0 +1,85 @@
+{
+  "model": "nvidia/nemotron-3.5-super-vl:free",
+  "drafts": {
+    "funded_clean": {
+      "fingerprint": "fcb9f055d974",
+      "prompt_hash": "c8200fe9544b",
+      "segment": "recently_funded",
+      "subject": "Context: Northwind Analytics Series A",
+      "body": "Priya,\n\nYou closed a Series A of $8M and have 12 open engineering roles.\n\nCompanies at this stage often find shipping speed limited by how fast recruiting can keep up rather than by ambition.\n\nWould a brief call next week make sense to explore how Acme Engineering's dedicated teams could help you ship faster than in-house hiring alone allows?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": 0.85,
+      "recorded_at": "2026-11-05T08:55:00+00:00"
+    },
+    "funded_medium_hiring": {
+      "fingerprint": "4cb35258557f",
+      "prompt_hash": "ce4b05f749e2",
+      "segment": "recently_funded",
+      "subject": "Context: Series B",
+      "body": "Daniel,\n\nYou closed a $22M Series B. Looking at the public signal, it seems your engineering team is expanding.\n\nFresh budget often means shipping faster than in-house hiring alone allows. We provide dedicated engineering teams to B2B software companies.\n\nWould you be open to a brief conversation about your engineering priorities this quarter?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": 0.75,
+      "recorded_at": "2026-11-05T08:55:00+00:00"
+    },
+    "funded_low_confidence_funding": {
+      "fingerprint": "9bb1c98c0e4d",
+      "prompt_hash": "a28399fe8dde",
+      "segment": "abstain",
+      "subject": "Question on engineering hiring",
+      "body": "Hi Mei,\n\nI noticed Cobalt Pathways has nine open engineering roles.\n\nWhen hiring is moving that fast, internal recruiting often becomes the bottleneck to shipping.\n\nDid your team close a round recently?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": 0.65,
+      "recorded_at": "2026-11-05T08:55:00+00:00"
+    },
+    "layoff_midsize": {
+      "fingerprint": "a4122d03934b",
+      "prompt_hash": "e3814f1f07e0",
+      "segment": "restructuring",
+      "subject": "Context: Harborline Systems engineering capacity",
+      "body": "Hi Grace,\n\nLooking at the public signal, it seems Harborline Systems has a small number of open engineering roles.\n\nWe help mid-sized software companies keep delivery capacity steady while costs come down.\n\nWould you be open to a brief conversation about how your team is prioritising engineering capacity right now?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": 0.75,
+      "recorded_at": "2026-11-05T08:55:00+00:00"
+    },
+    "leadership_low_confidence_with_funding": {
+      "fingerprint": "220a4d122b4b",
+      "prompt_hash": "0cffca591d90",
+      "segment": "recently_funded",
+      "subject": "Question on Ironbark Data's Series B",
+      "body": "Arjun\n\nIronbark Data closed a $15 million Series B, and I see ten open engineering roles. Fresh funding usually means shipping faster than in-house hiring alone allows.\n\nWe provide dedicated engineering teams to B2B software companies.\n\nIs your engineering team expanding faster than recruiting can keep up?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": 0.75,
+      "recorded_at": "2026-11-05T08:55:00+00:00"
+    },
+    "ai_capability_high": {
+      "fingerprint": "a9780fb779f8",
+      "prompt_hash": "4e8421a991c3",
+      "segment": "capability_gap",
+      "subject": "Context: ML platform team",
+      "body": "Sofia,\n\nI saw Meridian Insights has a public ML platform team and model-serving job posts, plus six open engineering roles.\n\nCompanies at AI maturity 3 often find that scoped AI projects ship faster than in-house hiring alone allows.\n\nWould you be open to a brief conversation about a fixed-scope AI project?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": 0.9,
+      "recorded_at": "2026-11-05T08:55:00+00:00"
+    },
+    "unknown_contact_and_timezone": {
+      "fingerprint": "43fe5c1bb821",
+      "prompt_hash": "68d681decf9a",
+      "segment": "recently_funded",
+      "subject": "Context: Larkspur Analytics Series A",
+      "body": "Larkspur Analytics closed a $10M Series A.\n\nFresh funding usually means shipping faster than in-house hiring alone allows.\n\nWould you be open to a brief conversation about how dedicated engineering teams can support that timeline?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": 0.95,
+      "recorded_at": "2026-11-05T08:55:00+00:00"
+    },
+    "medium_funding_high_hiring": {
+      "fingerprint": "c6cc61ea3acd",
+      "prompt_hash": "fa1ca1186da2",
+      "segment": "recently_funded",
+      "subject": "Context: Series B funding",
+      "body": "Felix,\n\nLooking at the public signal, it seems Thornbury Energy Software closed a Series B.\n\nFresh budget often means shipping faster than in-house hiring alone allows. We run dedicated engineering teams inside B2B software products.\n\nWould you be open to a brief conversation about how that could work for your team?\n\nSam\nResearch Partner\nAcme Engineering\nacme.example",
+      "proposed_times": [],
+      "tone_score": 0.75,
+      "recorded_at": "2026-11-05T08:55:00+00:00"
+    }
+  }
+}

@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 import uuid
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 
 from agent.config import settings
 from agent.core.scap import SCAPConfig, apply_scap, render_ask_directives
@@ -117,8 +117,9 @@ async def draft_email(
         email_type=email_type,
         subject=result.get("subject", ""),
         body=result.get("body", ""),
-        proposed_times=[ProposedTime(**t) for t in result.get("proposed_times", [])],
-        calcom_link=result.get("calcom_link") or get_calendar_client().get_booking_link(),
+        proposed_times=_future_times(result.get("proposed_times", [])),
+        # Always the configured calendar: models invent plausible-looking links.
+        calcom_link=get_calendar_client().get_booking_link(),
         grounded_claims=grounded,
         handoff_to_human=handoff,
         handoff_reason=handoff_reason,
@@ -135,6 +136,25 @@ async def draft_email(
     )
 
     return draft, traces
+
+
+def _future_times(raw_times: list[dict]) -> list[ProposedTime]:
+    """
+    Keep proposed times that are provably in the future. The prompt doesn't state
+    today's date, so models can copy its example date or invent a past one.
+    """
+    today = datetime.now(UTC).date()
+    kept = []
+    for raw in raw_times:
+        try:
+            when = datetime.strptime(str(raw.get("utc", ""))[:10], "%Y-%m-%d").date()
+            if when >= today:
+                kept.append(ProposedTime(**raw))
+                continue
+        except (TypeError, ValueError):
+            pass
+        logger.warning("Dropping proposed time that isn't a future date: %s", raw)
+    return kept
 
 
 @dataclass

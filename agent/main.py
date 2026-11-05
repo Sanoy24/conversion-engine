@@ -33,6 +33,7 @@ from agent.core.orchestrator import (
 from agent.core.review import get_review_queue
 from agent.core.sending import get_sending_guard
 from agent.core.suppression import MANUAL, get_suppression_list, verify_unsubscribe_token
+from agent.llm import LLMDailyLimitError
 from agent.models import ChannelType, ConversationStatus
 from agent.observability.trace_logger import compute_metrics, init_trace_logger
 from agent.security import (
@@ -194,6 +195,9 @@ async def new_prospect(request: NewProspectRequest):
             contact_title=request.contact_title,
         )
         return JSONResponse(content=result)
+    except LLMDailyLimitError as e:
+        logger.warning("New prospect pipeline stopped: %s", e)
+        raise HTTPException(status_code=429, detail=str(e)) from e
     except Exception as e:
         logger.error("New prospect pipeline failed: %s", str(e), exc_info=True)
         raise HTTPException(status_code=500, detail=str(e)) from e
