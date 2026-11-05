@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import threading
 from typing import ClassVar
 
 import httpx
@@ -26,6 +27,27 @@ def _draft() -> EmailDraft:
     return EmailDraft(
         thread_id="thread_1", email_type=EmailType.COLD, subject="Hello", body="Body text."
     )
+
+
+# ── Resend ────────────────────────────────────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_resend_does_not_block_the_event_loop(monkeypatch):
+    monkeypatch.setattr(settings, "email_provider", "resend")
+    monkeypatch.setattr(settings, "resend_api_key", "re_key")
+    threads = []
+
+    def fake_send(_message):
+        threads.append(threading.get_ident())
+        return {"id": "re_1"}
+
+    monkeypatch.setattr(email_providers.resend.Emails, "send", fake_send)
+
+    result, _trace = await send_email("jane@acme.io", _draft())
+
+    assert result["id"] == "re_1"
+    assert threads[0] != threading.get_ident()
 
 
 # ── SendGrid ──────────────────────────────────────────────────────────
