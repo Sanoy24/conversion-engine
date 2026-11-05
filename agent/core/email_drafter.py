@@ -75,20 +75,25 @@ async def draft_email(
 
     # Run tone-preservation check
     tone_score = None
+    signature = playbook.company.signature
     if style_guide:
-        tone_score, tone_trace = await _tone_check(
-            result.get("body", ""),
-            style_guide,
-            playbook.company.name,
-            signal_brief.prospect.company,
-            thread_id,
-        )
+
+        async def score_body(draft_result: dict) -> tuple[float, TraceRecord]:
+            return await _tone_check(
+                _with_signature(draft_result.get("body", ""), signature),
+                style_guide,
+                playbook.company.name,
+                signal_brief.prospect.company,
+                thread_id,
+            )
+
+        tone_score, tone_trace = await score_body(result)
         traces.append(tone_trace)
 
         # Regenerate if score is too low
         if tone_score < playbook.voice.tone_check_threshold:
             logger.warning("Tone score %.2f below threshold — regenerating.", tone_score)
-            result, regen_trace = await llm.chat_json(
+            regenerated, regen_trace = await llm.chat_json(
                 messages=[
                     {
                         "role": "system",
@@ -105,6 +110,13 @@ async def draft_email(
             )
             traces.append(regen_trace)
 
+            # A regeneration isn't automatically better: keep whichever scored higher,
+            # so the recorded score always belongs to the draft that is kept.
+            regen_score, regen_tone_trace = await score_body(regenerated)
+            traces.append(regen_tone_trace)
+            if regen_score >= tone_score:
+                result, tone_score = regenerated, regen_score
+
     # Check if we need human handoff
     handoff = False
     handoff_reason = None
@@ -116,7 +128,7 @@ async def draft_email(
         thread_id=thread_id,
         email_type=email_type,
         subject=result.get("subject", ""),
-        body=_with_signature(result.get("body", ""), playbook.company.signature),
+        body=_with_signature(result.get("body", ""), signature),
         proposed_times=_future_times(result.get("proposed_times", [])),
         # Always the configured calendar: models invent plausible-looking links.
         calcom_link=get_calendar_client().get_booking_link(),

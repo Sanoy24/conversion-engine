@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from agent.enrichment import layoffs
+from agent.enrichment import layoffs, leadership
 from agent.enrichment.crunchbase import (
     _extract_employee_count,
     _extract_industries,
@@ -17,6 +17,7 @@ from agent.enrichment.crunchbase import (
     search_company,
 )
 from agent.enrichment.layoffs import _parse_date, _parse_percentage, check_layoffs
+from agent.models import TraceRecord
 
 
 def _days_ago(days: int) -> str:
@@ -203,6 +204,35 @@ class TestLayoffsParser:
             [{"company": "TestCo", "date": older}, {"company": "TestCo", "date": newer}],
         )
         assert check_layoffs("TestCo").closed_at == newer
+
+
+class TestLeadershipCheck:
+    """The LLM is only asked when it has evidence to look at."""
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("record", [None, {"name": "TestCo", "about": "A SaaS company."}])
+    async def test_no_llm_call_without_people(self, monkeypatch, record):
+        def must_not_run():
+            raise AssertionError("called the LLM without any evidence")
+
+        monkeypatch.setattr(leadership, "get_llm_client", must_not_run)
+        signal, traces = await leadership.check_leadership_change("TestCo", record)
+        assert signal.change is False
+        assert signal.confidence.value == "low"
+        assert traces == []
+
+    @pytest.mark.asyncio
+    async def test_llm_is_asked_when_there_are_people(self, monkeypatch):
+        class FakeLLM:
+            async def chat_json(self, **_kwargs):
+                return {"change": False, "confidence": "low"}, TraceRecord(
+                    trace_id="t", event_type="enrichment_leadership"
+                )
+
+        monkeypatch.setattr(leadership, "get_llm_client", FakeLLM)
+        record = {"people": [{"name": "Ada", "title": "CEO"}]}
+        _signal, traces = await leadership.check_leadership_change("TestCo", record)
+        assert len(traces) == 1
 
 
 class TestDateParsing:
