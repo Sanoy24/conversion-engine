@@ -57,11 +57,6 @@ class LLMClient:
 
     def __init__(self, model: str | None = None):
         self.model = model or settings.active_model
-        if settings.free_models_only and not is_free_model(self.model):
-            raise ValueError(
-                f"FREE_MODELS_ONLY is on, refusing non-free model {self.model!r}. "
-                "Use a model ending in ':free' or 'openrouter/free'."
-            )
         # max_retries=0: the SDK would retry every 429, including the daily limit.
         self.client = AsyncOpenAI(
             api_key=settings.openrouter_api_key,
